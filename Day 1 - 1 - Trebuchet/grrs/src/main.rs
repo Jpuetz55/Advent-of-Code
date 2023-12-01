@@ -8,8 +8,6 @@ use std::path::Path;
 fn main() {
     // open file with raw text
 
-    
-
     let path = Path::new("/home/josh/Desktop/AOC/Advent-of-Code/Day 1 - 1 - Trebuchet/grrs/params.txt");
     let display = path.display();
     let mut calib_params_file = match File::open(&path) {
@@ -18,6 +16,7 @@ fn main() {
     };
     
     // write opened filed to string
+
     let mut calib_params_string = String::new();
     match calib_params_file.read_to_string(&mut calib_params_string) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
@@ -38,23 +37,28 @@ fn main() {
     let collect_params = calib_params_split.collect::<Vec<&str>>();
 
     // Loop over each item in array
-    for item in collect_params {    
+
+    for item in collect_params {   
+
+            // declare temporary variable to hold the first_number and the last_number and set them to NULL 
             let mut first_number: Option<u32> = None;
             let mut last_number: Option<u32> = None;          
             // loop through characters in array item.
-            for letter in item.chars() {
-                // declare temporary variable to hold the first_number and the last_number and set them to NULL
 
+            for letter in item.chars() {
+                
                 // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
+
                 if letter.is_numeric() && first_number.is_none() {
                     first_number =  letter.to_digit(10) 
                 };
                 // if character == number && first_number !== NULL then save to last_number and continue 
+
                 if letter.is_numeric() && !first_number.is_none() {
                     last_number = letter.to_digit(10)
                 };
                 
-            //end loop -- when loop ends first_number should contain the first number and lastCharacter should contain the last number
+                //end loop -- when loop ends first_number should contain the first number and lastCharacter should contain the last number
             }
 
             // calculate parameters
@@ -65,7 +69,7 @@ fn main() {
             //set back to zero for next loop
             print!("{} : {:?}, {:?} : {:?}\n", item, first_number.unwrap(), last_number.unwrap(), add_first_last);
             add_first_last = 0;
-            
+            //end loop    
         }
         print!("Total is : {:?}", total);    // answer is 52974    
         // function returns the value of total 
