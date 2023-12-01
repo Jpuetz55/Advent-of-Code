@@ -58,6 +58,7 @@ fn main() {
             }
 
             // calculate parameters
+            //(first number * 10) + finalNumber?
             add_first_last = (first_number.unwrap() * 10) + last_number.unwrap();
             //add them to total
             total += add_first_last;
@@ -66,12 +67,7 @@ fn main() {
             add_first_last = 0;
             
         }
-        print!("Total is : {:?}", total);    
-              
-            //  
-            //algo to convert the first and last number values into a number. i.e. 1 and 2 == 12
-                //(first number * 10) + finalNumber?
-            // add result of the calculation to the total.
-        //end loop
+        print!("Total is : {:?}", total);    // answer is 52974    
         // function returns the value of total 
+        total
 }
