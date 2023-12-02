@@ -8,7 +8,7 @@ use std::path::Path;
 fn main() {
     // open file with raw text
 
-    let path = Path::new("/home/josh/Desktop/AOC/Advent-of-Code/Day 1 - 1 - Trebuchet/grrs/params.txt");
+    let path = Path::new("./params.txt");
     let display = path.display();
     let mut calib_params_file = match File::open(&path) {
         Err(why) => panic!("couldn't open {}: {}", display, why),
@@ -73,5 +73,4 @@ fn main() {
         }
         print!("Total is : {:?}", total);    // answer is 52974    
         // function returns the value of total 
-        total
 }
