@@ -55,7 +55,7 @@ fn main() {
 
             // hashmap for word numbers
 
-            let solar_distance = HashMap::from([
+            let word_numbers = HashMap::from([
             ("one", 1),
             ("two", 2),
             ("three", 3),
