@@ -31,11 +31,21 @@ fn main() {
 
     let mut add_first_last: u32 = 0;
 
+    //counter
+    let mut i = 0;
+
     // Split raw calibration parameters by the new line and put them in a vector
 
     let calib_params_split = calib_params_string.split("\n");
 
     let collect_params = calib_params_split.collect::<Vec<&str>>();
+
+    // Circular Buffer to check for word numbers
+
+    // Initialize a new, empty circular buffer with a capacity of 5 elements
+    // when new value gets added, oldest value gets dropped and
+    // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
+    let mut buf = CircularBuffer::<5, char>::new();
 
     // Loop over each item in array
 
@@ -46,33 +56,16 @@ fn main() {
             let mut last_number: Option<u32> = None;          
             // loop through characters in array item.
 
-            // Circular Buffer to check for word numbers
-
-            // Initialize a new, empty circular buffer with a capacity of 5 elements
-            // when new value gets added, oldest value gets dropped and
-            // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
-            let mut buf = CircularBuffer::<5, u32>::new();
-
-            // hashmap for word numbers
-
-            let word_numbers = HashMap::from([
-            ("one", 1),
-            ("two", 2),
-            ("three", 3),
-            ("four", 4),
-            ("five", 5),
-            ("six", 6),
-            ("seven", 7),
-            ("eight", 8),
-            ("nine", 9),
-            ]); 
+            //clear buffer
+            buf.drain(0..);
 
             for letter in item.chars() {
                 
+                //push letter onto buffer if it isn't a new line
+                if letter != '\r' {
+                    buf.push_back(letter);
+                }
                 // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
-                buf.push_back(letter);
-
-
 
                 if letter.is_numeric() && first_number.is_none() {
                     first_number =  letter.to_digit(10) 
@@ -92,8 +85,10 @@ fn main() {
             //add them to total
             total += add_first_last;
             //set back to zero for next loop
-            print!("{} : {:?}, {:?} : {:?}\n", item, first_number.unwrap(), last_number.unwrap(), add_first_last);
+            //print!("{} : {:?}, {:?} : {:?}\n", item, first_number.unwrap(), last_number.unwrap(), add_first_last);
+            print!("{}{:?}\n", i, buf.range(0..));
             add_first_last = 0;
+            i += 1;
             //end loop    
         }
         print!("Total is : {:?}", total);    // answer is 52974    
