@@ -32,11 +32,28 @@ fn main()
 
     let collect_params = game_params_split.collect::<Vec<&str>>();
 
+    //game counter
+
+    let mut game_count: u32 = 1;
+
     for item in collect_params {
 
+        for letter in item.chars() {
 
-        //game counter
-        //
+            //red counter
+            let mut red_count: u32 = 0;
+            //green counter
+            let mut green_count: u32 = 0;
+            //blue counter
+            let mut blue_count: u32 = 0;
+
+
+
+
+        }
+        
+        
+        
 
 
 
