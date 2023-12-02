@@ -67,10 +67,6 @@ fn main() {
             ("nine", 9),
             ]); 
 
-            enum word {
-
-            }
-
             for letter in item.chars() {
                 
                 // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
