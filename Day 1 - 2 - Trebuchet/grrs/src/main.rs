@@ -68,7 +68,7 @@ fn main()
                 if letter != '\r' {
                     buf.push_back(letter);
                 }
-                if buf.len() > 2 {
+                if buf.len() > 2 { //prevent out of range index at start/short items
                     let buf3 = String::from_iter(buf.range(0..3));
                     if buf3 == "one" {
                         if first_number.is_none() {
@@ -91,7 +91,7 @@ fn main()
                     }
                 }
 
-                if buf.len() > 3 {
+                if buf.len() > 3 {  
                     let buf4 = String::from_iter(buf.range(0..4));
                     if buf4 == "zero" {
                         if first_number.is_none() {
@@ -159,13 +159,15 @@ fn main()
             //buf should still be populated at the end of the loop
             //To check for the case where a number word with a length smaller than the buffer punctuates an item:
 
-            //push char to buffer and check for 4 letter words at the end
-            if (!buf.get(3).is_none() &&
-                !buf.get(3).unwrap().is_numeric()) && (!buf.get(4).is_none() &&
+            
+            
+            if (!buf.get(3).is_none() &&                                                 //check for null values. Check for a number in the last or second to last index of buffer
+                !buf.get(3).unwrap().is_numeric()) && (!buf.get(4).is_none() &&          //to prevent recognition of 3 to 4 char number word preceding it
                 !buf.get(4).unwrap().is_numeric()) 
             {
-                buf.push_back('.');
-                if buf.len() > 2 {
+                //Check for 3 and 4 letter number words after each push
+                buf.push_back('.');  //push character to end of buffer to move chars to left
+                if buf.len() > 2 {   
                     let buf3 = String::from_iter(buf.range(0..3));
                     if buf3 == "one" {
                         if first_number.is_none() {
@@ -186,7 +188,7 @@ fn main()
                         }
                         last_number = Some(6);
                     }
-                    if buf.len() > 3 {
+                    if buf.len() > 3 {  
                         let buf4 = String::from_iter(buf.range(0..4));
                         if buf4 == "zero" {
                             if first_number.is_none() {
