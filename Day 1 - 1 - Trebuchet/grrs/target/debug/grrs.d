@@ -1,1 +1,1 @@
-/home/josh/Desktop/AOC/Advent-of-Code/Day\ 1\ -\ 1\ -\ Trebuchet/grrs/target/debug/grrs: /home/josh/Desktop/AOC/Advent-of-Code/Day\ 1\ -\ 1\ -\ Trebuchet/grrs/src/main.rs
+C:\Users\josh_\Advent-of-Code\Day\ 1\ -\ 1\ -\ Trebuchet\grrs\target\debug\grrs.exe: C:\Users\josh_\Advent-of-Code\Day\ 1\ -\ 1\ -\ Trebuchet\grrs\src\main.rs
