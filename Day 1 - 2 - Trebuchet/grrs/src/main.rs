@@ -66,85 +66,78 @@ fn main() {
             if letter != '\r' {
                 buf.push_back(letter);
             }
-            current_string = String::from_iter(buf.range(0..));
-            let zero = String::from("zero");
-            let one = String::from("one");
-            let two = String::from("two");
-            let three = String::from("three");
-            let four = String::from("four");
-            let five = String::from("five");
-            let six = String::from("six");
-            let seven = String::from("seven");
-            let eight = String::from("eight");
-            let nine = String::from("nine");
+            
+
+            //             
+                match current_string.as_str() {
+                     "zero" =>
+                        if first_number.is_none() {
+                            first_number = Some(0);
+                        }
+                        else {
+                            last_number = Some(0);
+                        },
+                    "one" =>
+                        if first_number.is_none() {
+                            first_number = Some(1);
+                        }
+                        else {
+                            last_number = Some(1);
+                        },
+                    "two" =>
+                        if first_number.is_none() {
+                            first_number = Some(2);
+                        } else {
+                            last_number = Some(2);
+                    },
+                    "three" =>
+                        if first_number.is_none() {
+                            first_number = Some(3);
+                        } else {
+                            last_number = Some(3);
+                        },
+                    "four" =>
+                        if first_number.is_none() {
+                            first_number = Some(4);
+                        } else {
+                            last_number = Some(4);
+                        },
+                    "five" =>
+                        if first_number.is_none() {
+                            first_number = Some(5);
+                        } else {
+                            last_number = Some(5);
+                        },
+                    "six" =>
+                        if first_number.is_none() {
+                            first_number = Some(6);
+                        } else {
+                            last_number = Some(6);
+                        },
+                    "seven" =>
+                        if first_number.is_none() {
+                            first_number = Some(7);
+                        } else {
+                            last_number = Some(7);
+                        },
+                    "eight" =>
+                        if first_number.is_none() {
+                            first_number = Some(8);
+                        } else {
+                            last_number = Some(8);
+                        },
+                    "nine" =>
+                        if first_number.is_none() {
+                            first_number = Some(9);
+                        } else {
+                            last_number = Some(9);
+                        },
+                    _ => {}
+            }
 
             // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
-            match current_string {
-                ref zero =>
-                if first_number.is_none() {
-                    first_number = Some(0);
-                }
-                else {
-                    last_number = Some(0);
-                },
-                ref one =>
-                if first_number.is_none() {
-                    first_number = Some(1);
-                }
-                else {
-                    last_number = Some(1);
-                },
-                ref two =>
-                if first_number.is_none() {
-                        first_number = Some(2);
-                    } else {
-                        last_number = Some(2);
-                    },
-                ref three =>
-                    if first_number.is_none() {
-                        first_number = Some(3);
-                    } else {
-                        last_number = Some(3);
-                    },
-                ref four =>
-                    if first_number.is_none() {
-                        first_number = Some(4);
-                    } else {
-                        last_number = Some(4);
-                    },
-                ref five =>
-                    if first_number.is_none() {
-                        first_number = Some(5);
-                    } else {
-                        last_number = Some(5);
-                    },
-                ref six =>
-                    if first_number.is_none() {
-                        first_number = Some(6);
-                    } else {
-                        last_number = Some(6);
-                    },
-                ref seven =>
-                    if first_number.is_none() {
-                        first_number = Some(7);
-                    } else {
-                        last_number = Some(7);
-                    },
-                ref eight =>
-                    if first_number.is_none() {
-                        first_number = Some(8);
-                    } else {
-                        last_number = Some(8);
-                    },
-                ref nine =>
-                    if first_number.is_none() {
-                        first_number = Some(9);
-                    } else {
-                        last_number = Some(9);
-                    },
-                _ => {}
-            }
-            print!("{}", current_string);
+            //is numerica and non numeric the only other posiblities?
+            print!("{}\n", current_string);
             if letter.is_numeric() && first_number.is_none() {
                 first_number = letter.to_digit(10)
             };
