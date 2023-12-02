@@ -1,9 +1,10 @@
 
-// ---------------------------------------------------------------- Day 1-1, Trebuchet ----------------------------------------------------------------
+// ---------------------------------------------------------------- Day 1-2, Trebuchet ----------------------------------------------------------------
 use std::fs::File;
 use std::io::prelude::*;
 use std::option;
 use std::path::Path;
+use circular_buffer::CircularBuffer;
 
 fn main() {
     // open file with raw text
@@ -45,9 +46,37 @@ fn main() {
             let mut last_number: Option<u32> = None;          
             // loop through characters in array item.
 
+            // Circular Buffer to check for word numbers
+
+            // Initialize a new, empty circular buffer with a capacity of 5 elements
+            // when new value gets added, oldest value gets dropped and
+            // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
+            let mut buf = CircularBuffer::<5, u32>::new();
+
+            // hashmap for word numbers
+
+            let solar_distance = HashMap::from([
+            ("one", 1),
+            ("two", 2),
+            ("three", 3),
+            ("four", 4),
+            ("five", 5),
+            ("six", 6),
+            ("seven", 7),
+            ("eight", 8),
+            ("nine", 9),
+            ]); 
+
+            enum word {
+
+            }
+
             for letter in item.chars() {
                 
                 // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
+                buf.push_back(letter);
+
+
 
                 if letter.is_numeric() && first_number.is_none() {
                     first_number =  letter.to_digit(10) 
