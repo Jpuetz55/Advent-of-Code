@@ -141,8 +141,9 @@ fn main()
             game_count += 1;
             break;
         }
+        //only on success
         print!("Success --- Game Total:  {}\t", game_total);
-        game_total += game_count;
+        game_total += game_count;   
         j += 1;                                                           
         print!("end loop {}\n", j);       
         //set i back to zero for next game
