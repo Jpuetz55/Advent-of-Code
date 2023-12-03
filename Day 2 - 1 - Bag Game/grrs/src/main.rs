@@ -33,8 +33,10 @@ fn main()
     let collect_params = game_params_split.collect::<Vec<&str>>();
 
     //game counter
-
     let mut game_count: u32 = 1;
+
+    //game total
+    let mut game_total: u32 = 0;
 
     for item in collect_params {
 
@@ -82,14 +84,26 @@ fn main()
                             }
                         }
                     }
+                    //check failure condition 
+                
+                    if blue_count > BLUEMAX {
+                        game_total += game_count;
+                        break;
+                    }
+                    if green_count > GREENMAX {
+                        game_total += game_count;
+                        break;
+                    }
+                    if red_count > REDMAX {
+                        game_total += game_count;
+                        break;
+                    }
 
                         
-                }
-                //check failure condition 
-
-                
-                iter += 1;                
+                }                                             
             }
+            iter += 1;
+            game_count += 1;
         }         
     }
 }
