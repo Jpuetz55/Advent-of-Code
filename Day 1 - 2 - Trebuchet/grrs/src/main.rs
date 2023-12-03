@@ -175,6 +175,6 @@ fn main()
         i += 1;
         //end loop         
     }
-            print!("Total is : {:?}", total); //answer 53340  
+            print!("Total is : {:?}", total); // 
 }
 

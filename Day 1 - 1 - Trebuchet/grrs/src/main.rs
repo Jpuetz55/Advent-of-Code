@@ -71,5 +71,5 @@ fn main() {
             add_first_last = 0;
             //end loop    
         }
-        print!("Total is : {:?}", total);    // answer is 52974    
+        print!("Total is : {:?}", total);       
 }
