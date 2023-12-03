@@ -27,8 +27,10 @@ fn main() {
         //detect and number 
         //reads it's value
         //set letter point to middle number
-            //go from top right, counter clockwise checking for non period values
-                //todo
+            //check closest values, then top and bottom from left to right
+                //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
+                //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
+                //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
             //if a non period is detected
                 //set letter pointer to next number 
                 //break 

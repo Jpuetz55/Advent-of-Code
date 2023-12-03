@@ -90,7 +90,6 @@ fn main()
                         //find corresponding color
                         //skip forward 2, get letter (r, b, g)
                         let color_char: char = game.chars().nth((i + 2).try_into().unwrap()).unwrap();
-
                         //check failure condition 
                         match color_char {
                             'r' => {
