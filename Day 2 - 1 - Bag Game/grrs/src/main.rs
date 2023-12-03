@@ -131,10 +131,14 @@ fn main()
             }   
             i += 1;            
         }
+        //duplicate some end loop logic that needs to execute on both success and failure
         if fail_flag == 1 {
             fail_flag = 0;
             j += 1;                                                           
             print!("end loop {}\n", j); 
+            //set i back to zero for next game
+            i = 0;
+            game_count += 1;
             break;
         }
         print!("Success --- Game Total:  {}\t", game_total);
