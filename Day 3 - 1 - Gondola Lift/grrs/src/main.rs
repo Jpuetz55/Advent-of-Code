@@ -24,7 +24,7 @@ fn main() {
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
     //once the values for forward and backward are obtained. Need to have algo to: 
-        //detect and number - first digit
+        //detect a number - first digit
             //reads it's value
                 //set letter point to middle number
                     //check closest values, then top and bottom from left to right
