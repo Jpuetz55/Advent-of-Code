@@ -6,9 +6,9 @@ use std::path::Path;
 
 fn main()
 {
-    const REDMAX: i32 = 12;
-    const GREENMAX: i32 = 13;
-    const BLUEMAX: i32 = 14;
+    const REDMAX: u32 = 12;
+    const GREENMAX: u32 = 13;
+    const BLUEMAX: u32 = 14;
 
     //crawl input by letter and computer with buffer?
     //open file
@@ -40,7 +40,7 @@ fn main()
 
     for item in collect_params {
 
-        let iter mut: u32 = 0;
+        let mut iter: u32 = 0;
         let mut temp_color_count: u32 = 0;  //hold total value for digit computation
         //red counter
         let mut red_count: u32 = 0;
@@ -49,30 +49,30 @@ fn main()
         //blue counter
         let mut blue_count: u32 = 0;
         for letter in item.chars() {
-            while (iter >= 7) {                     //skip to first number
-                //vector to hold digits
-                let mut digits = Vec::new();
-                while (letter.is_numeric()) {
-                    digits.push(letter.to_digit(10))
-                    if !item.chars().nth(iter + 1).is_digit() { //iter already incremented - this points to next
+            while iter >= 7 {                     //skip to first number
+                
+                while letter.is_numeric() {
+                    //vector to hold digits
+                    let mut digits = Vec::new();
+
+                    digits.push(letter.to_digit(10).unwrap()); //add to vec
+
+                    if !item.chars().next().unwrap().is_digit(10) { //if next is not a digit i.e. ->  ' '. digit end. compute
                         let mut mult_casc = 1; 
-                        for digit in digits {
-                            let temp = digits.pop();
+                        for &element in digits.iter().rev() {
+                            let temp = element * mult_casc;
                             //multiply by mult_cascade
-                            temp *= mult_casc;
-                            //multiply mult_casc by 10
-                            mult_casc *= 10;
-                            //add temp to temp_color_count
                             temp_color_count += temp;
-                            //next iteration}                            
+                            //multiply mult_casc by 10
+                            mult_casc *= 10;                         
                         }
                         //have quantity, now find color
                         //character value of current pos + 1 - iter already incremented above
                         //find corresponding color
                         //skip forward 2, get letter (r, b, g)
-                        let mut color_char: char = item.chars().nth(iter + 2);
+                        let color_char: char = item.chars().nth((iter + 2).try_into().unwrap()).unwrap();
 
-                        match color_char.as_str() {
+                        match color_char {
                             'r' => {
                                 red_count += temp_color_count
                             }
@@ -81,26 +81,25 @@ fn main()
                             }
                             'b' => {
                                 blue_count += temp_color_count
-                            }
+                            },
+                            _ => {}
                         }
-                    }
-                    //check failure condition 
+                        //check failure condition 
                 
-                    if blue_count > BLUEMAX {
-                        game_total += game_count;
-                        break;
-                    }
-                    if green_count > GREENMAX {
-                        game_total += game_count;
-                        break;
-                    }
-                    if red_count > REDMAX {
-                        game_total += game_count;
-                        break;
-                    }
-
-                        
-                }                                             
+                        if blue_count > BLUEMAX {
+                            game_total += game_count;
+                            break;
+                        }
+                        if green_count > GREENMAX {
+                            game_total += game_count;
+                            break;
+                        }
+                        if red_count > REDMAX {
+                            game_total += game_count;
+                            break;
+                        }                      
+                    }           
+                }                                                     
             }
             iter += 1;
             game_count += 1;
