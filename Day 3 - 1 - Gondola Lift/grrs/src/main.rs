@@ -43,7 +43,7 @@ fn main() {
 
     //loop by char in string   (start)
         //detect a number - first digit
-            //reads it's value
+            //check validity
                 //set letter point to middle number (anchor)
                     //check closest values, then top and bottom from left to right
                         //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
