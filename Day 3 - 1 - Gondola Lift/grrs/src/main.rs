@@ -61,10 +61,16 @@ fn main() {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
+    //trim newlines, we don't need them
+    gondola_params_string.retain(|c| !c.is_whitespace());
 
-    print!("{}", gondola_params_string);
+    print!("{:?}", gondola_params_string.chars());
 
     //loop by char in string   (start)
+    for letter in gondola_params_string.chars()
+     {
+        print!("{}\n", letter);
+    }
         //detect a number - first digit
             //check validity
                 //set letter point to middle number (anchor)
