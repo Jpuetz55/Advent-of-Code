@@ -25,7 +25,7 @@ fn main() {
 
     //once the values for forward and backward are obtained. Need to have algo to: 
     //parse input into array of strings split by the newline char and loop through array from start to end
-        //loop by char in string
+        //loop by char in string   (start)
             //detect a number - first digit
                 //reads it's value
                     //set letter point to middle number
