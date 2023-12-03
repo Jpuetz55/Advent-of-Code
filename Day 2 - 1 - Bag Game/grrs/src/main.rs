@@ -78,7 +78,7 @@ Game 15: 2 red, 4 green, 4 blue; 5 red; 5 green, 2 red, 2 blue; 5 green, 1 blue,
         for letter in item.chars() {
             if (i >= 7) 
             {
-                while letter.is_numeric() 
+                if letter.is_numeric() 
                 {   
                      temp_color_count = 0;               
                     digits.push(letter.to_digit(10).unwrap()); //add to vec
@@ -93,7 +93,7 @@ Game 15: 2 red, 4 green, 4 blue; 5 red; 5 green, 2 red, 2 blue; 5 green, 1 blue,
                             mult_casc *= 10;                         
                         }
                         //have quantity, now find color
-                        //character value of current pos + 1 - i already incremented above
+                        //character value of current pos + 2
                         //find corresponding color
                         //skip forward 2, get letter (r, b, g)
                         let color_char: char = item.chars().nth((i + 2).try_into().unwrap()).unwrap();
@@ -129,10 +129,11 @@ Game 15: 2 red, 4 green, 4 blue; 5 red; 5 green, 2 red, 2 blue; 5 green, 1 blue,
                 game_total += game_count;
                 print!("Red Failed {}\n", game_count);
             }
-            i += 1;
-        } 
-                                                             
+            i += 1;            
+        }                                                           
         print!("end loop {}\n", i);
+        //set i back to zero for next item
+        i = 0;
         game_count += 1;   
     }
 }
