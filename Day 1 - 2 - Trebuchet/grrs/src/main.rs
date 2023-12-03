@@ -48,8 +48,7 @@ fn main()
     // Initialize a new, empty circular buffer with a capacity of 5 elements
     // when new value gets added, oldest value gets dropped and
     // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
-    let mut buf = CircularBuffer::<5,
-        char>::new();
+    let mut buf = CircularBuffer::<5,char>::new();
     // Loop over each item in array
 
     for item in collect_params 
