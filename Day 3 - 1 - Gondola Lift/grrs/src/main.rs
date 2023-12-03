@@ -24,21 +24,23 @@ fn main() {
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
     //once the values for forward and backward are obtained. Need to have algo to: 
-        //detect a number - first digit
-            //reads it's value
-                //set letter point to middle number
-                    //check closest values, then top and bottom from left to right
-                        //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
-                        //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
-                        //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
-                        //if a non period is detected
-                            //set letter pointer to next number (go to start)
-                            //break 
-                        //if all periods around number
-                            //calculate numbers value
-                                //set letter point to first digit in number
-                                //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
-                            //set letter pointer to next number (go to start)
+    //parse input into array of strings split by the newline char and loop through array from start to end
+        //loop by char in string
+            //detect a number - first digit
+                //reads it's value
+                    //set letter point to middle number
+                        //check closest values, then top and bottom from left to right
+                            //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
+                            //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
+                            //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
+                            //if a non period is detected
+                                //set letter pointer to next number (go to start)
+                                //break 
+                            //if all periods around number
+                                //calculate numbers value
+                                    //set letter point to first digit in number
+                                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
+                                //set letter pointer to next number (go to start)
                     
 
 
