@@ -121,14 +121,26 @@ fn main()
         if blue_count > BLUEMAX {
                 game_total += game_count;
                 print!("Blue Failed {}\n", game_count);
+                //set i back to zero for next game
+                i = 0;
+                game_count += 1;
+                break;
             }
             if green_count > GREENMAX {
                 game_total += game_count;
                 print!("Green Failed {}\n", game_count);
+                //set i back to zero for next game
+                i = 0;
+                game_count += 1;
+                break;
             }
             if red_count > REDMAX {
                 game_total += game_count;
                 print!("Red Failed {}\n", game_count);
+                //set i back to zero for next game
+                i = 0;
+                game_count += 1;
+                break;
             }
         //set i back to zero for next game
         i = 0;
