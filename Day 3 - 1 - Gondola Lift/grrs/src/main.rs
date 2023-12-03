@@ -18,10 +18,26 @@ fn main() {
     //in the 5 x 5 matrix by moving forward or backward in the file a set amount for each position
 
     //EX. with the very center cell considered as the current anchor.
-    
+
     // (i-(backward)) (i-(backward + 1)) (i-(backward + 2)) (i-(backward + 3)) (i-(backward + 4))
     //      (i-2)              1                  1                   1                (i+2)
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
+
+    //once the values for forward and backward are obtained. Need to have algo to: 
+        //detect and number 
+        //reads it's value
+        //set letter point to middle number
+            //go from top right, counter clockwise checking for non period values
+                //todo
+            //if a non period is detected
+                //set letter pointer to next number 
+                //break 
+            //if all periods around number
+                //calculate numbers value
+                    //set letter point to first digit in number
+                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function
+                //set letter pointer to next number
+                    
 
 
     println!("Hello, world!");
