@@ -35,7 +35,7 @@ fn main() {
             //if all periods around number
                 //calculate numbers value
                     //set letter point to first digit in number
-                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function
+                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
                 //set letter pointer to next number
                     
 
