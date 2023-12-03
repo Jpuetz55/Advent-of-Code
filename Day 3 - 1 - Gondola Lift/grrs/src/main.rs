@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------- Day 3-1, Gondola Lift ----------------------------------------------------------------
-
+mod parse_int_from_string;
 
 fn main() {
 
@@ -29,7 +29,7 @@ fn main() {
         //loop by char in string   (start)
             //detect a number - first digit
                 //reads it's value
-                    //set letter point to middle number
+                    //set letter point to middle number (anchor)
                         //check closest values, then top and bottom from left to right
                             //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
                             //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
@@ -41,6 +41,7 @@ fn main() {
                                 //calculate numbers value
                                     //set letter pointer to char after last digit 
                                     //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
+                                        //parse_int_from_string()
                                 //set letter pointer to next number 
                     
 
