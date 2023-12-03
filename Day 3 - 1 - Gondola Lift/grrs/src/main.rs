@@ -4,7 +4,6 @@ use std::io::prelude::*;
 use std::path::Path;
 //mod helpers;
 
-fn main() {
 
     //have to think of each number being in the center of a 3x5 matrix
     //all 3 digit number
@@ -45,8 +44,12 @@ fn main() {
     //once the values for forward and backward are obtained. Need to have algo to: 
 
     //crawl input by letter
+    //open file   
+fn main() 
+{
+    //loop by char in string   (start)
+    //crawl input by letter
     //open file
-
     let path = Path::new("./params.txt");
     let display = path.display();
     let mut gondola_params_file = match File::open(&path) {
@@ -64,27 +67,46 @@ fn main() {
     //trim newlines, we don't need them
     gondola_params_string.retain(|c| !c.is_whitespace());
 
-    print!("{:?}", gondola_params_string.chars());
-
-    //loop by char in string   (start)
-    for letter in gondola_params_string.chars()
-     {
-        print!("{}\n", letter);
-    }
-        //detect a number - first digit
-            //check validity
-                //set letter point to middle number (anchor)
-                    //check closest values, then top and bottom from left to right
-                        //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
-                        //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
-                        //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
-                        //if a non period is detected
-                            //set letter pointer to char after last digit 
-                            //break 
-                        //if all periods around number
+    let mut index = 0;
+    //loop over chars in string
+    loop {
+        match gondola_params_string.chars().nth(index) {
+            Some(letter) => {
+                // Process the character here
+                //detect a number - first digit
+                if letter.unwrap().is_digit(10) {
+                    //check validity
+                        //find index of middle digit (anchor -> index + 1) 
+                            //check idx -2 and + 2 from anchor
+                                //on failure
+                                    //set index pointer to char after last digit to start loop again from that point
+                                    //break
+                            //check backward 
+                                //on failure
+                                    //set index pointer to char after last digit to start loop again from that point
+                                    //break
+                            //check forward
+                                //on failure
+                                    //set index pointer to char after last digit to start loop again from that point
+                                    //break
+                         //if all periods around number
                             //calculate numbers value
-                                //set letter pointer to char after last digit 
                                 //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
                                     //parse_int_from_string()
-                            //set letter pointer to next number 
+                                //set index pointer to char after last digit to start loop again from that point
+
+
+                }
+                
+                println!("Character at position {}: {}", index, letter);
+            }
+            None => {
+                // Break the loop when reaching the end of the string
+                break;
+            }
+        }
+
+        // Increment the index for the next iteration
+        index += 1;
+    }               
 }
