@@ -35,13 +35,13 @@ fn main() {
                             //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
                             //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
                             //if a non period is detected
-                                //set letter pointer to next number (go to start)
+                                //set letter pointer to char after last digit 
                                 //break 
                             //if all periods around number
                                 //calculate numbers value
-                                    //set letter point to first digit in number
+                                    //set letter pointer to char after last digit 
                                     //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
-                                //set letter pointer to next number (go to start)
+                                //set letter pointer to next number 
                     
 
 
