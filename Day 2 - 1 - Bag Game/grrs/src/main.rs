@@ -28,7 +28,7 @@ fn main()
         Ok(_) => {}
     }
 
-    let game_params_split = calib_params_string.split("\n");
+    let game_params_split = game_params_string.split("\n");
 
     let collect_params = game_params_split.collect::<Vec<&str>>();
 
@@ -38,27 +38,59 @@ fn main()
 
     for item in collect_params {
 
+        let iter mut: u32 = 0;
+        let mut temp_color_count: u32 = 0;  //hold total value for digit computation
+        //red counter
+        let mut red_count: u32 = 0;
+        //green counter
+        let mut green_count: u32 = 0;
+        //blue counter
+        let mut blue_count: u32 = 0;
         for letter in item.chars() {
+            while (iter >= 7) {                     //skip to first number
+                //vector to hold digits
+                let mut digits = Vec::new();
+                while (letter.is_numeric()) {
+                    digits.push(letter.to_digit(10))
+                    if !item.chars().nth(iter + 1).is_digit() { //iter already incremented - this points to next
+                        let mut mult_casc = 1; 
+                        for digit in digits {
+                            let temp = digits.pop();
+                            //multiply by mult_cascade
+                            temp *= mult_casc;
+                            //multiply mult_casc by 10
+                            mult_casc *= 10;
+                            //add temp to temp_color_count
+                            temp_color_count += temp;
+                            //next iteration}                            
+                        }
+                        //have quantity, now find color
+                        //character value of current pos + 1 - iter already incremented above
+                        //find corresponding color
+                        //skip forward 2, get letter (r, b, g)
+                        let mut color_char: char = item.chars().nth(iter + 2);
 
-            //red counter
-            let mut red_count: u32 = 0;
-            //green counter
-            let mut green_count: u32 = 0;
-            //blue counter
-            let mut blue_count: u32 = 0;
+                        match color_char.as_str() {
+                            'r' => {
+                                red_count += temp_color_count
+                            }
+                            'g' => {
+                                green_count += temp_color_count
+                            }
+                            'b' => {
+                                blue_count += temp_color_count
+                            }
+                        }
+                    }
 
+                        
+                }
+                //check failure condition 
 
-
-
-        }
-        
-        
-        
-
-
-
+                
+                iter += 1;                
+            }
+        }         
     }
-
-
 }
 
