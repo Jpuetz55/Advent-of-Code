@@ -84,6 +84,7 @@ fn main()
                             //multiply mult_casc by 10
                             mult_casc *= 10;                         
                         }
+                        digits.clear();
                         //have quantity, now find color
                         //character value of current pos + 2
                         //find corresponding color
@@ -114,8 +115,7 @@ fn main()
                                 }
                             },
                             _ => {}
-                        } 
-                        digits.clear();                     
+                        }                                              
                     }
                 }                           
             }             
