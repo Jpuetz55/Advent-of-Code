@@ -1,181 +1,163 @@
-// ---------------------------------------------------------------- Day 1-2, Trebuchet ----------------------------------------------------------------
+// ---------------------------------------------------------------- Day 2-1, Bag Game ----------------------------------------------------------------
 use std::fs::File;
 use std::io::prelude::*;
-use std::option;
 use std::path::Path;
-use circular_buffer::CircularBuffer;
 
 fn main()
 {
+    const REDMAX: u32 = 12;
+    const GREENMAX: u32 = 13;
+    const BLUEMAX: u32 = 14;
 
-    // open file with raw text
+    //vector to hold digits
+    let mut digits = Vec::new();
+
+    //crawl input by letter
+    //open file
 
     let path = Path::new("./params.txt");
     let display = path.display();
-    let mut calib_params_file = match File::open(&path) {
+    let mut game_params_file = match File::open(&path) {
         Err(why) => panic!("couldn't open {}: {}", display, why),
         Ok(file) => file,
     };
 
-    // write opened filed to string
+    // // write opened filed to string
 
-    let mut calib_params_string = String::new();
-    match calib_params_file.read_to_string(&mut calib_params_string) {
+    let mut game_params_string = String::new();
+    match game_params_file.read_to_string(&mut game_params_string) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
-    // declare total to add calibration parameters to
+// ---------------------------------------------------------------- Test ----------------------------------------------------------------
+//     let test_params: &str = "Game 1: 4 blue, 4 red, 16 green; 14 green, 5 red; 1 blue, 3 red, 5 green
+// Game 2: 3 green, 8 red, 1 blue; 5 green, 6 blue; 4 green, 4 blue, 10 red; 2 green, 6 red, 4 blue; 8 red, 11 blue, 4 green; 10 red, 10 blue
+// Game 3: 7 blue, 2 green; 9 blue, 2 green, 4 red; 5 blue, 2 red; 1 red, 1 green, 10 blue; 1 green, 5 blue, 1 red
+// Game 4: 5 green, 4 blue, 15 red; 1 green, 5 blue, 2 red; 14 red, 3 blue, 2 green; 6 red, 12 green, 1 blue; 1 blue, 6 green, 16 red
+// Game 5: 1 red, 1 blue, 4 green; 3 blue, 2 green, 4 red; 4 blue, 1 red, 2 green; 1 green, 3 red, 4 blue; 1 green, 2 blue
+// Game 6: 17 red, 2 blue, 18 green; 4 green, 10 blue, 14 red; 10 blue, 15 green, 14 red; 6 blue, 9 red; 5 blue, 7 red, 10 green
+// Game 7: 2 green, 3 red, 14 blue; 3 red, 2 green, 6 blue; 3 blue, 1 red; 10 blue, 1 green; 3 green, 17 blue
+// Game 8: 9 blue, 13 green, 2 red; 3 red, 10 green, 18 blue; 8 blue, 8 green
+// Game 9: 11 red, 2 blue; 1 blue, 9 green, 13 red; 2 blue, 17 red, 6 green
+// Game 10: 13 green, 8 red, 8 blue; 10 red, 5 blue, 9 green; 3 blue, 2 green, 1 red; 5 blue, 1 red, 10 green; 10 red, 8 blue; 8 blue, 1 green
+// Game 11: 14 red, 19 green; 2 blue, 6 red, 17 green; 12 green, 9 red, 6 blue
+// Game 12: 19 green, 3 blue, 10 red; 8 red, 2 blue, 19 green; 3 blue, 6 red, 2 green; 8 red, 5 blue; 1 blue, 15 green; 8 green, 7 red
+// Game 13: 2 red, 8 green, 1 blue; 4 green, 3 blue, 2 red; 4 red, 1 green; 1 red, 1 green; 2 green, 1 blue
+// Game 14: 4 blue, 2 green; 2 blue, 6 red, 2 green; 6 red, 16 blue; 5 blue, 1 green, 5 red
+// Game 15: 2 red, 4 green, 4 blue; 5 red; 5 green, 2 red, 2 blue; 5 green, 1 blue, 7 red";
+    //let game_params_split = test_params.split("\n");
 
-    let mut total: u32 = 0;
+    let game_params_split = game_params_string.split("\n");
 
-    //declare variable to hold the final parameter calculation
+    let games = game_params_split.collect::<Vec<&str>>();
 
-    let mut add_first_last: u32 = 0;
+    // print!("{:?}\n", games);
 
-    //counter
-    let mut i = 0;
+    //game counter
+    let mut game_count: u32 = 1;
+    //game total
+    let mut game_total: u32 = 0;
+    //iterators to help read input/debug
+    let mut i: u32 = 0;   //letter iterator
+    let mut j: u32 = 0;   //game iterator
 
-    // Split raw calibration parameters by the new line and put them in a vector
+    let mut temp_color_count: u32 = 0;  //hold total value for digit computation
+    //red counter per game
+    let mut red_count: u32 = 0;
+    //green counter per game
+    let mut green_count: u32 = 0;
+    //blue counter per game
+    let mut blue_count: u32 = 0;
+    //signal failure from letter loop to game loop
+    let mut fail_flag: u32 = 0;
 
-    //let calib_params_string = "9ftzbdsdkd9plrrtwo";
+    for game in games {
+        
+        
+        red_count = 0;
+        green_count= 0;
+        blue_count = 0;
 
-    let calib_params_split = calib_params_string.split("\n");
+        for letter in game.chars() {
+            if i >= 7
+            {
+                if letter.is_numeric() 
+                {   
+                    temp_color_count = 0;               
+                    digits.push(letter.to_digit(10).unwrap()); //add to vec
+                    if !game.chars().nth((i + 1).try_into().unwrap()).unwrap().is_digit(10) 
+                    { //if next is not a digit i.e. ->  ' '. digit end. compute
+                        let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
+                        for &element in digits.iter().rev() {
+                            let temp = element * mult_casc;
+                            //multiply by mult_cascade
+                            temp_color_count += temp;
+                            //multiply mult_casc by 10
+                            mult_casc *= 10;                         
+                        }
+                        //have quantity, now find color
+                        //character value of current pos + 2
+                        //find corresponding color
+                        //skip forward 2, get letter (r, b, g)
+                        let color_char: char = game.chars().nth((i + 2).try_into().unwrap()).unwrap();
 
-    let collect_params = calib_params_split.collect::<Vec<&str>>();
-
-    // Circular Buffer to check for word numbers
-
-    // Initialize a new, empty circular buffer with a capacity of 5 elements
-    // when new value gets added, oldest value gets dropped and
-    // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
-    let mut buf = CircularBuffer::<5,
-        char>::new();
-    // Loop over each item in array
-
-    for item in collect_params 
-    {
-
-        // declare temporary variable to hold the first_number and the last_number and set them to NULL
-        let mut first_number: Option<u32> = None;
-        let mut last_number: Option<u32> = None;
-        // loop through characters in array item.
-
-        //clear buffer
-        let _ = buf.drain(0..);
-        //initialize buffer
-        for _ in 0..5 {
-            buf.push_back('n');  // Pushing the placeholder value ('n' in this case)
+                        match color_char {
+                            'r' => {
+                                red_count += temp_color_count
+                            }
+                            'g' => {
+                                green_count += temp_color_count
+                            }
+                            'b' => {
+                                blue_count += temp_color_count
+                            },
+                            _ => {}
+                        } 
+                        digits.clear();                     
+                    }
+                }                           
+            }
+            //check failure condition
+            //need to make it so if one color fails, it stops entering this loop and adding the game count to the total      
+            if blue_count > BLUEMAX {
+                fail_flag = 1;
+                print!("Blue Failed {}----", game_count);
+                break;
+            }
+            if green_count > GREENMAX {                
+                fail_flag = 1;
+                print!("Green Failed {}----", game_count);
+                break;
+            }
+            if red_count > REDMAX {
+                fail_flag = 1;
+                print!("Red Failed {}----", game_count);
+                break;
+            }   
+            i += 1;            
         }
-
-        for letter in item.chars()
-        {
-            if letter != '\r' {
-                buf.push_back(letter);
-            }
-            //check 3 letter                                                                  
-            let buf3 = String::from_iter(buf.range(2..5));                                    
-            match buf3.as_str() {
-                "one" => {
-                    if first_number.is_none() {
-                        first_number = Some(1);
-                    }
-                    last_number = Some(1);                 
-                }
-                "two" => {
-                    if first_number.is_none() {
-                        first_number = Some(2);
-                    }
-                    last_number = Some(2);
-                }
-                "six" => {
-                    if first_number.is_none() {
-                        first_number = Some(6);
-                    }
-                    last_number = Some(6);
-                }
-                _ => {}
-            }
-            //check 4 letter
-            let buf4 = String::from_iter(buf.range(1..5));
-            match buf4.as_str() {
-                "zero" => {
-                    if first_number.is_none() {
-                        first_number = Some(0);
-                    }
-                        last_number = Some(0);
-                }
-                "four" => {
-                    if first_number.is_none() {
-                        first_number = Some(4);
-                    }
-                    last_number = Some(4);
-                }
-                "five" => {
-                    if first_number.is_none() {
-                        first_number = Some(5);
-                    }
-                    last_number = Some(5);
-                }
-                "nine" => {
-                    if first_number.is_none() {
-                        first_number = Some(9);
-                    }
-                    last_number = Some(9);
-                }
-                _ => {}
-            }
-            
-            //check 5 letter
-
-            let buf5 = String::from_iter(buf.range(0..5));
-            match buf5.as_str() {
-                "three" => {
-                    if first_number.is_none() {
-                        first_number = Some(3);
-                    }
-                    last_number = Some(3);
-                }
-                "seven" => {
-                    if first_number.is_none() {
-                        first_number = Some(7);
-                    }
-                    last_number = Some(7);
-                }
-                "eight" => {
-                    if first_number.is_none() {
-                        first_number = Some(8);
-                    }
-                    last_number = Some(8);
-                }
-                _ => {}
-            }
-            // if letter.is_numeric() && first_number.is_empty then save to first_number and continue to next char
-            // if character == number
-            if letter.is_numeric() {
-                //only set first_number when it it's none
-                if first_number.is_none() {
-                    first_number = letter.to_digit(10);
-                }
-                //always set last_number when letter is numeric
-                last_number = letter.to_digit(10);
-            }
-
-            //end loop -- when loop ends first_number should contain the first number and lastCharacter should contain the last number
+        //duplicate some end loop logic that needs to execute on both success and failure
+        // on failure
+        if fail_flag == 1 {
+            fail_flag = 0;
+            j += 1;                                                           
+            print!("end loop {}\n", j); 
+            //set i back to zero for next game
+            i = 0;
+            game_count += 1;
         }
-        // calculate parameters
-        //(first number * 10) + finalNumber?
-        add_first_last = (first_number.unwrap() * 10) + last_number.unwrap();
-        //add them to total
-        total += add_first_last;
-        print!("{:?} - {:?}, {:?} - {:?} - {:?}\n", item, first_number.unwrap(), last_number.unwrap(), add_first_last, total);
-        //print!("{} - \n", item);
-        //print!("\t{}{:?}\n", i, buf.range(0..));
-        //set back to zero for next loop
-        add_first_last = 0;
-        //increment counter
-        i += 1;
-        //end loop         
+        //on success
+        else { 
+            print!("----Game Total Previous:  {}\t", game_total);          
+            game_total += game_count;
+            print!("Success --- Game Total:  {}\t", game_total);   
+            j += 1;                                                           
+            print!("end loop {}\n", j);       
+            //set i back to zero for next game
+            i = 0;
+            game_count += 1; 
+        }         
     }
-            print!("Total is : {:?}", total); //answer 53340  
+    print!("{}", game_total);
 }
 
