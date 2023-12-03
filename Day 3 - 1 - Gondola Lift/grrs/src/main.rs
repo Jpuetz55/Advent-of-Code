@@ -17,6 +17,22 @@ fn main() {
     //all lines are equal length, so I should be able to calculate and check the location of each cell
     //in the 5 x 5 matrix by moving forward or backward in the file a set amount for each position
 
+        // EX.   ----               .....y....
+        //                          ......x...
+        //                          .....z....
+
+        //considering a fixed length line. The distance moved backward or forward from x to get to y or z is the same for any pos x
+
+        //                          .....y....
+        //                          ......x...
+        //                          .....z....
+
+        //here, the distance from x to y is -11, which turns out to be (-(line length) - 1). This is the same for any pos x on the middle line
+        //the distance to z is (line length - 1).  This is the same for any pos x on the middle line
+        // so we can conclude that: 
+            // backward = (-(line length) - 1)
+            //forward = (line length - 1)
+        //we can then use these as the basis for checcking the two chars to the right of them
     //EX. with the very center cell considered as the current anchor.
 
     // (i-(backward)) (i-(backward + 1)) (i-(backward + 2)) (i-(backward + 3)) (i-(backward + 4))
