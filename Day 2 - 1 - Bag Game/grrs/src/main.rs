@@ -113,10 +113,11 @@ fn main()
             //check failure condition   
             i += 1;            
         }
-        
+
         j += 1;                                                           
         print!("end loop {}\n", j);
-        
+
+        //need to make it so if one color fails, it stops entering this loop and adding the game count to the total      
         if blue_count > BLUEMAX {
                 game_total += game_count;
                 print!("Blue Failed {}\n", game_count);
