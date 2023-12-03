@@ -50,6 +50,7 @@ fn main()
     //loop by char in string   (start)
     //crawl input by letter
     //open file
+    const LINELENGTH: u32 = 140;
     let path = Path::new("./params.txt");
     let display = path.display();
     let mut gondola_params_file = match File::open(&path) {
@@ -67,6 +68,14 @@ fn main()
     //trim newlines, we don't need them
     gondola_params_string.retain(|c| !c.is_whitespace());
 
+    let backward = (-1 * LINELENGTH) - 1);
+    let forward = LINELENGTH - 1;
+
+    let move_arr: [12; i32] = [-2,2,
+                              (backward, backward + 1,backward + 2, backward + 3, backward + 4,
+                               forward, forward + 1, forward + 2, forward + 3, forward + 4
+                              ]
+
     let mut index = 0;
     //loop over chars in string
     loop {
@@ -76,24 +85,33 @@ fn main()
                 //detect a number - first digit
                 if letter.unwrap().is_digit(10) {
                     //check validity
-                        //find index of middle digit (anchor -> index + 1) 
-                            //check idx -2 and + 2 from anchor
-                                //on failure
-                                    //set index pointer to char after last digit to start loop again from that point
-                                    //break
-                            //check backward 
-                                //on failure
-                                    //set index pointer to char after last digit to start loop again from that point
-                                    //break
-                            //check forward
-                                //on failure
-                                    //set index pointer to char after last digit to start loop again from that point
-                                    //break
-                         //if all periods around number
-                            //calculate numbers value
-                                //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
-                                    //parse_int_from_string()
+                    //find index of middle digit (anchor -> index + 1)
+                    //declare array of all values to test
+                    let mut i = 0;
+                    let anchor = index + 1; 
+                    loop {
+                        if gondola_params_string.chars().nth(index + move_arr[i]) != '.' {
+                            //set index pointer to char after last digit to start loop again from that point
+                            //break invalid
+                        }
+                    }
+                        //check idx -2 and + 2 from anchor
+                            //on failure
+                                
+                                //break
+                        //check backward 
+                            //on failure
                                 //set index pointer to char after last digit to start loop again from that point
+                                //break
+                        //check forward
+                            //on failure
+                                //set index pointer to char after last digit to start loop again from that point
+                                //break
+                        //if all periods around number
+                        //calculate numbers value
+                            //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
+                                //parse_int_from_string()
+                            //set index pointer to char after last digit to start loop again from that point
 
 
                 }
