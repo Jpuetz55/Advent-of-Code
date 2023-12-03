@@ -127,27 +127,9 @@ fn main()
                     }
                 }                           
             }
-            //check failure condition
-            //need to make it so if one color fails, it stops entering this loop and adding the game count to the total      
-            // if blue_max_count > BLUEMAX {
-            //     fail_flag = 1;
-            //     print!("Blue Failed {}----", game_count);
-            //     break;
-            // }
-            // if green_max_count > GREENMAX {                
-            //     fail_flag = 1;
-            //     print!("Green Failed {}----", game_count);
-            //     break;
-            // }
-            // if red_max_count > REDMAX {
-            //     fail_flag = 1;
-            //     print!("Red Failed {}----", game_count);
-            //     break;
-            // } 
             i += 1;              
         } 
         //have all max color counts for game now
-
         // multiply them together with result added to running total 
         print!("Game Total Prev {}----", game_total);
         game_total += red_max_count * green_max_count * blue_max_count;
@@ -157,28 +139,7 @@ fn main()
         print!("Red Max {}----", red_max_count);
         print!("end loop {}\n", j);
         j += 1;
-
-        //duplicate some end loop logic that needs to execute on both success and failure
-        // on failure
-        // if fail_flag == 1 {
-        //     fail_flag = 0;
-        //     j += 1;                                                           
-        //     print!("end loop {}\n", j); 
-        //     //set i back to zero for next game
-        //     i = 0;
-        //     game_count += 1;
-        // }
-        //on success
-        // else { 
-        //     print!("----Game Total Previous:  {}\t", game_total);          
-        //     game_total += game_count;
-        //     print!("Success --- Game Total:  {}\t", game_total);   
-        //     j += 1;                                                           
-        //     print!("end loop {}\n", j);       
-        //     //set i back to zero for next game
-        //     i = 0;
-        //     game_count += 1; 
-        // }         
+        i = 0; //reset i for next game 
     }
     print!("{}", game_total);
 }
