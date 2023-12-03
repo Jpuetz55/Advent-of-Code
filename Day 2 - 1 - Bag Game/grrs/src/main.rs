@@ -133,9 +133,11 @@ fn main()
         }
         if fail_flag == 1 {
             fail_flag = 0;
+            j += 1;                                                           
+            print!("end loop {}\n", j); 
             break;
         }
-        print!("Success --- Game Total:  {}\n", game_total);
+        print!("Success --- Game Total:  {}\t", game_total);
         game_total += game_count;
         j += 1;                                                           
         print!("end loop {}\n", j);       
