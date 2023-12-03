@@ -1,9 +1,12 @@
 // ---------------------------------------------------------------- Day 3-1, Gondola Lift ----------------------------------------------------------------
-mod helpers::parse_int_from_string;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+//mod helpers;
 
 fn main() {
 
-    //have to think of each number being in the center of a 5x5 matrix
+    //have to think of each number being in the center of a 3x5 matrix
     //all 3 digit number
     // EX.
 
@@ -41,6 +44,26 @@ fn main() {
 
     //once the values for forward and backward are obtained. Need to have algo to: 
 
+    //crawl input by letter
+    //open file
+
+    let path = Path::new("./params.txt");
+    let display = path.display();
+    let mut gondola_params_file = match File::open(&path) {
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    // // write opened filed to string
+
+    let mut gondola_params_string = String::new();
+    match gondola_params_file.read_to_string(&mut gondola_params_string) {
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+        Ok(_) => {}
+    }
+
+    print!("{}", gondola_params_string);
+
     //loop by char in string   (start)
         //detect a number - first digit
             //check validity
@@ -58,8 +81,4 @@ fn main() {
                                 //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
                                     //parse_int_from_string()
                             //set letter pointer to next number 
-                    
-
-
-    println!("Hello, world!");
 }

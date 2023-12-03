@@ -2,8 +2,8 @@
 //given string slice starting with a number, will parse digit out of string reutrning value of digit upon encountering a non digit character
 
 
-pub fn parse_int_from_string(s: String) -> <u32,i32>  { 
-       
+pub fn parse_int_from_string(s: String) -> u32  { 
+
     let mut i = 0;
 
     digits.push(letter.to_digit(10).unwrap())
@@ -21,6 +21,6 @@ pub fn parse_int_from_string(s: String) -> <u32,i32>  {
             }
             temp_total
     }
-    i +=1;
+    i += 1;
 }
                     
