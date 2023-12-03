@@ -40,25 +40,24 @@ fn main() {
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
     //once the values for forward and backward are obtained. Need to have algo to: 
-    //parse input into array of strings split by the newline char and loop through array from start to end
-    //loop by string in array
-        //loop by char in string   (start)
-            //detect a number - first digit
-                //reads it's value
-                    //set letter point to middle number (anchor)
-                        //check closest values, then top and bottom from left to right
-                            //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
-                            //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
-                            //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
-                            //if a non period is detected
+
+    //loop by char in string   (start)
+        //detect a number - first digit
+            //reads it's value
+                //set letter point to middle number (anchor)
+                    //check closest values, then top and bottom from left to right
+                        //store all the values that the letter pointer needs to moved by in a array of signed ints in desired order
+                        //EX. [(-2),(+2), -(backward), -(backward + 1), -(backward + 2), -(backward + 3), -(backward + 4)
+                        //                 (forward), (forward + 1), (forward + 2), (forward + 3), (forward + 4) ]
+                        //if a non period is detected
+                            //set letter pointer to char after last digit 
+                            //break 
+                        //if all periods around number
+                            //calculate numbers value
                                 //set letter pointer to char after last digit 
-                                //break 
-                            //if all periods around number
-                                //calculate numbers value
-                                    //set letter pointer to char after last digit 
-                                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
-                                        //parse_int_from_string()
-                                //set letter pointer to next number 
+                                //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?
+                                    //parse_int_from_string()
+                            //set letter pointer to next number 
                     
 
 
