@@ -60,29 +60,18 @@ fn main()
     //iterators to help read input/debug
     let mut i: u32 = 0;   //letter iterator
     let mut j: u32 = 0;   //game iterator
-
-    let mut temp_color_count: u32 = 0;  //hold total value for digit computation
-    //red counter per game
-    let mut red_count: u32 = 0;
-    //green counter per game
-    let mut green_count: u32 = 0;
-    //blue counter per game
-    let mut blue_count: u32 = 0;
+    //hold total value for digit computation
+    let mut temp_color_count: u32 = 0;  
     //signal failure from letter loop to game loop
     let mut fail_flag: u32 = 0;
 
     for game in games {
-        
-        
-        red_count = 0;
-        green_count= 0;
-        blue_count = 0;
-
         for letter in game.chars() {
             if i >= 7
             {
                 if letter.is_numeric() 
                 {   
+                    //set back to zero to erase value from previous loop
                     temp_color_count = 0;               
                     digits.push(letter.to_digit(10).unwrap()); //add to vec
                     if !game.chars().nth((i + 1).try_into().unwrap()).unwrap().is_digit(10) 
@@ -101,39 +90,35 @@ fn main()
                         //skip forward 2, get letter (r, b, g)
                         let color_char: char = game.chars().nth((i + 2).try_into().unwrap()).unwrap();
 
+                        //check failure condition 
                         match color_char {
                             'r' => {
-                                red_count += temp_color_count
+                                if temp_color_count > REDMAX {
+                                    fail_flag = 1;
+                                    print!("Red Failed {}----red count {}----", game_count,temp_color_count);
+                                    break; 
+                                }
                             }
                             'g' => {
-                                green_count += temp_color_count
+                                if temp_color_count > GREENMAX {
+                                    fail_flag = 1;
+                                    print!("Green Failed {}----green count {}----", game_count, temp_color_count);
+                                    break;
+                                }
                             }
                             'b' => {
-                                blue_count += temp_color_count
+                                if temp_color_count > BLUEMAX {
+                                    fail_flag = 1;
+                                    print!("Blue Failed {}----blue count {}----", game_count, temp_color_count);
+                                    break;
+                                }
                             },
                             _ => {}
                         } 
                         digits.clear();                     
                     }
                 }                           
-            }
-            //check failure condition
-            //need to make it so if one color fails, it stops entering this loop and adding the game count to the total      
-            if blue_count > BLUEMAX {
-                fail_flag = 1;
-                print!("Blue Failed {}----", game_count);
-                break;
-            }
-            if green_count > GREENMAX {                
-                fail_flag = 1;
-                print!("Green Failed {}----", game_count);
-                break;
-            }
-            if red_count > REDMAX {
-                fail_flag = 1;
-                print!("Red Failed {}----", game_count);
-                break;
-            }   
+            }             
             i += 1;            
         }
         //duplicate some end loop logic that needs to execute on both success and failure
@@ -150,7 +135,7 @@ fn main()
         else { 
             print!("----Game Total Previous:  {}\t", game_total);          
             game_total += game_count;
-            print!("Success --- Game Total:  {}\t", game_total);   
+            print!("Success --- Game Total:  {}\t", game_total);
             j += 1;                                                           
             print!("end loop {}\n", j);       
             //set i back to zero for next game
