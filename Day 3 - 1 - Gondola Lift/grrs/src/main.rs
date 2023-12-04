@@ -44,10 +44,10 @@ use std::path::Path;
 fn main() 
 {
 
-    let test_input: String = String::from("
-...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
-......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
-...............383...........................372..................................474...................................432.471......729....");
+//     let test_input: String = String::from("
+// ...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+// ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
+// ...............383...........................372..................................474...................................432.471......729....");
     
     const LINELENGTH: i32 = 140;
     //declare vec to hold digits for calc
@@ -69,23 +69,23 @@ fn main()
     let mut index = LINELENGTH;
     //crawl input by letter
     //open file
-    // let path = Path::new("./params.txt");
-    // let display = path.display();
-    // let mut gondola_params_file = match File::open(&path) {
-    //     Err(why) => panic!("couldn't open {}: {}", display, why),
-    //     Ok(file) => file,
-    // };
+    let path = Path::new("./params.txt");
+    let display = path.display();
+    let mut gondola_params_file = match File::open(&path) {
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
 
     // // write opened filed to string
 
-    // let mut gondola_params_string = String::new();
-    // match gondola_params_file.read_to_string(&mut gondola_params_string) {
-    //     Err(why) => panic!("couldn't read {}: {}", display, why),
-    //     Ok(_) => {}
-    // }
+    let mut gondola_params_string = String::new();
+    match gondola_params_file.read_to_string(&mut gondola_params_string) {
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+        Ok(_) => {}
+    }
     //trim newlines, we don't need them
     
-    let mut gondola_params_string = test_input;
+    // let mut gondola_params_string = test_input;
     gondola_params_string.retain(|c| !c.is_whitespace());
     //pad string with a line of periods on front and back for validating first and last line
     let periods = ".".repeat(LINELENGTH.try_into().unwrap());
