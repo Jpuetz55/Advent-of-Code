@@ -51,7 +51,7 @@ fn main()
     
     const LINELENGTH: i32 = 140;
     //declare vec to hold digits for calc
-    let mut digits_vec: Vec<Vec<u32>>= Vec::new();
+    let mut numbers_vec: Vec<String>= Vec::new();
     //vec to hold index values of found numbers
     let mut found_indexes = Vec::new();
     //hold numbers to multiply
@@ -89,14 +89,11 @@ fn main()
     //trim newlines, we don't need them
     
     // let mut gondola_params_string = test_input;
-    gondola_params_string.retain(|c| !c.is_whitespace());
-    //pad string with a line of periods on front and back for validating first and last line
-    let periods = ".".repeat(LINELENGTH.try_into().unwrap());
-    let gondola_params_string_with_padding = format!("{}{}{}", periods, gondola_params_string, periods);  
+
     //loop over chars in string
     loop 
     {
-        match gondola_params_string_with_padding.chars().nth(index.try_into().unwrap()) 
+        match gondola_params_string.chars().nth(index.try_into().unwrap()) 
         {
             
             Some(letter) => 
@@ -111,16 +108,67 @@ fn main()
                         //todo -- add logic to determine
                             // A - that the digit found is the left most digit of the number
                             // B - the digit found is a digit from a previously found number
-                        if gondola_params_string_with_padding.chars()
-                                                              .nth((index + move_arr[i]) as usize)
-                                                              .unwrap().to_digit(10) 
-                                                              != None                 //if true, is number                                            
+                        if gondola_params_string.chars()
+                                                .nth((index + move_arr[i]) as usize)
+                                                .unwrap().to_digit(10) 
+                                                != None
                         {
-                            print!("Index of Number: {:?}\tNumber Found: {:?}", index + move_arr[i], 
-                                                                                gondola_params_string_with_padding.chars()
-                                                                                                                  .nth((index + move_arr[i]) as usize));
-                            //push index of found number to found_indexes vector
-                            found_indexes.push(index + move_arr[i]);
+                            loop 
+                            {
+
+                                let mut j = 1;
+                                //digit found
+                                //check left of digit to see if its left most digit in number
+                                //if left most
+                                if gondola_params_string.chars()
+                                                .nth((index + move_arr[i] - j) as usize)
+                                                .unwrap().to_digit(10) == None 
+                                {
+                                    let mut k = 1;
+                                    //find right most digit to figure out number length
+                                    //start index of number
+                                    let start_index = index + move_arr[i];
+                                    let end_index = index + move_arr[i];   //initialize to same value in case of one digit number
+                                    while gondola_params_string.chars()
+                                                .nth((index + move_arr[i] - j) as usize)
+                                                .unwrap().to_digit(10) != None 
+                                    {      //while the next number is not a digit
+                                        end_index = index + move_arr[i] + k;
+                                        k += 1
+                                    }
+                                    //end index of number
+                                    //if first digit index == forward || backward
+                                    //zero out forward + 1, forward + 2, respectively to stop algo from checking already found number
+                                        if index + move_arr[i] ==  forward + move_arr[i] {
+                                            move_arr[6] = 0;
+                                            move_arr[7] = 0;
+                                        }
+                                        else if index + move_arr[i] ==  backward + move_arr[i]{
+                                            move_arr[3] = 0;
+                                            move_arr[4] = 0;
+                                        }
+                                        else{
+
+                                        }
+
+                                }
+                                   
+                                else {
+                                    j += 1;
+                                }               
+                                
+                                    
+                                            //find number length                                       
+                                        //push index to index vector
+                                    //if not left most
+                                        //move char pointer left one, check again
+                                print!("Index of Number: {:?}\tNumber Found: {:?}", index + move_arr[i], 
+                                                                                    gondola_params_string.chars()
+                                                                                                        .nth((index + move_arr[i]) as usize));
+                                //push index of found number to found_indexes vector
+                                numbers_vec.push(index + move_arr[i]);
+                                }
+                        }  
                         }
                         i += 1;
                         if i >= 8 { 
@@ -180,7 +228,6 @@ fn main()
                     }        
                             print!("\t{:?}\tTotal: {}\n", digits_vec.as_mut_slice(), total);                      
                 } 
-            }
             None => {
                 // Break the loop when reaching the end of the string
                 break;
