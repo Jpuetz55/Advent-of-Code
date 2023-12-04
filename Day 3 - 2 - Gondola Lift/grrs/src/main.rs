@@ -112,6 +112,9 @@ fn main()
                     loop 
                     {
                         //check around *
+                        //todo -- add logic to determine
+                            // A - that the digit found is the left most digit of the number
+                            // B - the digit found is a digit from a previously found number
                         if gondola_params_string_with_padding.chars()
                                                               .nth((index + move_arr[i]) as usize)
                                                               .unwrap().to_digit(10) 
