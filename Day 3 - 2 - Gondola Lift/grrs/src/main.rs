@@ -185,8 +185,8 @@ fn main()
                 // Break the loop when reaching the end of the string
                 break;
             }
-        }                 
-    } 
-    index += 1;   
+        }
+        index += 1;                 
+    }     
     print!("{}", total);               
 }
