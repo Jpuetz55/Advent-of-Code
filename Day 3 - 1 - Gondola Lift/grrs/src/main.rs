@@ -90,9 +90,9 @@ fn main()
     
     let mut gondola_params_string = test_input;
     gondola_params_string.retain(|c| !c.is_whitespace());
-    //pad string with a line of periods for first line validation testing
+    //pad string with a line of periods on front and back for validating first and last line
     let periods = ".".repeat(LINELENGTH.try_into().unwrap());
-    let gondola_params_string_with_padding = format!("{}{}", periods, gondola_params_string);   
+    let gondola_params_string_with_padding = format!("{}{}{}", periods, gondola_params_string, periods);  
     //loop over chars in string
     loop 
     {
@@ -102,7 +102,7 @@ fn main()
             Some(letter) => 
             {
                 //detect a number - first digit         
-                if letter.is_digit(10) 
+                if letter.is_numeric() 
                 { //if letter is a digit, enter
                     //check validity
                     //find index of middle digit (anchor -> index + 1)
@@ -135,25 +135,33 @@ fn main()
                     {
                         let mut j = 0;
                         //push current letter and next two letters t digits vec
-                        loop {
-                            digits.push(gondola_params_string_with_padding.chars().nth((index + j).try_into().unwrap()).unwrap().to_digit(10));
+                        while gondola_params_string_with_padding.chars().nth((index + j)
+                                                                        .try_into()
+                                                                            .unwrap())
+                                                                            .expect("REASON")
+                                                                            .is_numeric() 
+                        {
+                            digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
+                                                                                  .try_into()
+                                                                                    .unwrap())                                  
+                                                                                        .unwrap()
+                                                                                        .to_digit(10));
                             j += 1;
-                            if j >= 3 {
-                                break;
-                            }
                         }
+                            
                         let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
-                        for &element in digits.iter().rev() {
+                        for &element in digits.iter().rev() 
+                        {
                             let temp = element.unwrap() * mult_casc;
                             //multiply by mult_cascade
                             total += temp;
                             //multiply mult_casc by 10
                             mult_casc *= 10;
-                        } 
-                        digits.clear();     
+                        }     
                     }
                     //move index to next non digit character
-                    index += 3;
+                    index += digits.len() as i32;
+                    digits.clear();
                 }
             }
             None => {
