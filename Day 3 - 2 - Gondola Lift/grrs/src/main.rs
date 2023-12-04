@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------- Day 3-1, Gondola Lift ----------------------------------------------------------------
+// ---------------------------------------------------------------- Day 3-2, Gondola Lift ----------------------------------------------------------------
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -35,12 +35,16 @@ use std::path::Path;
             // backward = (-(line length) - 2)
             //forward = (line length - 2)
         //we can then use these as the basis for checcking the two chars to the right of them
-    //EX. with the very center cell considered as the current anchor.
+    //EX. with the very center cell considered as the current index.
 
     // (i-(backward)) (i-(backward + 1)) (i-(backward + 2)) (i-(backward + 3)) (i-(backward + 4))
     //      (i-2)              1                  1                   1                (i+2)
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
-    
+
+//remove padding and wonky hacks  x
+//adjust move_arr for finding digits around a *
+    //only compute found digits when exactly 2 are found around *
+//when digit is found, set index in digit computation loop to first nu
 fn main() 
 {
 
@@ -51,23 +55,25 @@ fn main()
     
     const LINELENGTH: i32 = 140;
     //declare vec to hold digits for calc
-    let mut digits = Vec::new();
+    let mut digits_vec: Vec<Vec<u32>>= Vec::new();
+    //vec to hold index values of found numbers
+    let mut found_indexes = Vec::new();
+    //hold numbers to multiply
+    let mut multiplicand_vec = Vec::new();
+    //multiplication cascade for digit computation
+    let mut mult_casc = 1;
     //total
     let mut total = 0;
     //readability
-    let backward = (-1 * LINELENGTH) - 2;
-    let forward = LINELENGTH - 2;
+    let backward = (-1 * LINELENGTH) - 1;
+    let forward = LINELENGTH - 1;
     //sequence to check around number
-    //hack to handle 2 digit. subtract 1 from [1], set [11], [6] to zero
-    let mut move_arr: [i32; 12] = [-2,2,
-                              backward, backward + 1,backward + 2, backward + 3, backward + 4,
-                               forward, forward + 1, forward + 2, forward + 3, forward + 4
+    let move_arr: [i32; 8] = [-1,1,
+                                  backward, backward + 1,backward + 2,
+                                  forward, forward + 1, forward + 2
                               ];
-    //indicate to outer loop that index was incremented by compute number protocol already
-    let mut already_inc = false;
-    //index of string 
-    //set to start on first line after padding                           
-    let mut index = LINELENGTH;
+    //index for crawling letter by letter                           
+    let mut index = 0;
     //crawl input by letter
     //open file
     let path = Path::new("./params.txt");
@@ -100,121 +106,89 @@ fn main()
             Some(letter) => 
             {
                 //detect a number - first digit         
-                if letter.is_numeric() 
-                { //if letter is a digit, enter
-                    //check validity
-                    //find index of middle digit (anchor -> index + 1)
-                    //declare array of all values to test
-                    let mut i = 0;
-                    let mut j = 0;
-                    let mut anchor = index + 1;
-                    
-                    //this was moved out of below loop because we need the digit vec
-                    //to be populated regardless of whether or not the digit passes the test
-                    //as the length of this vec is used to determine how far forward to move the iterator
-                    //when this was in the loop below. The digit vector was only populated when the letter
-                    //passed the test, so on a failed number. the iterator was incrementing and it was calculating 
-                    //again on the same number.
-                    while gondola_params_string_with_padding.chars().nth((index + j)
+                if letter == '*' //if letter is a *, enter
+                { 
+                    let mut i = 0; //check surroundings iter                           
+                    loop 
+                    {
+                        //check around *
+                        if gondola_params_string_with_padding.chars()
+                                                              .nth((index + move_arr[i]) as usize)
+                                                              .unwrap().to_digit(10) 
+                                                              != None                 //if true, is number                                            
+                        {
+                            print!("Index of Number: {:?}\tNumber Found: {:?}", index + move_arr[i], 
+                                                                                gondola_params_string_with_padding.chars()
+                                                                                                                  .nth((index + move_arr[i]) as usize));
+                            //push index of found number to found_indexes vector
+                            found_indexes.push(index + move_arr[i]);
+                        }
+                        i += 1;
+                        if i >= 8 { 
+                            break; 
+                        };
+                        //if only two digits are found around * - compute
+                        if found_indexes.len() == 2 
+                        {
+                            //go to first digit by using value stored in found_indexes
+                            let mut k = 0; //increment to next vector in digits vector
+                            for idx in &found_indexes {
+                                let mut j = 0;   //push to digit vec on digits vector iter  
+                                while gondola_params_string_with_padding.chars().nth((idx + j)
                                                                         .try_into()
                                                                             .unwrap())
                                                                             .expect("REASON")
-                                                                            .is_numeric() 
-                    {
-                        digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
-                                                                            .try_into()
-                                                                                .unwrap())                                  
-                                                                                    .unwrap()
-                                                                                    .to_digit(10));
-                        j += 1;
-                    }
-                    //hack for 1 digit
-                    if digits.len() == 1 {
-                        anchor = index;
-                        move_arr[0] += 1;
-                        move_arr[1] -= 1;
-                        move_arr[2] = 0;
-                        move_arr[6] = 0;
-                        move_arr[7] = 0;
-                        move_arr[11] = 0;
-                    }; 
-                    //hack to handle 2 digit. subtract 1 from [1], set [11], [6] to zero
-                    if digits.len() == 2 {
-                        move_arr[1] -= 1;
-                        move_arr[6] = 0;
-                        move_arr[11] = 0;
-                    };              
-                    loop 
-                    {
-                        //if any adjacent position have non-period char or non digit char
-                        //if found, valid -> computer digit and add to total list
-                        //move_arr contains values to move index for char check
-                        if gondola_params_string_with_padding.chars()
-                                                             .nth((anchor + move_arr[i]) as usize) != Some('.')
-                                                             &&
-                           gondola_params_string_with_padding.chars()
-                                                             .nth((anchor + move_arr[i]) as usize).unwrap().to_digit(10) == None                                                             
-                        {
-                            print!("Digit Start Index: {}\tValid!: {:?}", index, gondola_params_string_with_padding.chars()
-                                                                                                                   .nth((anchor + move_arr[i]) as usize));                           
-                            //computer digits and add to total
-                            //parse digits
-                            //push letters as digits to vec                           
+                                                                            .is_numeric()
+                                {
+                                        digits_vec[k].push(gondola_params_string_with_padding.chars()
+                                                                                             .nth((index + j).try_into().unwrap())
+                                                                                             .map(|c| c.to_digit(10).unwrap_or(0))
+                                                                                             .unwrap_or(0 as u32));
+                                        j += 1;                                   
+                                }
+                                k += 1;
+                            } 
+                            //digits vector now populated with two digit vectors to multiply
+                            //compute value of each digit 
+                            //multiply them together and add them to running total                      
                             print!("\tTotal Previous: {}", total);
                             //compute from vec and add to total
-                            let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
-                            for &element in digits.iter().rev() 
+                            //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together                  
+                            for element in digits_vec.iter()
                             {
-                                let temp = element.unwrap() * mult_casc;
-                                //multiply by mult_cascade
-                                total += temp;
-                                //multiply mult_casc by 10
-                                mult_casc *= 10;
+                                let loop_total = 0;                               
+                                for &number in element.iter().rev() {
+                                    let temp = number * mult_casc;
+                                    //multiply by mult_cascade
+                                    total += temp;
+                                    //multiply mult_casc by 10
+                                    mult_casc *= 10;
+                                }
+                                mult_casc = 1;
+                                multiplicand_vec.push(loop_total);     //push final computed value                           
                             }
-                            print!("\t{:?}\tTotal: {}\n", digits.as_mut_slice(), total);
-                             
-                            break;
+                            //we now have a vector with the two numbers we need to multiply
+                            //set the total equal to the last number
+                            let mut product_for_total = multiplicand_vec.pop().unwrap();
+                            //multiply the rest of the numbers by this numbers --- scalability
+                            for &number in multiplicand_vec.iter() {
+                                product_for_total *= number;
+                            }
+                            //have total now, add it to running total
+                            total += product_for_total;
                         }
-                        i += 1;
-                        //invalid number
-                        if i >= 12 { 
-                            break; 
-                        };
-                    } 
-                    //hack for 1 digit
-                    if digits.len() == 1 {
-                        move_arr[0] -= 1;
-                        move_arr[1] += 1;
-                        move_arr[2] = backward;
-                        move_arr[6] = backward + 4;
-                        move_arr[7] = forward;
-                        move_arr[11] = forward + 4;
-                    }; 
-                    //fix hack 2 digit
-                    if digits.len() == 2 {
-                        move_arr[1] += 1;
-                        move_arr[6] = backward + 4;
-                        move_arr[11] = forward + 4;
-                    }; 
-                    //move index to next non digit character
-                    index += digits.len() as i32;
-                    digits.clear();
-                    already_inc = true;                                               
-                }
+                    }        
+                            print!("\t{:?}\tTotal: {}\n", digits_vec.as_mut_slice(), total);                      
+                } 
             }
             None => {
                 // Break the loop when reaching the end of the string
                 break;
             }
         }
-        //if compute loop didn't increment. flip switch back off
-        if already_inc {
-            // Increment the index for the next iteration
-            already_inc = false;            
-        }
-        else{
-            index += 1;
-        }
+
+        index += 1;
+
         
         
         
