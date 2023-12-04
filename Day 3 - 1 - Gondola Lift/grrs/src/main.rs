@@ -43,16 +43,9 @@ use std::path::Path;
 fn main() 
 {
 
-//     let test_input: String = String::from(".679.....662....71............................805..........862.680...................................................................687....
-// ............*....-..811..........846..855......*.............*..$........230.92@............................=.....................92........
-// ..........360..........#....664.....=.*...881...677...934.780.......426.*..........8......654.....*959.....539..........21.........*........
-// .....................+.........*......379..*.........*.........=.........969........*........*.976..............872....*....../....579......
-// .......566......652...809....482.394......492..303.650..../...38....%...............106...385..................#.....793..484.865...........
-// ......*...........*................*..347.......*.........220.....349...691...392*..................18..797.......................+.........
-// .....11......890........870.......156............733.................../..........921.....................*......*.............203..........
-// .............#...238.....*...........................188......294./58........408...............677.......778....104.903............%........
-// .411+...828.......*.....706.....249..=.....638...848*...........%...............*948............*.....+......+...........917.......817...346
-// ................69.................*..310.*....@..........118*......428=..785...................931...217.....934....475...@.145........*...");
+    let test_input: String = String::from("...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
+...............383...........................372..................................474...................................432.471......729....");
     
     const LINELENGTH: i32 = 140;
     //declare vec to hold digits for calc
@@ -72,29 +65,29 @@ fn main()
     let mut index = LINELENGTH;
     //crawl input by letter
     //open file
-    let path = Path::new("./params.txt");
-    let display = path.display();
-    let mut gondola_params_file = match File::open(&path) {
-        Err(why) => panic!("couldn't open {}: {}", display, why),
-        Ok(file) => file,
-    };
+    // let path = Path::new("./params.txt");
+    // let display = path.display();
+    // let mut gondola_params_file = match File::open(&path) {
+    //     Err(why) => panic!("couldn't open {}: {}", display, why),
+    //     Ok(file) => file,
+    // };
 
     // // write opened filed to string
 
-    let mut gondola_params_string = String::new();
-    match gondola_params_file.read_to_string(&mut gondola_params_string) {
-        Err(why) => panic!("couldn't read {}: {}", display, why),
-        Ok(_) => {}
-    }
+    // let mut gondola_params_string = String::new();
+    // match gondola_params_file.read_to_string(&mut gondola_params_string) {
+    //     Err(why) => panic!("couldn't read {}: {}", display, why),
+    //     Ok(_) => {}
+    // }
     //trim newlines, we don't need them
     
-    // let mut gondola_params_string = test_input;
+    let mut gondola_params_string = test_input;
     gondola_params_string.retain(|c| !c.is_whitespace());
     //pad string with a line of periods on front and back for validating first and last line
     let periods = ".".repeat(LINELENGTH.try_into().unwrap());
     let gondola_params_string_with_padding = format!("{}{}{}", periods, gondola_params_string, periods);  
     //loop over chars in string
-    loop 
+tot    loop 
     {
         match gondola_params_string_with_padding.chars().nth(index.try_into().unwrap()) 
         {
@@ -120,8 +113,8 @@ fn main()
                            gondola_params_string_with_padding.chars()
                                                              .nth((anchor + move_arr[i]) as usize).unwrap().to_digit(10) == None                                                             
                         {
-                            print!("Valid!: {:?}", gondola_params_string_with_padding.chars()
-                                                                                            .nth((anchor + move_arr[i]) as usize));
+                            print!("Digit Start Index: {}\tValid!: {:?}", index, gondola_params_string_with_padding.chars()
+                                                                                                                   .nth((anchor + move_arr[i]) as usize));
                             let mut j = 0;
                             //computer digits and add to total
                             //parse digits
@@ -139,6 +132,7 @@ fn main()
                                                                                             .to_digit(10));
                                 j += 1;
                             }
+                            print!("\tTotal Previous: {}", total);
                             //compute from vec and add to total
                             let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
                             for &element in digits.iter().rev() 
@@ -149,6 +143,7 @@ fn main()
                                 //multiply mult_casc by 10
                                 mult_casc *= 10;
                             }
+                            print!("\t{:?}\tTotal: {}\n", digits.as_mut_slice(), total);
                         }
                         i += 1;
                         //valid number
