@@ -133,11 +133,12 @@ fn main()
                             let mut k = 0; //increment to next vector in digits vector
                             for idx in &found_indexes {
                                 let mut j = 0;   //push to digit vec on digits vector iter  
-                                while gondola_params_string_with_padding.chars().nth((idx + j)
+                                while gondola_params_string_with_padding.chars()
+                                                                        .nth((idx + j)
                                                                         .try_into()
-                                                                            .unwrap())
-                                                                            .expect("REASON")
-                                                                            .is_numeric()
+                                                                        .unwrap())
+                                                                        .expect("REASON")
+                                                                        .is_numeric()
                                 {
                                         digits_vec[k].push(gondola_params_string_with_padding.chars()
                                                                                              .nth((index + j).try_into().unwrap())
@@ -184,13 +185,8 @@ fn main()
                 // Break the loop when reaching the end of the string
                 break;
             }
-        }
-
-        index += 1;
-
-        
-        
-        
-    }    
+        }                 
+    } 
+    index += 1;   
     print!("{}", total);               
 }
