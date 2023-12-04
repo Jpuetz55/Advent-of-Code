@@ -114,13 +114,39 @@ fn main()
                     let mut failure_flag = false;                     
                     loop 
                     {
-                        //if any adjacent position have non-period char
-                        if gondola_params_string_with_padding.chars().nth((anchor + move_arr[i]) as usize) != Some('.') {
-                            print!("validity test: {:?}", gondola_params_string_with_padding.chars().nth((anchor + move_arr[i]) as usize));
-                            //set failure flag for outer loop
-                            failure_flag = true;
-                            //break
-                            break;
+                        //if any adjacent position have non-period char or non digit char
+                        if gondola_params_string_with_padding.chars()
+                                                             .nth((anchor + move_arr[i]) as usize) != Some('.')
+                                                             ||
+                           gondola_params_string_with_padding.chars()
+                                                             .nth((anchor + move_arr[i]) as usize).unwrap().to_digit(10) == None                                                             
+                        {
+                            print!("validity test: {:?}", gondola_params_string_with_padding.chars()
+                                                                                            .nth((anchor + move_arr[i]) as usize));
+                            let mut j = 0;
+                            //push letters as digits to vec
+                            while gondola_params_string_with_padding.chars().nth((index + j)
+                                                                        .try_into()
+                                                                            .unwrap())
+                                                                            .expect("REASON")
+                                                                            .is_numeric() 
+                            {
+                                digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
+                                                                                    .try_into()
+                                                                                        .unwrap())                                  
+                                                                                            .unwrap()
+                                                                                            .to_digit(10));
+                                j += 1;
+                            }
+                            let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
+                            for &element in digits.iter().rev() 
+                            {
+                                let temp = element.unwrap() * mult_casc;
+                                //multiply by mult_cascade
+                                total += temp;
+                                //multiply mult_casc by 10
+                                mult_casc *= 10;
+                            }
                         }
                         i += 1;
                         //valid number
@@ -133,31 +159,9 @@ fn main()
                     //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?                                                         
                     if !failure_flag 
                     {
-                        let mut j = 0;
-                        //push current letter and next two letters t digits vec
-                        while gondola_params_string_with_padding.chars().nth((index + j)
-                                                                        .try_into()
-                                                                            .unwrap())
-                                                                            .expect("REASON")
-                                                                            .is_numeric() 
-                        {
-                            digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
-                                                                                  .try_into()
-                                                                                    .unwrap())                                  
-                                                                                        .unwrap()
-                                                                                        .to_digit(10));
-                            j += 1;
-                        }
+                                                
                             
-                        let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
-                        for &element in digits.iter().rev() 
-                        {
-                            let temp = element.unwrap() * mult_casc;
-                            //multiply by mult_cascade
-                            total += temp;
-                            //multiply mult_casc by 10
-                            mult_casc *= 10;
-                        }     
+                 
                     }
                     //move index to next non digit character
                     index += digits.len() as i32;
