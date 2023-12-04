@@ -108,22 +108,23 @@ fn main()
                     //find index of middle digit (anchor -> index + 1)
                     //declare array of all values to test
                     let mut i = 0;
-                    let anchor = index + 1;
-                    //initialize failure flag
-                    //set failure flag to signal outer loop
-                    let mut failure_flag = false;                     
+                    let anchor = index + 1;              
                     loop 
                     {
                         //if any adjacent position have non-period char or non digit char
+                        //if found, valid -> computer digit and add to total list
+                        //move_arr contains values to move index for char check
                         if gondola_params_string_with_padding.chars()
                                                              .nth((anchor + move_arr[i]) as usize) != Some('.')
-                                                             ||
+                                                             &&
                            gondola_params_string_with_padding.chars()
                                                              .nth((anchor + move_arr[i]) as usize).unwrap().to_digit(10) == None                                                             
                         {
-                            print!("validity test: {:?}", gondola_params_string_with_padding.chars()
+                            print!("Valid!: {:?}", gondola_params_string_with_padding.chars()
                                                                                             .nth((anchor + move_arr[i]) as usize));
                             let mut j = 0;
+                            //computer digits and add to total
+                            //parse digits
                             //push letters as digits to vec
                             while gondola_params_string_with_padding.chars().nth((index + j)
                                                                         .try_into()
@@ -138,6 +139,7 @@ fn main()
                                                                                             .to_digit(10));
                                 j += 1;
                             }
+                            //compute from vec and add to total
                             let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
                             for &element in digits.iter().rev() 
                             {
@@ -153,16 +155,7 @@ fn main()
                         if i >= 12 { 
                             break; 
                         };
-                    }
-                    //validity confirmed
-                    //calculate numbers value
-                    //implement algo from previous excercise to calculate value and add it to total -- make into helper function -- make module?                                                         
-                    if !failure_flag 
-                    {
-                                                
-                            
-                 
-                    }
+                    }          
                     //move index to next non digit character
                     index += digits.len() as i32;
                     digits.clear();
