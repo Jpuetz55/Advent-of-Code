@@ -58,7 +58,8 @@ fn main()
     let backward = (-1 * LINELENGTH) - 2;
     let forward = LINELENGTH - 2;
     //sequence to check around number
-    let move_arr: [i32; 12] = [-2,2,
+    //hack to handle 2 digit. subtract 1 from [1], set [11], [6] to zero
+    let mut move_arr: [i32; 12] = [-2,2,
                               backward, backward + 1,backward + 2, backward + 3, backward + 4,
                                forward, forward + 1, forward + 2, forward + 3, forward + 4
                               ];
@@ -106,7 +107,7 @@ fn main()
                     //declare array of all values to test
                     let mut i = 0;
                     let mut j = 0;
-                    let anchor = index + 1;
+                    let mut anchor = index + 1;
                     
                     //this was moved out of below loop because we need the digit vec
                     //to be populated regardless of whether or not the digit passes the test
@@ -126,7 +127,23 @@ fn main()
                                                                                     .unwrap()
                                                                                     .to_digit(10));
                         j += 1;
-                    }              
+                    }
+                    //hack for 1 digit
+                    if digits.len() == 1 {
+                        anchor = index;
+                        move_arr[0] += 1;
+                        move_arr[1] -= 1;
+                        move_arr[2] = 0;
+                        move_arr[6] = 0;
+                        move_arr[7] = 0;
+                        move_arr[11] = 0;
+                    }; 
+                    //hack to handle 2 digit. subtract 1 from [1], set [11], [6] to zero
+                    if digits.len() == 2 {
+                        move_arr[1] -= 1;
+                        move_arr[6] = 0;
+                        move_arr[11] = 0;
+                    };              
                     loop 
                     {
                         //if any adjacent position have non-period char or non digit char
@@ -164,6 +181,21 @@ fn main()
                             break; 
                         };
                     } 
+                    //hack for 1 digit
+                    if digits.len() == 1 {
+                        move_arr[0] -= 1;
+                        move_arr[1] += 1;
+                        move_arr[2] = backward;
+                        move_arr[6] = backward + 4;
+                        move_arr[7] = forward;
+                        move_arr[11] = forward + 4;
+                    }; 
+                    //fix hack 2 digit
+                    if digits.len() == 2 {
+                        move_arr[1] += 1;
+                        move_arr[6] = backward + 4;
+                        move_arr[11] = forward + 4;
+                    }; 
                     //move index to next non digit character
                     index += digits.len() as i32;
                     digits.clear();
