@@ -40,10 +40,12 @@ use std::path::Path;
     // (i-(backward)) (i-(backward + 1)) (i-(backward + 2)) (i-(backward + 3)) (i-(backward + 4))
     //      (i-2)              1                  1                   1                (i+2)
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
+    
 fn main() 
 {
 
-    let test_input: String = String::from("...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+    let test_input: String = String::from("
+...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
 ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
 ...............383...........................372..................................474...................................432.471......729....");
     
@@ -60,6 +62,8 @@ fn main()
                               backward, backward + 1,backward + 2, backward + 3, backward + 4,
                                forward, forward + 1, forward + 2, forward + 3, forward + 4
                               ];
+    //indicate to outer loop that index was incremented by compute number protocol already
+    let mut already_inc = false;
     //index of string 
     //set to start on first line after padding                           
     let mut index = LINELENGTH;
@@ -87,7 +91,7 @@ fn main()
     let periods = ".".repeat(LINELENGTH.try_into().unwrap());
     let gondola_params_string_with_padding = format!("{}{}{}", periods, gondola_params_string, periods);  
     //loop over chars in string
-tot    loop 
+    loop 
     {
         match gondola_params_string_with_padding.chars().nth(index.try_into().unwrap()) 
         {
@@ -101,7 +105,28 @@ tot    loop
                     //find index of middle digit (anchor -> index + 1)
                     //declare array of all values to test
                     let mut i = 0;
-                    let anchor = index + 1;              
+                    let mut j = 0;
+                    let anchor = index + 1;
+                    
+                    //this was moved out of below loop because we need the digit vec
+                    //to be populated regardless of whether or not the digit passes the test
+                    //as the length of this vec is used to determine how far forward to move the iterator
+                    //when this was in the loop below. The digit vector was only populated when the letter
+                    //passed the test, so on a failed number. the iterator was incrementing and it was calculating 
+                    //again on the same number.
+                    while gondola_params_string_with_padding.chars().nth((index + j)
+                                                                        .try_into()
+                                                                            .unwrap())
+                                                                            .expect("REASON")
+                                                                            .is_numeric() 
+                    {
+                        digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
+                                                                            .try_into()
+                                                                                .unwrap())                                  
+                                                                                    .unwrap()
+                                                                                    .to_digit(10));
+                        j += 1;
+                    }              
                     loop 
                     {
                         //if any adjacent position have non-period char or non digit char
@@ -114,24 +139,10 @@ tot    loop
                                                              .nth((anchor + move_arr[i]) as usize).unwrap().to_digit(10) == None                                                             
                         {
                             print!("Digit Start Index: {}\tValid!: {:?}", index, gondola_params_string_with_padding.chars()
-                                                                                                                   .nth((anchor + move_arr[i]) as usize));
-                            let mut j = 0;
+                                                                                                                   .nth((anchor + move_arr[i]) as usize));                           
                             //computer digits and add to total
                             //parse digits
-                            //push letters as digits to vec
-                            while gondola_params_string_with_padding.chars().nth((index + j)
-                                                                        .try_into()
-                                                                            .unwrap())
-                                                                            .expect("REASON")
-                                                                            .is_numeric() 
-                            {
-                                digits.push(gondola_params_string_with_padding.chars().nth(((index + j))
-                                                                                    .try_into()
-                                                                                        .unwrap())                                  
-                                                                                            .unwrap()
-                                                                                            .to_digit(10));
-                                j += 1;
-                            }
+                            //push letters as digits to vec                           
                             print!("\tTotal Previous: {}", total);
                             //compute from vec and add to total
                             let mut mult_casc = 1;   //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together
@@ -144,16 +155,19 @@ tot    loop
                                 mult_casc *= 10;
                             }
                             print!("\t{:?}\tTotal: {}\n", digits.as_mut_slice(), total);
+                             
+                            break;
                         }
                         i += 1;
-                        //valid number
+                        //invalid number
                         if i >= 12 { 
                             break; 
                         };
-                    }          
+                    } 
                     //move index to next non digit character
                     index += digits.len() as i32;
                     digits.clear();
+                    already_inc = true;                                               
                 }
             }
             None => {
@@ -161,8 +175,17 @@ tot    loop
                 break;
             }
         }
-        // Increment the index for the next iteration
-        index += 1;
+        //if compute loop didn't increment. flip switch back off
+        if already_inc {
+            // Increment the index for the next iteration
+            already_inc = false;            
+        }
+        else{
+            index += 1;
+        }
+        
+        
+        
     }    
     print!("{}", total);               
 }
