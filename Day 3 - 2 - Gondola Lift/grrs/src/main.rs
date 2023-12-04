@@ -41,10 +41,6 @@ use std::path::Path;
     //      (i-2)              1                  1                   1                (i+2)
     // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
-//remove padding and wonky hacks  x
-//adjust move_arr for finding digits around a *
-    //only compute found digits when exactly 2 are found around *
-//when digit is found, set index in digit computation loop to first nu
 fn main() 
 {
 
