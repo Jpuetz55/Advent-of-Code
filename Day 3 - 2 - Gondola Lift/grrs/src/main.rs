@@ -51,25 +51,23 @@ fn main()
     
     const LINELENGTH: i32 = 140;
     //declare vec to hold digits for calc
-    let mut numbers_vec: Vec<String>= Vec::new();
+    let mut numbers_vec: Vec<u32>= Vec::new();
     //vec to hold index values of found numbers
-    let mut found_indexes = Vec::new();
-    //hold numbers to multiply
-    let mut multiplicand_vec = Vec::new();
-    //multiplication cascade for digit computation
-    let mut mult_casc = 1;
+    let mut found_indexes: Vec<u32> = Vec::new();
     //total
     let mut total = 0;
     //readability
     let backward = (-1 * LINELENGTH) - 1;
     let forward = LINELENGTH - 1;
     //sequence to check around number
-    let move_arr: [i32; 8] = [-1,1,
+    let mut move_arr: [i32; 8] = [-1,1,
                                   backward, backward + 1,backward + 2,
                                   forward, forward + 1, forward + 2
                               ];
     //index for crawling letter by letter                           
     let mut index = 0;
+
+    let mut number_counter = 0;
     //crawl input by letter
     //open file
     let path = Path::new("./params.txt");
@@ -107,18 +105,22 @@ fn main()
                         //check around *
                         //todo -- add logic to determine
                             // A - that the digit found is the left most digit of the number
-                            // B - the digit found is a digit from a previously found number
+                            // B - the digit found is a digit from a previously found number                                                      
                         if gondola_params_string.chars()
                                                 .nth((index + move_arr[i]) as usize)
                                                 .unwrap().to_digit(10) 
                                                 != None
-                        {                            
+                        {      //digit found                      
                             loop //digit check loop
                             {
                                 let mut j = 1;
                                 //digit found
                                 //check left of digit to see if its left most digit in number
                                 //if left most
+                                //skip left digit check if move_arr value is one to right of *
+                                //if index of move_arr wasn't checking for the digit right of the * then enter left digit find loop
+                                //never mind, this logic already does that, neat
+                                //if block returns start index and end index of the digit
                                 if gondola_params_string.chars()
                                                 .nth((index + move_arr[i] - j) as usize)
                                                 .unwrap().to_digit(10) == None 
@@ -127,7 +129,7 @@ fn main()
                                     //find right most digit to figure out number length
                                     //start index of number
                                     let start_index = move_arr[i] - (j + 1); // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
-                                    let end_index = start_index;   //initialize to same value in case of one digit number
+                                    let mut end_index = start_index;   //initialize to same value in case of one digit number
                                     while gondola_params_string.chars()
                                                 .nth((start_index + k) as usize)
                                                 .unwrap().to_digit(10) != None 
@@ -139,34 +141,57 @@ fn main()
                                     //now have start_index and end_index of digit
                                     //if first digit index == forward || backward
                                     //zero out forward + 1, forward + 2, respectively to stop algo from checking already found number
-                                        if index + move_arr[i] ==  forward + move_arr[i] {
-                                            move_arr[6] = 0;
-                                            move_arr[7] = 0;
-                                        }
-                                        else if index + move_arr[i] ==  backward + move_arr[i]{
-                                            move_arr[3] = 0;
-                                            move_arr[4] = 0;
-                                        }
-                                        else{
+                                    //need to check the number of digits in number, then decide how many positions to zero out
+                                    //only need two and three digit
+                                    match  end_index - start_index
+                                    {
+                                        1 =>
+                                        {
+                                                //2 digit
+                                            if move_arr[i] ==  backward 
+                                                {
+                                                move_arr[3] = 0;
+                                                }
 
+                                            if move_arr[i] ==  forward 
+                                                {
+                                                move_arr[6] = 0;
+                                                }
                                         }
+                                                                                
 
+                                        2 => 
+                                        {  // digit
+                                            if move_arr[i] ==  backward 
+                                                {
+                                                move_arr[3] = 0;
+                                                move_arr[4] = 0;
+                                                }
+                                        
+                                            if move_arr[i] ==  forward 
+                                                {
+                                                move_arr[6] = 0;
+                                                move_arr[7] = 0;
+                                                }
+
+                                        },
+
+                                        default => {} 
+                                    }
+
+                                    let digit_str: String = gondola_params_string
+                                                                                .chars()
+                                                                                .skip(start_index as usize)
+                                                                                .take((end_index - start_index + 1) as usize)
+                                                                                .collect();
+
+                                    numbers_vec.push(digit_str.parse().unwrap());  //push string slice containing digit to vec as u32
+                                    break;                                                                                                                       
                                 }
                                    
                                 else {   //check one more digit to left
                                     j += 1;
-                                }               
-                                
-                                    
-                                            //find number length                                       
-                                        //push index to index vector
-                                    //if not left most
-                                        //move char pointer left one, check again
-                                print!("Index of Number: {:?}\tNumber Found: {:?}", index + move_arr[i], 
-                                                                                    gondola_params_string.chars()
-                                                                                                        .nth((index + move_arr[i]) as usize));
-                                //push index of found number to found_indexes vector
-                                numbers_vec.push(index + move_arr[i]);
+                                }
                             }
                                 
                         }
@@ -176,60 +201,14 @@ fn main()
                         };  
                     }
                         
-                        //if only two digits are found around * - compute
-                        if found_indexes.len() == 2 
-                        {
-                            //go to first digit by using value stored in found_indexes
-                            let mut k = 0; //increment to next vector in digits vector
-                            for idx in &found_indexes {
-                                let mut j = 0;   //push to digit vec on digits vector iter  
-                                while gondola_params_string_with_padding.chars()
-                                                                        .nth((idx + j)
-                                                                        .try_into()
-                                                                        .unwrap())
-                                                                        .expect("REASON")
-                                                                        .is_numeric()
-                                {
-                                        digits_vec[k].push(gondola_params_string_with_padding.chars()
-                                                                                             .nth((index + j).try_into().unwrap())
-                                                                                             .map(|c| c.to_digit(10).unwrap_or(0))
-                                                                                             .unwrap_or(0 as u32));
-                                        j += 1;                                   
-                                }
-                                k += 1;
-                            } 
-                            //digits vector now populated with two digit vectors to multiply
-                            //compute value of each digit 
-                            //multiply them together and add them to running total                      
-                            print!("\tTotal Previous: {}", total);
-                            //compute from vec and add to total
-                            //iterate backwards on vec, aka, starting from the ones and multiply multiplication factor by 10 for each digit. add results together                  
-                            for element in digits_vec.iter()
-                            {
-                                let loop_total = 0;                               
-                                for &number in element.iter().rev() {
-                                    let temp = number * mult_casc;
-                                    //multiply by mult_cascade
-                                    total += temp;
-                                    //multiply mult_casc by 10
-                                    mult_casc *= 10;
-                                }
-                                mult_casc = 1;
-                                multiplicand_vec.push(loop_total);     //push final computed value                           
-                            }
-                            //we now have a vector with the two numbers we need to multiply
-                            //set the total equal to the last number
-                            let mut product_for_total = multiplicand_vec.pop().unwrap();
-                            //multiply the rest of the numbers by this numbers --- scalability
-                            for &number in multiplicand_vec.iter() {
-                                product_for_total *= number;
-                            }
-                            //have total now, add it to running total
-                            total += product_for_total;
-                        }
-                    }        
-                            print!("\t{:?}\tTotal: {}\n", digits_vec.as_mut_slice(), total);                      
-                } 
+                    //if only two digits are found around * ---  compute
+                    if number_counter == 2 
+                    {
+                       total += numbers_vec[1] * numbers_vec[1];
+                       number_counter = 0;
+                    }                         
+                }
+            } 
             None => {
                 // Break the loop when reaching the end of the string
                 break;
