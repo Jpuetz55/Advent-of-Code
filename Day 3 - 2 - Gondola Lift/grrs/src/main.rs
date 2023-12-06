@@ -42,8 +42,7 @@ use std::path::Path;
 
 fn main() {
   let test_input: String = String::from(
-    "
-  ...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+    ".*.........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
   ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
   ...............383...........................372..................................474...................................432.471......729...."
   );
@@ -68,9 +67,7 @@ fn main() {
     forward + 2,
   ];
   //index for crawling letter by letter
-  let mut index = 0;
-
-  let mut number_counter = 0;
+  let mut index = LINELENGTH;
   //crawl input by letter
   //open file
   // let path = Path::new("./params.txt");
@@ -175,12 +172,12 @@ fn main() {
                     2 => {
                       //backward
                       match end_index - start_index {
-                        2 => {
+                        1 => {
                           //dont need to handle 1 digit
                           // 2 digit
                           move_arr[3] = 0;
                         }
-                        3 => {
+                        2 => {
                           // 3 digit
                           move_arr[3] = 0;
                           move_arr[4] = 0;
@@ -192,7 +189,7 @@ fn main() {
                     3 => {
                       //backward + 1
                       match end_index - start_index {
-                        2 | 3 => {
+                        1 | 2 => {
                           // 2 digit or 3 digit still only blanks 1 from this position
 
                           move_arr[4] = 0;
@@ -204,12 +201,12 @@ fn main() {
                     5 => {
                       //forward
                       match end_index - start_index {
-                        2 => {
+                        1 => {
                           //dont need to handle 1 digit
                           // 2 digit
                           move_arr[6] = 0;
                         }
-                        3 => {
+                        2 => {
                           // 3 digit
                           move_arr[6] = 0;
                           move_arr[7] = 0;
@@ -222,7 +219,7 @@ fn main() {
                     6 => {
                       //forward + 1
                       match end_index - start_index {
-                        2 | 3 => {
+                        1 | 2 => {
                           // 2 digit or 3 digit still only blanks 1 from this position
 
                           move_arr[7] = 0;
@@ -263,10 +260,10 @@ fn main() {
                   j += 1;
                 }
               }
-              i += 1;
-              if i >= 8 {
-                break;
-              }
+            }
+            i += 1;
+            if i >= 8 {
+              break;
             }
           }
         }
@@ -274,12 +271,11 @@ fn main() {
         move_arr = [-1, 1, backward, backward + 1, backward + 2, forward, forward + 1, forward + 2];
 
         //if only two digits are found around * ---  compute
-        if number_counter == 2 {
+        if numbers_vec.len() == 2 {
           total += numbers_vec[1] * numbers_vec[1];
-          number_counter = 0;
           print!("Total is: {}", total);
-          numbers_vec.clear();
         }
+        numbers_vec.clear();
       }
       None => {
         // Break the loop when reaching the end of the string
