@@ -41,16 +41,16 @@ use std::path::Path;
 // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
 fn main() {
-  //     let test_input: String = String::from("
-  // ...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
-  // ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
-  // ...............383...........................372..................................474...................................432.471......729....");
+  let test_input: String = String::from(
+    "
+  ...........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+  ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
+  ...............383...........................372..................................474...................................432.471......729...."
+  );
 
   const LINELENGTH: i32 = 140;
   //declare vec to hold digits for calc
   let mut numbers_vec: Vec<u32> = Vec::new();
-  //vec to hold index values of found numbers
-  let mut found_indexes: Vec<u32> = Vec::new();
   //total
   let mut total = 0;
   //readability
@@ -73,27 +73,39 @@ fn main() {
   let mut number_counter = 0;
   //crawl input by letter
   //open file
-  let path = Path::new("./params.txt");
-  let display = path.display();
-  let mut gondola_params_file = match File::open(&path) {
-    Err(why) => panic!("couldn't open {}: {}", display, why),
-    Ok(file) => file,
-  };
+  // let path = Path::new("./params.txt");
+  // let display = path.display();
+  // let mut gondola_params_file = match File::open(&path) {
+  //   Err(why) => panic!("couldn't open {}: {}", display, why),
+  //   Ok(file) => file,
+  // };
 
   // // write opened filed to string
 
-  let mut gondola_params_string = String::new();
-  match gondola_params_file.read_to_string(&mut gondola_params_string) {
-    Err(why) => panic!("couldn't read {}: {}", display, why),
-    Ok(_) => {}
-  }
+  // let mut gondola_params_string = String::new();
+  // match gondola_params_file.read_to_string(&mut gondola_params_string_with_padding) {
+  //   Err(why) => panic!("couldn't read {}: {}", display, why),
+  //   Ok(_) => {}
+  // }
   //trim newlines, we don't need them
 
-  // let mut gondola_params_string = test_input;
+  let mut gondola_params_string = test_input;
+
+  gondola_params_string.retain(|c| !c.is_whitespace());
+  //pad string with a line of periods on front and back for validating first and last line
+  let periods = ".".repeat(LINELENGTH.try_into().unwrap());
+  let gondola_params_string_with_padding = format!(
+    "{}{}{}",
+    periods,
+    gondola_params_string,
+    periods
+  );
+
+  print!("{}", gondola_params_string_with_padding);
 
   //loop over chars in string
   loop {
-    match gondola_params_string.chars().nth(index.try_into().unwrap()) {
+    match gondola_params_string_with_padding.chars().nth(index.try_into().unwrap()) {
       Some(letter) => {
         //detect a number - first digit
         if
@@ -106,12 +118,19 @@ fn main() {
             // A - that the digit found is the left most digit of the number
             // B - the digit found is a digit from a previously found number
             if
-              gondola_params_string
+              gondola_params_string_with_padding
                 .chars()
                 .nth((index + move_arr[i]) as usize)
                 .unwrap()
                 .to_digit(10) != None
             {
+              print!(
+                "{}",
+                gondola_params_string_with_padding
+                  .chars()
+                  .nth((index + move_arr[i]) as usize)
+                  .unwrap()
+              );
               //digit found
               //digit check loop
               loop {
@@ -121,7 +140,7 @@ fn main() {
                 //if left most
                 //this if block returns start index and end index of the digit
                 if
-                  gondola_params_string
+                  gondola_params_string_with_padding
                     .chars()
                     .nth((index + move_arr[i] - j) as usize)
                     .unwrap()
@@ -130,10 +149,10 @@ fn main() {
                   let mut k = 1;
                   //find right most digit to figure out number length
                   //start index of number
-                  let start_index = move_arr[i] - (j + 1); // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
+                  let start_index = index + move_arr[i] - (j + 1); // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
                   let mut end_index = start_index; //initialize to same value in case of one digit number
                   while
-                    gondola_params_string
+                    gondola_params_string_with_padding
                       .chars()
                       .nth((start_index + k) as usize)
                       .unwrap()
@@ -177,10 +196,10 @@ fn main() {
                     default => {}
                   }
 
-                  let digit_str: String = gondola_params_string
+                  let digit_str: String = gondola_params_string_with_padding
                     .chars()
                     .skip(start_index as usize)
-                    .take((end_index - start_index + 1) as usize)
+                    .take((start_index - end_index + 1) as usize)
                     .collect();
 
                   numbers_vec.push(digit_str.parse().unwrap()); //push string slice containing digit to vec as u32
@@ -212,6 +231,7 @@ fn main() {
           if number_counter == 2 {
             total += numbers_vec[1] * numbers_vec[1];
             number_counter = 0;
+            print!("Total is: {}", total);
           }
         }
       }
