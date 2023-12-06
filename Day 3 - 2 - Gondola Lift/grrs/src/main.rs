@@ -112,10 +112,9 @@ fn main()
                                                 .nth((index + move_arr[i]) as usize)
                                                 .unwrap().to_digit(10) 
                                                 != None
-                        {
-                            loop 
+                        {                            
+                            loop //digit check loop
                             {
-
                                 let mut j = 1;
                                 //digit found
                                 //check left of digit to see if its left most digit in number
@@ -127,16 +126,17 @@ fn main()
                                     let mut k = 1;
                                     //find right most digit to figure out number length
                                     //start index of number
-                                    let start_index = index + move_arr[i];
-                                    let end_index = index + move_arr[i];   //initialize to same value in case of one digit number
+                                    let start_index = move_arr[i] - (j + 1); // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
+                                    let end_index = start_index;   //initialize to same value in case of one digit number
                                     while gondola_params_string.chars()
-                                                .nth((index + move_arr[i] - j) as usize)
+                                                .nth((start_index + k) as usize)
                                                 .unwrap().to_digit(10) != None 
-                                    {      //while the next number is not a digit
-                                        end_index = index + move_arr[i] + k;
+                                    {      //while the next number is a digit
+                                        end_index += 1; 
                                         k += 1
                                     }
                                     //end index of number
+                                    //now have start_index and end_index of digit
                                     //if first digit index == forward || backward
                                     //zero out forward + 1, forward + 2, respectively to stop algo from checking already found number
                                         if index + move_arr[i] ==  forward + move_arr[i] {
@@ -153,7 +153,7 @@ fn main()
 
                                 }
                                    
-                                else {
+                                else {   //check one more digit to left
                                     j += 1;
                                 }               
                                 
@@ -167,13 +167,15 @@ fn main()
                                                                                                         .nth((index + move_arr[i]) as usize));
                                 //push index of found number to found_indexes vector
                                 numbers_vec.push(index + move_arr[i]);
-                                }
-                        }  
+                            }
+                                
                         }
                         i += 1;
                         if i >= 8 { 
                             break; 
-                        };
+                        };  
+                    }
+                        
                         //if only two digits are found around * - compute
                         if found_indexes.len() == 2 
                         {
