@@ -149,7 +149,7 @@ fn main() {
                   let mut k = 1;
                   //find right most digit to figure out number length
                   //start index of number
-                  let start_index = index + move_arr[i] - (j + 1); // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
+                  let start_index = index + move_arr[i] - j + 1; // if move_arr[i] - j is where the next non digit car is. if move_arr[i] - (j + 1) is the digit to the right of it
                   let mut end_index = start_index; //initialize to same value in case of one digit number
                   while
                     gondola_params_string_with_padding
@@ -168,6 +168,7 @@ fn main() {
                   //zero out forward + 1, forward + 2, respectively to stop algo from checking already found number
                   //need to check the number of digits in number, then decide how many positions to zero out
                   //only need two and three digit
+                  //todo ****** Fix this logic ******
                   match end_index - start_index {
                     1 => {
                       //2 digit
@@ -196,13 +197,29 @@ fn main() {
                     default => {}
                   }
 
-                  let digit_str: String = gondola_params_string_with_padding
-                    .chars()
+                  let slice: String = gondola_params_string_with_padding
+                    .char_indices()
                     .skip(start_index as usize)
-                    .take((start_index - end_index + 1) as usize)
+                    .take((end_index - start_index + 1) as usize)
+                    .map(|(i, _)| gondola_params_string_with_padding.chars().nth(i).unwrap())
                     .collect();
 
-                  numbers_vec.push(digit_str.parse().unwrap()); //push string slice containing digit to vec as u32
+                  let parsed_integer: Result<u32, _> = slice.parse();
+
+                  // Check if parsing was successful
+                  match parsed_integer {
+                    Ok(parsed_value) => {
+                      // Create a vector and push the parsed value
+                      numbers_vec.push(parsed_value);
+
+                      // Print the vector
+                      println!("Vector: {:?}", numbers_vec);
+                    }
+                    Err(e) => {
+                      // Handle parsing error
+                      eprintln!("Error parsing integer: {}", e);
+                    }
+                  }
                   break;
                 } else {
                   //check one more digit to left
@@ -232,6 +249,7 @@ fn main() {
             total += numbers_vec[1] * numbers_vec[1];
             number_counter = 0;
             print!("Total is: {}", total);
+            numbers_vec.clear();
           }
         }
       }
