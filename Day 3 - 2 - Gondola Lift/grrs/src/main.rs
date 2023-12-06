@@ -196,6 +196,17 @@ fn main() {
               break;
             }
           }
+          //set move_arr back to normal
+          move_arr = [
+            -1,
+            1,
+            backward,
+            backward + 1,
+            backward + 2,
+            forward,
+            forward + 1,
+            forward + 2,
+          ];
 
           //if only two digits are found around * ---  compute
           if number_counter == 2 {
