@@ -169,31 +169,68 @@ fn main() {
                   //need to check the number of digits in number, then decide how many positions to zero out
                   //only need two and three digit
                   //todo ****** Fix this logic ******
-                  match end_index - start_index {
-                    1 => {
-                      //2 digit
-                      if move_arr[i] == backward {
-                        move_arr[3] = 0;
-                      }
 
-                      if move_arr[i] == forward {
-                        move_arr[6] = 0;
-                      }
-                    }
-
+                  match i {
+                    //if pos being checked is one of following positions
                     2 => {
-                      // digit
-                      if move_arr[i] == backward {
-                        move_arr[3] = 0;
-                        move_arr[4] = 0;
-                      }
+                      //backward
+                      match end_index - start_index {
+                        2 => {
+                          //dont need to handle 1 digit
+                          // 2 digit
+                          move_arr[3] = 0;
+                        }
+                        3 => {
+                          // 3 digit
+                          move_arr[3] = 0;
+                          move_arr[4] = 0;
+                        }
 
-                      if move_arr[i] == forward {
-                        move_arr[6] = 0;
-                        move_arr[7] = 0;
+                        default => {}
+                      }
+                    }
+                    3 => {
+                      //backward + 1
+                      match end_index - start_index {
+                        2 | 3 => {
+                          // 2 digit or 3 digit still only blanks 1 from this position
+
+                          move_arr[4] = 0;
+                        }
+
+                        default => {}
+                      }
+                    }
+                    5 => {
+                      //forward
+                      match end_index - start_index {
+                        2 => {
+                          //dont need to handle 1 digit
+                          // 2 digit
+                          move_arr[6] = 0;
+                        }
+                        3 => {
+                          // 3 digit
+                          move_arr[6] = 0;
+                          move_arr[7] = 0;
+                        }
+
+                        default => {}
                       }
                     }
 
+                    6 => {
+                      //forward + 1
+                      match end_index - start_index {
+                        2 | 3 => {
+                          // 2 digit or 3 digit still only blanks 1 from this position
+
+                          move_arr[7] = 0;
+                        }
+
+                        default => {}
+                      }
+                    }
                     default => {}
                   }
 
@@ -226,31 +263,22 @@ fn main() {
                   j += 1;
                 }
               }
-            }
-            i += 1;
-            if i >= 8 {
-              break;
+              i += 1;
+              if i >= 8 {
+                break;
+              }
             }
           }
-          //set move_arr back to normal
-          move_arr = [
-            -1,
-            1,
-            backward,
-            backward + 1,
-            backward + 2,
-            forward,
-            forward + 1,
-            forward + 2,
-          ];
+        }
+        //set move_arr back to normal
+        move_arr = [-1, 1, backward, backward + 1, backward + 2, forward, forward + 1, forward + 2];
 
-          //if only two digits are found around * ---  compute
-          if number_counter == 2 {
-            total += numbers_vec[1] * numbers_vec[1];
-            number_counter = 0;
-            print!("Total is: {}", total);
-            numbers_vec.clear();
-          }
+        //if only two digits are found around * ---  compute
+        if number_counter == 2 {
+          total += numbers_vec[1] * numbers_vec[1];
+          number_counter = 0;
+          print!("Total is: {}", total);
+          numbers_vec.clear();
         }
       }
       None => {
@@ -260,5 +288,4 @@ fn main() {
     }
     index += 1;
   }
-  print!("{}", total);
 }
