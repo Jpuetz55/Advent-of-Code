@@ -5,9 +5,7 @@ use std::option;
 use std::path::Path;
 use circular_buffer::CircularBuffer;
 
-fn main()
-{
-
+fn main() {
     // open file with raw text
 
     let path = Path::new("./params.txt");
@@ -48,12 +46,10 @@ fn main()
     // Initialize a new, empty circular buffer with a capacity of 5 elements
     // when new value gets added, oldest value gets dropped and
     // Ex buf = [1, 2, 3, 4, 5] -> buf.push_back(6) -> buf = [2, 3, 4, 5, 6]
-    let mut buf = CircularBuffer::<5,char>::new();
+    let mut buf = CircularBuffer::<5, char>::new();
     // Loop over each item in array
 
-    for item in collect_params 
-    {
-
+    for item in collect_params {
         // declare temporary variable to hold the first_number and the last_number and set them to NULL
         let mut first_number: Option<u32> = None;
         let mut last_number: Option<u32> = None;
@@ -63,22 +59,21 @@ fn main()
         let _ = buf.drain(0..);
         //initialize buffer
         for _ in 0..5 {
-            buf.push_back('n');  // Pushing the placeholder value ('n' in this case)
+            buf.push_back('n'); // Pushing the placeholder value ('n' in this case)
         }
 
-        for letter in item.chars()
-        {
+        for letter in item.chars() {
             if letter != '\r' {
                 buf.push_back(letter);
             }
-            //check 3 letter                                                                  
-            let buf3 = String::from_iter(buf.range(2..5));                                    
+            //check 3 letter
+            let buf3 = String::from_iter(buf.range(2..5));
             match buf3.as_str() {
                 "one" => {
                     if first_number.is_none() {
                         first_number = Some(1);
                     }
-                    last_number = Some(1);                 
+                    last_number = Some(1);
                 }
                 "two" => {
                     if first_number.is_none() {
@@ -101,7 +96,7 @@ fn main()
                     if first_number.is_none() {
                         first_number = Some(0);
                     }
-                        last_number = Some(0);
+                    last_number = Some(0);
                 }
                 "four" => {
                     if first_number.is_none() {
@@ -123,7 +118,7 @@ fn main()
                 }
                 _ => {}
             }
-            
+
             //check 5 letter
 
             let buf5 = String::from_iter(buf.range(0..5));
@@ -163,18 +158,24 @@ fn main()
         }
         // calculate parameters
         //(first number * 10) + finalNumber?
-        add_first_last = (first_number.unwrap() * 10) + last_number.unwrap();
+        add_first_last = first_number.unwrap() * 10 + last_number.unwrap();
         //add them to total
         total += add_first_last;
-        print!("{:?} - {:?}, {:?} - {:?} - {:?}\n", item, first_number.unwrap(), last_number.unwrap(), add_first_last, total);
+        print!(
+            "{:?} - {:?}, {:?} - {:?} - {:?}\n",
+            item,
+            first_number.unwrap(),
+            last_number.unwrap(),
+            add_first_last,
+            total
+        );
         //print!("{} - \n", item);
         //print!("\t{}{:?}\n", i, buf.range(0..));
         //set back to zero for next loop
         add_first_last = 0;
         //increment counter
         i += 1;
-        //end loop         
+        //end loop
     }
-            print!("Total is : {:?}", total); // 
+    print!("Total is : {:?}", total); //
 }
-
