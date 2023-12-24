@@ -41,11 +41,11 @@ use std::path::Path;
 // (i+(forward)) (i+(forward + 1)) (i+(forward + 2)) (i+(forward + 3)) (i+(forward + 4))
 
 fn main() {
-  let test_input: String = String::from(
-    ".*.........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
-  ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
-  ...............383...........................372..................................474...................................432.471......729...."
-  );
+  // let test_input: String = String::from(
+  //   ".*.........@.913.....168....=909..431......=......@..976.......+.......*..........155............................620.......250......@.......
+  // ......806.....*....................*...........@................45.....475...724..*......&45.........+202..-576.....*.........*.............
+  // ...............383...........................372..................................474...................................432.471......729...."
+  // );
 
   const LINELENGTH: i32 = 140;
   //declare vec to hold digits for calc
@@ -70,23 +70,23 @@ fn main() {
   let mut index = LINELENGTH;
   //crawl input by letter
   //open file
-  // let path = Path::new("./params.txt");
-  // let display = path.display();
-  // let mut gondola_params_file = match File::open(&path) {
-  //   Err(why) => panic!("couldn't open {}: {}", display, why),
-  //   Ok(file) => file,
-  // };
+  let path = Path::new("./params.txt");
+  let display = path.display();
+  let mut gondola_params_file = match File::open(&path) {
+    Err(why) => panic!("couldn't open {}: {}", display, why),
+    Ok(file) => file,
+  };
 
   // // write opened filed to string
 
-  // let mut gondola_params_string = String::new();
-  // match gondola_params_file.read_to_string(&mut gondola_params_string_with_padding) {
-  //   Err(why) => panic!("couldn't read {}: {}", display, why),
-  //   Ok(_) => {}
-  // }
+  let mut gondola_params_string = String::new();
+  match gondola_params_file.read_to_string(&mut gondola_params_string) {
+    Err(why) => panic!("couldn't read {}: {}", display, why),
+    Ok(_) => {}
+  }
   //trim newlines, we don't need them
 
-  let mut gondola_params_string = test_input;
+  // let mut gondola_params_string = test_input;
 
   gondola_params_string.retain(|c| !c.is_whitespace());
   //pad string with a line of periods on front and back for validating first and last line
@@ -122,7 +122,7 @@ fn main() {
                 .to_digit(10) != None
             {
               print!(
-                "{}",
+                "Number Found: {} ----",
                 gondola_params_string_with_padding
                   .chars()
                   .nth((index + move_arr[i]) as usize)
@@ -130,8 +130,8 @@ fn main() {
               );
               //digit found
               //digit check loop
+              let mut j = 1;
               loop {
-                let mut j = 1;
                 //digit found
                 //check left of digit to see if its left most digit in number
                 //if left most
@@ -166,9 +166,18 @@ fn main() {
                   //need to check the number of digits in number, then decide how many positions to zero out
                   //only need two and three digit
                   //todo ****** Fix this logic ******
+                  //on the positions checked by this loop, we need to determine how many digits are to the right of the found digit
+                  //we can simplify the logic we need to implement by only caring about digits to the right
+                  //of the position as the digits to the left are not checked anyway.
+                  //about which indexes in the move arr to zero out
+                  //the loop below is what determines which indexes to zero out. We must fix it here.
 
                   match i {
                     //if pos being checked is one of following positions
+                    //todo: this loop needs fixed so that the algo is figuring out how many digits are to the right
+                    //of the current position being checked and zeroing out the correct number of positions in the move_arr
+                    //right now, it just figures out the length of the number and zeros out that many postitions to the right of the first found digit
+                    //this doesn't calculate correctly for numbers whose first number is not the digit in the current position
                     2 => {
                       //backward
                       match end_index - start_index {
@@ -247,7 +256,7 @@ fn main() {
                       numbers_vec.push(parsed_value);
 
                       // Print the vector
-                      println!("Vector: {:?}", numbers_vec);
+                      println!(" Vector: {:?} ---- Position found in: {}", numbers_vec, i);
                     }
                     Err(e) => {
                       // Handle parsing error
@@ -272,8 +281,9 @@ fn main() {
 
         //if only two digits are found around * ---  compute
         if numbers_vec.len() == 2 {
-          total += numbers_vec[1] * numbers_vec[1];
-          print!("Total is: {}", total);
+          print!("Previous Total is: {}  ", total);
+          total += numbers_vec[0] * numbers_vec[1];
+          print!("{:?} *  {:?} -----Total is: {}\n", numbers_vec[1], numbers_vec[0], total);
         }
         numbers_vec.clear();
       }
