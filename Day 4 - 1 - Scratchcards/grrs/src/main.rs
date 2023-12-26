@@ -26,18 +26,23 @@ Take a seat in the large pile of colorful cards. How many points are they worth 
 
 fn main() {
     //for each card 
-    //parse numbers out of string and put them in separate arrays. One for the winning numbers and one for the numbers that you hold
-        //Once arrays are populated, loop over each number the in held_numbers array and check if it is in the winning numbers array
-        //set card_total to zero
-        //for number in heldArray        
-            //if number is in winning numbers 
-                //if first match
-                    //add 1 to the card_total
-                //any subsequent match
-                    //multiply card_total by two
-            //else do nothing and go to next number in held_numbers.                           
-        //end for loop
-        //add card_total to overall_total
+    //parse numbers out of string and put them in separate arrays. One for the winning numbers and one for the numbers that you hold 
+        //split string at the colon and take the second half
+        //now split second half at the | and keep both arrays
+        //now split these two arrays at the space
+        //convert them into integers
+        //put them into two u32 vectors
+            //Once arrays are populated, loop over each number the in held_numbers array and check if it is in the winning numbers array
+            //set card_total to zero
+            //for number in heldArray        
+                //if number is in winning numbers 
+                    //if first match
+                        //add 1 to the card_total
+                    //any subsequent match
+                        //multiply card_total by two
+                //else do nothing and go to next number in held_numbers.                           
+            //end for loop
+            //add card_total to overall_total
     //end for loop
 
     //print overall_total
