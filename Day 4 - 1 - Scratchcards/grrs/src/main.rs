@@ -22,33 +22,9 @@ Take a seat in the large pile of colorful cards. How many points are they worth 
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
-            
-        
 
 fn main() {
-    //for each card 
-    //parse numbers out of string and put them in separate arrays. One for the winning numbers and one for the numbers that you hold 
-        //split string at the colon and take the second half
-        //now split second half at the | and keep both arrays
-        //now split these two arrays at the space
-        //convert them into integers
-        //put them into two u32 vectors
-            //Once arrays are populated, loop over each number the in held_numbers array and check if it is in the winning numbers array
-            //set card_total to zero
-            //for number in heldArray        
-                //if number is in winning numbers 
-                    //if first match
-                        //add 1 to the card_total
-                    //any subsequent match
-                        //multiply card_total by two
-                //else do nothing and go to next number in held_numbers.                           
-            //end for loop
-            //add card_total to overall_total
-    //end for loop
-
-    //print overall_total
-
-    //end
+    // Read scratchcards parameters from a file
     let path = Path::new("./params.txt");
     let display = path.display();
     let mut scratchcards_params_file = match File::open(&path) {
@@ -56,46 +32,62 @@ fn main() {
         Ok(file) => file,
     };
 
-    // // write opened filed to string
-
+    // Read the file content into a string
     let mut scratchcards_params_string = String::new();
     match scratchcards_params_file.read_to_string(&mut scratchcards_params_string) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
 
+    // Split the file content into lines
     let lines: Vec<&str> = scratchcards_params_string.lines().collect();
     let mut overall_total = 0;
 
+    // Process each scratchcard
     for card in lines {
         let parts: Vec<&str> = card.split(":").collect();
 
+        // Split the string into winning and held numbers
         let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
-
         let winning_numbers = held_numbers[0].split_whitespace().collect::<Vec<&str>>();
         let held_numbers = held_numbers[1].split_whitespace().collect::<Vec<&str>>();
 
-        let winning_numbers: Vec<u32> = winning_numbers.iter().map(|s| s.parse().unwrap_or(0)).collect();
-        let held_numbers: Vec<u32> = held_numbers.iter().map(|s| s.parse().unwrap_or(0)).collect();
+        // Convert strings to vectors of u32
+        let winning_numbers: Vec<u32> = winning_numbers
+            .iter()
+            .map(|s| s.parse().unwrap_or(0))
+            .collect();
+        let held_numbers: Vec<u32> = held_numbers
+            .iter()
+            .map(|s| s.parse().unwrap_or(0))
+            .collect();
 
         println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
 
         let mut card_total = 0;
+        let mut is_first = true;
 
+        // Check if held numbers are winning numbers and calculate points
         for number in &held_numbers {
             if winning_numbers.contains(number) {
-                if let Some(index) = winning_numbers.iter().position(|&x| x == *number) {
-                    if index == 0 {
-                        card_total += 1;
-                    } else {
-                        card_total *= 2;
-                    }
+                if is_first {
+                    card_total += 1;
+                    is_first = false;
+                    println!(
+                        "held numbers: {:?}\nwinning numbers: {:?}",
+                        held_numbers,
+                        winning_numbers
+                    );
+                } else {
+                    card_total *= 2;
                 }
             }
         }
 
+        // Add the card total to the overall total
         overall_total += card_total;
     }
 
+    // Print the overall total
     println!("Overall Total: {}", overall_total);
 }
