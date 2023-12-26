@@ -29,6 +29,12 @@ use std::io::prelude::*;
 use std::path::Path;
 use std::collections::HashMap;
 
+// Define a Card struct
+#[derive(Debug)]
+struct Card {
+    value: String,
+    index: usize,
+}
 
 //this function takes references to the lines arr, a card, the overall_total, and the current_index for state management during recursion
 fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
@@ -53,7 +59,6 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
     println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
     //need to count the amount of total card
 
-
     // Check if held numbers are winning numbers and calculate points
     for number in &held_numbers {
         if winning_numbers.contains(number) {
@@ -63,8 +68,7 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
     if win_count == 0 {
         //base case - no more winning numbers in card
         //exit function and go back up the stack
-    }
-    else {
+    } else {
         // Make an array with all the copies to be added and iterate through it,
         // calling process_card on each one
         overall_total += win_count;
@@ -73,9 +77,6 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
             process_card(lines, copy_card, overall_total);
         }
     }
-    
-
-    
 }
 
 fn main() {
