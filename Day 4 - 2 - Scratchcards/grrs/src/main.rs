@@ -108,10 +108,11 @@ fn main() {
         });
     }
     //start count wtih the number of original cards and add copies to the total in process_card func
-    let mut overall_total = lines.len();
+    let mut overall_total = lines.len() as u32;
 
     // Process each scratchcard
-    for card in lines {
+    for card in &cards {
+        process_card(&cards, &card, &mut overall_total);
     }
 
     // Print the overall total
