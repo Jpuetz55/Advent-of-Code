@@ -28,6 +28,40 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
+fn process_card(parameter1: Type1, parameter2: Type2) -> u32 {
+    let parts: Vec<&str> = card.split(":").collect();
+    let count = 0;
+
+    // Split the string into winning and held numbers
+    let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
+    let winning_numbers = held_numbers[0].split_whitespace().collect::<Vec<&str>>();
+    let held_numbers = held_numbers[1].split_whitespace().collect::<Vec<&str>>();
+
+    // Convert strings to vectors of u32
+    let winning_numbers: Vec<u32> = winning_numbers
+        .iter()
+        .map(|s| s.parse().unwrap_or(0))
+        .collect();
+    let held_numbers: Vec<u32> = held_numbers
+        .iter()
+        .map(|s| s.parse().unwrap_or(0))
+        .collect();
+
+    println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
+    //need to count the amount of total card
+    //base case - no more winning numbers in card
+
+    // Check if held numbers are winning numbers and calculate points
+    for number in &held_numbers {
+        if winning_numbers.contains(number) {
+            count += 1;
+        }
+    }
+
+    // Add the card total to the overall total
+    overall_total += process_card;
+}
+
 fn main() {
     // Read scratchcards parameters from a file
     let path = Path::new("./params.txt");
@@ -50,47 +84,6 @@ fn main() {
 
     // Process each scratchcard
     for card in lines {
-        let parts: Vec<&str> = card.split(":").collect();
-
-        // Split the string into winning and held numbers
-        let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
-        let winning_numbers = held_numbers[0].split_whitespace().collect::<Vec<&str>>();
-        let held_numbers = held_numbers[1].split_whitespace().collect::<Vec<&str>>();
-
-        // Convert strings to vectors of u32
-        let winning_numbers: Vec<u32> = winning_numbers
-            .iter()
-            .map(|s| s.parse().unwrap_or(0))
-            .collect();
-        let held_numbers: Vec<u32> = held_numbers
-            .iter()
-            .map(|s| s.parse().unwrap_or(0))
-            .collect();
-
-        println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
-
-        let mut card_total = 0;
-        let mut is_first = true;
-
-        // Check if held numbers are winning numbers and calculate points
-        for number in &held_numbers {
-            if winning_numbers.contains(number) {
-                if is_first {
-                    card_total += 1;
-                    is_first = false;
-                    println!(
-                        "held numbers: {:?}\nwinning numbers: {:?}",
-                        held_numbers,
-                        winning_numbers
-                    );
-                } else {
-                    card_total *= 2;
-                }
-            }
-        }
-
-        // Add the card total to the overall total
-        overall_total += card_total;
     }
 
     // Print the overall total
