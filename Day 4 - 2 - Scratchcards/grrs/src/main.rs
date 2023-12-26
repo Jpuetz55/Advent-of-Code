@@ -31,7 +31,7 @@ use std::collections::HashMap;
 
 
 //this function takes references to the lines arr, a card, the overall_total, and the current_index for state management during recursion
-fn process_card(lines: &Vec<Card>, card: &str, overall_total: &u32) {
+fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
     let parts: Vec<&str> = card.split(":").collect();
     let win_count = 0;
 
