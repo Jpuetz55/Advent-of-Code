@@ -31,7 +31,7 @@ use std::collections::HashMap;
 
 
 //this function takes references to the lines arr, a card, the overall_total, and the current_index for state management during recursion
-fn process_card(lines: &Vec<&str>, card: &str, overall_total: &u32, current_index: u32) {
+fn process_card(lines: &Vec<&str>, card: &str, overall_total: &u32) {
     let parts: Vec<&str> = card.split(":").collect();
     let win_count = 0;
 
@@ -96,6 +96,11 @@ fn main() {
 
     // Split the file content into lines
     let lines: Vec<&str> = scratchcards_params_string.lines().collect();
+    let mut indexed_lines: HashMap<usize, &str> = HashMap::new();
+    //create hash map with index value for each card for state management during recursion. zero-based index
+    for (index, card) in lines.iter().enumerate() {
+        indexed_lines.insert(index, *card);
+    }
     //start count wtih the number of original cards and add copies to the total in process_card func
     let mut overall_total = lines.len();
 
