@@ -31,7 +31,7 @@ use std::collections::HashMap;
 
 
 //this function takes references to the lines arr, a card, the overall_total, and the current_index for state management during recursion
-fn process_card(lines: &HashMap<usize, &str>, card: &str, overall_total: &u32) {
+fn process_card(lines: &Vec<Card>, card: &str, overall_total: &u32) {
     let parts: Vec<&str> = card.split(":").collect();
     let win_count = 0;
 
@@ -68,9 +68,9 @@ fn process_card(lines: &HashMap<usize, &str>, card: &str, overall_total: &u32) {
         // Make an array with all the copies to be added and iterate through it,
         // calling process_card on each one
         overall_total += win_count;
-        let copy_arr: Vec<&str> = (current_index + 1..lines.len()).map(|i| lines[i]).collect();
+        let copy_arr: Vec<&str> = (card.get(key)..lines.len()).map(|i| lines[i]).collect();
         for copy_card in copy_arr {
-            process_card(lines, copy_card, overall_total, current_index);
+            process_card(lines, copy_card, overall_total);
         }
     }
     
@@ -97,9 +97,13 @@ fn main() {
     // Split the file content into lines
     let lines: Vec<&str> = scratchcards_params_string.lines().collect();
     let mut indexed_lines: HashMap<usize, &str> = HashMap::new();
-    //create hash map with index value for each card for state management during recursion. zero-based index
-    for (index, card) in lines.iter().enumerate() {
-        indexed_lines.insert(index, *card);
+    // Create a vector of Card structs
+    let mut cards: Vec<Card> = Vec::new();
+    for (index, &card) in lines.iter().enumerate() {
+        cards.push(Card {
+            value: card.to_string(),
+            index,
+        });
     }
     //start count wtih the number of original cards and add copies to the total in process_card func
     let mut overall_total = lines.len();
