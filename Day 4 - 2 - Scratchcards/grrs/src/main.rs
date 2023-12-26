@@ -27,10 +27,13 @@ Process all of the original and copied scratchcards until no more scratchcards a
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::collections::HashMap;
 
-fn process_card(parameter1: Type1, parameter2: Type2) -> u32 {
+
+//this function takes references to the lines arr, a card, the overall_total, and the current_index for state management during recursion
+fn process_card(lines: &Vec<&str>, card: &str, overall_total: &u32, current_index: u32) {
     let parts: Vec<&str> = card.split(":").collect();
-    let count = 0;
+    let win_count = 0;
 
     // Split the string into winning and held numbers
     let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
@@ -49,17 +52,26 @@ fn process_card(parameter1: Type1, parameter2: Type2) -> u32 {
 
     println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
     //need to count the amount of total card
-    //base case - no more winning numbers in card
+
 
     // Check if held numbers are winning numbers and calculate points
     for number in &held_numbers {
         if winning_numbers.contains(number) {
-            count += 1;
+            win_count += 1;
         }
     }
+    if win_count == 0 {
+        //base case - no more winning numbers in card
+        // Add the card total to the overall total
+        overall_total += process_card(card);
+    }
+    else {
+        //make array with all the copies to be added and iterate through it, calling process_card on each one
+        let copy_arr = 
+    }
+    
 
-    // Add the card total to the overall total
-    overall_total += process_card;
+    
 }
 
 fn main() {
