@@ -69,22 +69,16 @@ fn main() {
 
     for card in lines {
         let parts: Vec<&str> = card.split(":").collect();
-        if parts.len() != 2 {
-            // Skip invalid cards
-            continue;
-        }
 
-        let held_numbers_str = parts[1].split("|").collect::<Vec<&str>>();
-        if held_numbers_str.len() != 2 {
-            // Skip invalid cards
-            continue;
-        }
+        let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
 
-        let winning_numbers_str = held_numbers_str[0].split_whitespace().collect::<Vec<&str>>();
-        let held_numbers_str = held_numbers_str[1].split_whitespace().collect::<Vec<&str>>();
+        let winning_numbers = held_numbers[0].split_whitespace().collect::<Vec<&str>>();
+        let held_numbers = held_numbers[1].split_whitespace().collect::<Vec<&str>>();
 
-        let winning_numbers: Vec<u32> = winning_numbers_str.iter().map(|s| s.parse().unwrap_or(0)).collect();
-        let held_numbers: Vec<u32> = held_numbers_str.iter().map(|s| s.parse().unwrap_or(0)).collect();
+        let winning_numbers: Vec<u32> = winning_numbers.iter().map(|s| s.parse().unwrap_or(0)).collect();
+        let held_numbers: Vec<u32> = held_numbers.iter().map(|s| s.parse().unwrap_or(0)).collect();
+
+        println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
 
         let mut card_total = 0;
 
