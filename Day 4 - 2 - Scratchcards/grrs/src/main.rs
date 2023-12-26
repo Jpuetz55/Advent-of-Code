@@ -64,14 +64,17 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
             win_count += 1;
         }
     }
-    if win_count == 0 {
+    if win_count == 0 || card.index + (win_count as usize) >= lines.len() {
         //base case - no more winning numbers in card, ergo no more copies
         //exit function and go back up the stack
+        return;
     } else {
         // Make an array with all the copies to be added and iterate through it,
         // calling process_card on each one
+        //I believe this is passing the same card to the copy array over and over again
+        //further debugging is needed to make a determination
         *overall_total += win_count;
-        let copy_arr: Vec<&Card> = (card.index..card.index + (win_count as usize))
+        let copy_arr: Vec<&Card> = (card.index + 1..win_count as usize)
             .map(|i| &lines[i])
             .collect();
 
