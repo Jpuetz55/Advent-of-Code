@@ -68,7 +68,7 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &u32) {
         // Make an array with all the copies to be added and iterate through it,
         // calling process_card on each one
         overall_total += win_count;
-        let copy_arr: Vec<&str> = (card.get(key)..lines.len()).map(|i| lines[i]).collect();
+        let copy_arr: Vec<&str> = (card.index..win_count).map(|i| lines[i]).collect();
         for copy_card in copy_arr {
             process_card(lines, copy_card, overall_total);
         }
