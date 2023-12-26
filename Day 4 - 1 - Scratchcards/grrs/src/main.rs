@@ -19,8 +19,9 @@ So, in this example, the Elf's pile of scratchcards is worth 13 points.
 
 Take a seat in the large pile of colorful cards. How many points are they worth in total? */
 
-
-
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
             
         
 
@@ -48,4 +49,59 @@ fn main() {
     //print overall_total
 
     //end
+    let path = Path::new("./params.txt");
+    let display = path.display();
+    let mut scratchcards_params_file = match File::open(&path) {
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    // // write opened filed to string
+
+    let mut scratchcards_params_string = String::new();
+    match scratchcards_params_file.read_to_string(&mut scratchcards_params_string) {
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+        Ok(_) => {}
+    }
+
+    let lines: Vec<&str> = scratchcards_params_string.lines().collect();
+    let mut overall_total = 0;
+
+    for card in lines {
+        let parts: Vec<&str> = card.split(":").collect();
+        if parts.len() != 2 {
+            // Skip invalid cards
+            continue;
+        }
+
+        let held_numbers_str = parts[1].split("|").collect::<Vec<&str>>();
+        if held_numbers_str.len() != 2 {
+            // Skip invalid cards
+            continue;
+        }
+
+        let winning_numbers_str = held_numbers_str[0].split_whitespace().collect::<Vec<&str>>();
+        let held_numbers_str = held_numbers_str[1].split_whitespace().collect::<Vec<&str>>();
+
+        let winning_numbers: Vec<u32> = winning_numbers_str.iter().map(|s| s.parse().unwrap_or(0)).collect();
+        let held_numbers: Vec<u32> = held_numbers_str.iter().map(|s| s.parse().unwrap_or(0)).collect();
+
+        let mut card_total = 0;
+
+        for number in &held_numbers {
+            if winning_numbers.contains(number) {
+                if let Some(index) = winning_numbers.iter().position(|&x| x == *number) {
+                    if index == 0 {
+                        card_total += 1;
+                    } else {
+                        card_total *= 2;
+                    }
+                }
+            }
+        }
+
+        overall_total += card_total;
+    }
+
+    println!("Overall Total: {}", overall_total);
 }
