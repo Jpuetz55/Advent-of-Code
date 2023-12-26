@@ -180,14 +180,14 @@ fn main() {
                     //this doesn't calculate correctly for numbers whose first number is not the digit in the current position
                     2 => {
                       //backward
-                      match end_index - start_index {
+                      match end_index - (index + backward) {
                         1 => {
                           //dont need to handle 1 digit
-                          // 2 digit
+                          // 1 digit to right
                           move_arr[3] = 0;
                         }
                         2 => {
-                          // 3 digit
+                          // 2 digits to
                           move_arr[3] = 0;
                           move_arr[4] = 0;
                         }
@@ -197,19 +197,16 @@ fn main() {
                     }
                     3 => {
                       //backward + 1
-                      match end_index - start_index {
-                        1 | 2 => {
-                          // 2 digit or 3 digit still only blanks 1 from this position
-
+                      if end_index - (index + backward + 1) > 0 {
+                        {
+                          // 2 digit or 3 digit to the right still only blanks 1 from this position
                           move_arr[4] = 0;
                         }
-
-                        default => {}
                       }
                     }
                     5 => {
                       //forward
-                      match end_index - start_index {
+                      match end_index - (index + forward) {
                         1 => {
                           //dont need to handle 1 digit
                           // 2 digit
@@ -227,16 +224,13 @@ fn main() {
 
                     6 => {
                       //forward + 1
-                      match end_index - start_index {
-                        1 | 2 => {
-                          // 2 digit or 3 digit still only blanks 1 from this position
+                      if end_index - (index + forward + 1) > 0 {
+                        // 2 digit or 3 digit still only blanks 1 from this position
 
-                          move_arr[7] = 0;
-                        }
-
-                        default => {}
+                        move_arr[7] = 0;
                       }
                     }
+
                     default => {}
                   }
 
