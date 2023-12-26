@@ -62,12 +62,16 @@ fn process_card(lines: &Vec<&str>, card: &str, overall_total: &u32, current_inde
     }
     if win_count == 0 {
         //base case - no more winning numbers in card
-        // Add the card total to the overall total
-        overall_total += process_card(card);
+        //exit function and go back up the stack
     }
     else {
-        //make array with all the copies to be added and iterate through it, calling process_card on each one
-        let copy_arr = 
+        // Make an array with all the copies to be added and iterate through it,
+        // calling process_card on each one
+        overall_total += win_count;
+        let copy_arr: Vec<&str> = (current_index + 1..lines.len()).map(|i| lines[i]).collect();
+        for copy_card in copy_arr {
+            process_card(lines, copy_card, overall_total, current_index);
+        }
     }
     
 
@@ -92,7 +96,8 @@ fn main() {
 
     // Split the file content into lines
     let lines: Vec<&str> = scratchcards_params_string.lines().collect();
-    let mut overall_total = 0;
+    //start count wtih the number of original cards and add copies to the total in process_card func
+    let mut overall_total = lines.len();
 
     // Process each scratchcard
     for card in lines {
