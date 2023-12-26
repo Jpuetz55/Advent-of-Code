@@ -65,7 +65,7 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
         }
     }
     if win_count == 0 {
-        //base case - no more winning numbers in card
+        //base case - no more winning numbers in card, ergo no more copies
         //exit function and go back up the stack
     } else {
         // Make an array with all the copies to be added and iterate through it,
