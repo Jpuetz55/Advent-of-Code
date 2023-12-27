@@ -64,7 +64,7 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
             win_count += 1;
         }
     }
-    if win_count == 0 || card.index + (win_count as usize) >= lines.len() {
+    if win_count == 0 {
         //potential problem here. if the number of copies to be
         //made is greater than the number of cards left in the deck
         //then the cards that are left at the end will be thrown out
@@ -77,6 +77,9 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
         //I believe this is passing the same card to the copy array over and over again
         //further debugging is needed to make a determination
         //if win count is greater than the number of cards remaining, then add only the cards that are remaining as copies
+        if card.index + (win_count as usize) > lines.len() {
+            win_count = (lines.len() as u32) - ((card.index + 1) as u32);
+        }
         *overall_total += win_count;
         let copy_arr: Vec<&Card> = (card.index + 1..(win_count + 1) as usize)
             .map(|i| &lines[i])
