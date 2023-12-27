@@ -76,12 +76,12 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
         //further debugging is needed to make a determination
         //if win count is greater than the number of cards remaining, then add only the cards that are remaining as copies
         if card.index + (win_count as usize) >= lines.len() {
-            win_count = (lines.len() as u32) - (card.index as u32);
+            win_count = (lines.len() as u32) - (card.index as u32) - 1;
         }
         *overall_total += win_count;
         println!("Overall Total: {}\t", overall_total);
         println!("index: {}", card.index);
-        let copy_arr: Vec<&Card> = (card.index + 1..card.index + (win_count as usize))
+        let copy_arr: Vec<&Card> = (card.index + 1..=card.index + (win_count as usize))
             .map(|i| &lines[i])
             .collect();
 
