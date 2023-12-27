@@ -54,8 +54,6 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
         .iter()
         .map(|s| s.parse().unwrap_or(0))
         .collect();
-
-    println!("held numbers: {:?}\nwinning numbers: {:?}", held_numbers, winning_numbers);
     //need to count the amount of total card
 
     // Check if held numbers are winning numbers and calculate points
@@ -77,11 +75,13 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
         //I believe this is passing the same card to the copy array over and over again
         //further debugging is needed to make a determination
         //if win count is greater than the number of cards remaining, then add only the cards that are remaining as copies
-        if card.index + (win_count as usize) > lines.len() {
-            win_count = (lines.len() as u32) - ((card.index + 1) as u32);
+        if card.index + (win_count as usize) >= lines.len() {
+            win_count = (lines.len() as u32) - (card.index as u32);
         }
         *overall_total += win_count;
-        let copy_arr: Vec<&Card> = (card.index + 1..(win_count + 1) as usize)
+        println!("Overall Total: {}\t", overall_total);
+        println!("index: {}", card.index);
+        let copy_arr: Vec<&Card> = (card.index + 1..card.index + (win_count as usize))
             .map(|i| &lines[i])
             .collect();
 
@@ -107,8 +107,8 @@ fn main() {
         Ok(_) => {}
     }
 
-    //     let scratchcards_params_string_test =
-    //         "Card   1: 99 46 62 92 60 37 52 56 41 31 | 83 40 31 33 46  3 10 39 82  8 64 35  5 63 60 72 48 87 11 81 95 34 97 37 99
+    // let scratchcards_params_string_test =
+    //     "Card   1: 99 46 62 92 60 37 52 56 41 31 | 83 40 31 33 46  3 10 39 82  8 64 35  5 63 60 72 48 87 11 81 95 34 97 37 99
     // Card   2: 98 96 50 60  7 40 83 93 55 26 | 45 38 47 98 32 50 55 35 93 11 97 53 74 83 99 60 73 56 40 58 96 66 90 26  7
     // Card   3: 82  8 12 15 53 23 29 61  5 21 | 21 73  5 65 44 29 61 97 15  4 90 76 53 91 13 27  9 11  2 75 22 92 95 82 86
     // Card   4: 68 22 77 52 23 60 57 31 74 38 | 22 38 68 79 52 23 40 57 10 74 31 83 24 60 95 17 78 89 39 37 87 26 77 63 54
@@ -119,7 +119,7 @@ fn main() {
     // Card   9: 98 71 24 85 11 74 22 35 65 59 | 18 43 54 36 71 86 22  7 85 78 46  6 77 62 38 98 83 65 88 37 84 70 72 59 23
     // Card  10:  5 87 77 60 62 86 42 33 43 76 | 86 19 26 77  5 60 21 34 44 76 33 85 78 67 79 13 18 42 87 59 54 43 62 65 16";
 
-    //let lines: Vec<&str> = scratchcards_params_string_test.lines().collect();
+    // let lines: Vec<&str> = scratchcards_params_string_test.lines().collect();
 
     // Split the file content into lines
     let lines: Vec<&str> = scratchcards_params_string.lines().collect();
