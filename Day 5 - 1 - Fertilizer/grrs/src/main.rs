@@ -114,12 +114,22 @@ fn main() {
         Ok(_) => {}
     }
 
+    // Split the file content into lines
+    let lines: Vec<&str> = params_string.lines().collect();
+
     //will figure out how to prep the string after implementing algorithm
     println!("{}", params_string);
 
     //read seed numbers into a vector
+     let mut seeds: Vec<> = Vec::new();
+    for (index, &card) in lines.iter().enumerate() {
+        cards.push(Card {
+            value: card.to_string(),
+            index,
+        });
+    }
     //read maps into a 3D vector
 
     //logic to map the seed numbers through the chain
-    
+
 }
