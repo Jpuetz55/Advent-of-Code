@@ -5,18 +5,34 @@ use std::path::Path;
 // Function to parse a single map and return a 2D array
 fn parse_map(map_str: &str) -> Vec<usize> {
     map_str
-        .lines()
-        .flat_map(|line| line.split_whitespace().map(|num_str| num_str.parse().unwrap()))
+        .split_whitespace()
+        .map(|num_str| num_str.parse().unwrap())
         .collect()
 }
 
 // Function to parse the entire input and return a vector of 2D arrays
 fn parse_input(input: &str) -> Vec<Vec<usize>> {
-    input
-        .split("\n\n") // Assume maps are separated by double newlines
-        .filter(|map_str| !map_str.is_empty())
-        .map(|map_str| parse_map(map_str))
-        .collect()
+    let mut maps = Vec::new();
+    let input_to_vector: Vec<&str> = input.lines().collect();
+
+    let mut current_map: Vec<usize> = Vec::new();
+    for line in input_to_vector {
+        if !line.is_empty() && line.chars().nth(0).unwrap().is_digit(10) {
+            // Parse the line and add to the current map
+            current_map.extend(parse_map(line));
+        } else if line.is_empty() && !current_map.is_empty() {
+            // Add the current map to the vector and clear it
+            maps.push(current_map.clone());
+            current_map.clear();
+        }
+    }
+
+    // Add the last map if it's not empty
+    if !current_map.is_empty() {
+        maps.push(current_map);
+    }
+
+    maps
 }
 
 fn main() {
@@ -35,31 +51,34 @@ fn main() {
         Ok(_) => {}
     }
 
-    // Split the file content into lines
-    let lines: Vec<&str> = params_string.lines().collect();
-
     // Print the file content for debugging
     println!("{}", params_string);
 
     // Parse the input into a vector of 2D arrays
     let maps = parse_input(&params_string);
 
-    // Accessing the first map in the seed-to-soil category
-    let seed_to_soil_map = &maps[0];
+    // Iterate through all maps and print their information
+    for (index, map) in maps.iter().enumerate() {
+        // Iterate through lines within the current map
+        for (line_index, line_values) in map.iter().enumerate() {
+            // Access individual values in the line without dereferencing
+            let destination_start = *line_values;
+            // For the next two lines, we'll need to adjust depending on the length of each line
+            let source_start = *line_values; // Example: Assuming the line has at least 2 values
+            let range_length = *line_values; // Example: Assuming the line has at least 3 values
 
-    // Access individual values in the map without dereferencing
-    let destination_start = seed_to_soil_map[0];
-    let source_start = seed_to_soil_map[1];
-    let range_length = seed_to_soil_map[2];
+            // Print values from the current line
+            println!(
+                "Map {}: Line {}: Destination Start: {}, Source Start: {}, Range Length: {}",
+                index + 1,
+                line_index + 1,
+                destination_start,
+                source_start,
+                range_length
+            );
 
-    // Print values from the first line of the seed-to-soil map
-    println!(
-        "Destination Start: {}, Source Start: {}, Range Length: {}",
-        destination_start,
-        source_start,
-        range_length
-    );
-
-    // Logic to map the seed numbers through the chain
-    // ...
+            // Additional logic to map the seed numbers through the chain
+            // ...
+        }
+    }
 }
