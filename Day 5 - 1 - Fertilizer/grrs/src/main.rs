@@ -82,7 +82,14 @@ fn main() {
                 range_length
             );
             // Additional logic to map the seed numbers through the chain
-            // ...
+            //Starting at the first line of the map
+            //add RL to SRS and check if SN falls into the range (SRS - STS + RL)
+            //if true
+            //Find the distance between the SRS and the SN
+            //Add above value to the DS to find the SN for the next map
+            //go straight to the next map
+            //if false
+            //go to next line in map
         }
     }
 }
