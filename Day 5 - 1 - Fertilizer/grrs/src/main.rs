@@ -50,9 +50,21 @@ fn main() {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
+    //parse the seed numbers and put them in a vector
+    let first_line: Option<&str> = params_string.lines().next();
+    let mut seed_numbers: Vec<&str> = Vec::new();
 
-    // Print the file content for debugging
-    println!("{}", params_string);
+    if let Some(line) = first_line {
+        let parts: Vec<&str> = line.split(":").collect();
+        // Now you can use the parts vector for further processing
+        // ...
+        seed_numbers = parts[1].split_whitespace().collect::<Vec<&str>>();
+    } else {
+        // Handle the case where the string is empty
+        // ...
+    }
+
+    println!("Seed Numbers: {:?}", seed_numbers);
 
     // Parse the input into a vector of 2D arrays
     let maps = parse_input(&params_string);
