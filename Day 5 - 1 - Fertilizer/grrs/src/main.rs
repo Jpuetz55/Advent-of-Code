@@ -1,135 +1,88 @@
-// ---------------------------------------------------------------- Day 5-1, Fertilizer ----------------------------------------------------------------
-
-/* TYou take the boat and find the gardener right where you were told he would be: managing a giant "garden" that looks more to you like a farm.
-
-"A water source? Island Island is the water source!" You point out that Snow Island isn't receiving any water.
-
-"Oh, we had to stop the water because we ran out of sand to filter it with! Can't make snow with dirty water. Don't worry, I'm sure we'll get more sand soon; we only turned off the water a few days... weeks... oh no." His face sinks into a look of horrified realization.
-
-"I've been so busy making sure everyone here has food that I completely forgot to check why we stopped getting more sand! There's a ferry leaving soon that is headed over in that direction - it's much faster than your boat. Could you please go check it out?"
-
-You barely have time to agree to this request when he brings up another. "While you wait for the ferry, maybe you can help us with our food production problem. The latest Island Island Almanac just arrived and we're having trouble making sense of it."
-
-The almanac (your puzzle input) lists all of the seeds that need to be planted. It also lists what type of soil to use with each kind of seed, what type of fertilizer to use with each kind of soil, what type of water to use with each kind of fertilizer, and so on. Every type of seed, soil, fertilizer and so on is identified with a number, but numbers are reused by each category - that is, soil 123 and fertilizer 123 aren't necessarily related to each other.
-
-For example:
-
-seeds: 79 14 55 13
-
-seed-to-soil map:
-50 98 2
-52 50 48
-
-soil-to-fertilizer map:
-0 15 37
-37 52 2
-39 0 15
-
-fertilizer-to-water map:
-49 53 8
-0 11 42
-42 0 7
-57 7 4
-
-water-to-light map:
-88 18 7
-18 25 70
-
-light-to-temperature map:
-45 77 23
-81 45 19
-68 64 13
-
-temperature-to-humidity map:
-0 69 1
-1 0 69
-
-humidity-to-location map:
-60 56 37
-56 93 4
-The almanac starts by listing which seeds need to be planted: seeds 79, 14, 55, and 13.
-
-The rest of the almanac contains a list of maps which describe how to convert numbers from a source category into numbers in a destination category. That is, the section that starts with seed-to-soil map: describes how to convert a seed number (the source) to a soil number (the destination). This lets the gardener and his team know which soil to use with which seeds, which water to use with which fertilizer, and so on.
-
-Rather than list every source number and its corresponding destination number one by one, the maps describe entire ranges of numbers that can be converted. Each line within a map contains three numbers: the destination range start, the source range start, and the range length.
-
-Consider again the example seed-to-soil map:
-
-50 98 2
-52 50 48
-The first line has a destination range start of 50, a source range start of 98, and a range length of 2. This line means that the source range starts at 98 and contains two values: 98 and 99. The destination range is the same length, but it starts at 50, so its two values are 50 and 51. With this information, you know that seed number 98 corresponds to soil number 50 and that seed number 99 corresponds to soil number 51.
-
-The second line means that the source range starts at 50 and contains 48 values: 50, 51, ..., 96, 97. This corresponds to a destination range starting at 52 and also containing 48 values: 52, 53, ..., 98, 99. So, seed number 53 corresponds to soil number 55.
-
-Any source numbers that aren't mapped correspond to the same destination number. So, seed number 10 corresponds to soil number 10.
-
-So, the entire list of seed numbers and their corresponding soil numbers looks like this:
-
-seed  soil
-0     0
-1     1
-...   ...
-48    48
-49    49
-50    52
-51    53
-...   ...
-96    98
-97    99
-98    50
-99    51
-With this map, you can look up the soil number required for each initial seed number:
-
-Seed number 79 corresponds to soil number 81.
-Seed number 14 corresponds to soil number 14.
-Seed number 55 corresponds to soil number 57.
-Seed number 13 corresponds to soil number 13.
-The gardener and his team want to get started as soon as possible, so they'd like to know the closest location that needs a seed. Using these maps, find the lowest location number that corresponds to any of the initial seeds. To do this, you'll need to convert each seed number through other categories until you can find its corresponding location number. In this example, the corresponding types are:
-
-Seed 79, soil 81, fertilizer 81, water 81, light 74, temperature 78, humidity 78, location 82.
-Seed 14, soil 14, fertilizer 53, water 49, light 42, temperature 42, humidity 43, location 43.
-Seed 55, soil 57, fertilizer 57, water 53, light 46, temperature 82, humidity 82, location 86.
-Seed 13, soil 13, fertilizer 52, water 41, light 34, temperature 34, humidity 35, location 35.
-So, the lowest location number in this example is 35.
-
-What is the lowest location number that corresponds to any of the initial seed numbers? */
-
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
-
+// Function to parse a single map and return a 2D array
+fn parse_map(map_str: &str) -> Vec<usize> {
+    map_str
+        .split_whitespace()
+        .map(|num_str| num_str.parse().unwrap())
+        .collect()
+}
+// Function to parse the entire input and return a vector of 2D arrays
+fn parse_input(input: &str) -> Vec<Vec<usize>> {
+    let mut maps = Vec::new();
+    let input_to_vector: Vec<&str> = input.lines().collect();
+    let mut current_map: Vec<usize> = Vec::new();
+    for line in input_to_vector {
+        if !line.is_empty() && line.chars().nth(0).unwrap().is_digit(10) {
+            // Parse the line and add to the current map
+            current_map.extend(parse_map(line));
+        } else if line.is_empty() && !current_map.is_empty() {
+            // Add the current map to the vector and clear it
+            maps.push(current_map.clone());
+            current_map.clear();
+        }
+    }
+    // Add the last map if it's not empty
+    if !current_map.is_empty() {
+        maps.push(current_map);
+    }
+    maps
+}
 fn main() {
-    //Read parameters from a file
+    // Read parameters from a file
     let path = Path::new("./params.txt");
     let display = path.display();
     let mut params_file = match File::open(&path) {
         Err(why) => panic!("couldn't open {}: {}", display, why),
         Ok(file) => file,
     };
-
     // Read the file content into a string
     let mut params_string = String::new();
     match params_file.read_to_string(&mut params_string) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
+    //parse the seed numbers and put them in a vector
+    let first_line: Option<&str> = params_string.lines().next();
+    let mut seed_numbers: Vec<&str> = Vec::new();
 
-    // Split the file content into lines
-    let lines: Vec<&str> = params_string.lines().collect();
-
-    //will figure out how to prep the string after implementing algorithm
+    // Print the file content for debugging
     println!("{}", params_string);
-
-    //read seed numbers into a vector
-     let mut seeds: Vec<> = Vec::new();
-    for (index, &card) in lines.iter().enumerate() {
-        cards.push(Card {
-            value: card.to_string(),
-            index,
-        });
+    if let Some(line) = first_line {
+        let parts: Vec<&str> = line.split(":").collect();
+        // Now you can use the parts vector for further processing
+        // ...
+        seed_numbers = parts[1].split_whitespace().collect::<Vec<&str>>();
+    } else {
+        // Handle the case where the string is empty
+        // ...
     }
-    //read maps into a 3D vector
 
-    //logic to map the seed numbers through the chain
+    println!("Seed Numbers: {:?}", seed_numbers);
 
+    // Parse the input into a vector of 2D arrays
+    let maps = parse_input(&params_string);
+    // Iterate through all maps and print their information
+    for (index, map) in maps.iter().enumerate() {
+        // Iterate through lines within the current map
+        for (line_index, line_values) in map.iter().enumerate() {
+            // Access individual values in the line without dereferencing
+            let destination_start = *line_values;
+            // For the next two lines, we'll need to adjust depending on the length of each line
+            let source_start = *line_values; // Example: Assuming the line has at least 2 values
+            let range_length = *line_values; // Example: Assuming the line has at least 3 values
+            // Print values from the current line
+            println!(
+                "Map {}: Line {}: Destination Start: {}, Source Start: {}, Range Length: {}",
+                index + 1,
+                line_index + 1,
+                destination_start,
+                source_start,
+                range_length
+            );
+            // Additional logic to map the seed numbers through the chain
+            // ...
+        }
+    }
 }
