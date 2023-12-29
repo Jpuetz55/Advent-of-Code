@@ -99,7 +99,7 @@ use std::io::prelude::*;
 use std::path::Path;
 
 fn main() {
-    //Read scratchcards parameters from a file
+    //Read parameters from a file
     let path = Path::new("./params.txt");
     let display = path.display();
     let mut params_file = match File::open(&path) {
@@ -114,7 +114,12 @@ fn main() {
         Ok(_) => {}
     }
 
+    //will figure out how to prep the string after implementing algorithm
     println!("{}", params_string);
 
+    //read seed numbers into a vector
+    //read maps into a 3D vector
+
+    //logic to map the seed numbers through the chain
     
 }
