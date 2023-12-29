@@ -81,9 +81,10 @@ fn main() {
                 source_start,
                 range_length
             );
+            //RL = range_length, SN = seed-number, SS = source_start, DS = destination_start
             // Additional logic to map the seed numbers through the chain
             //Starting at the first line of the map
-            //add RL to SRS and check if SN falls into the range (SRS - STS + RL)
+            //add RL to SS and check if SN falls into the range (SS to SS + RL)
             //if true
             //Find the distance between the SRS and the SN
             //Add above value to the DS to find the SN for the next map
