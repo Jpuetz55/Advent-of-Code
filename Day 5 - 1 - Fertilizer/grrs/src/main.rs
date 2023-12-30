@@ -47,17 +47,13 @@ fn main() {
     let first_line: Option<&str> = params_string.lines().next();
     let mut seed_numbers: Vec<&str> = Vec::new();
 
-    // Print the file content for debugging
-    println!("{}", params_string);
-    if let Some(line) = first_line {
-        let parts: Vec<&str> = line.split(":").collect();
-        // Now you can use the parts vector for further processing
-        // ...
-        seed_numbers = parts[1].split_whitespace().collect::<Vec<&str>>();
-    } else {
-        // Handle the case where the string is empty
-        // ...
-    }
+    let parts: Vec<&str> = first_line.unwrap().split(":").collect();
+    // Now you can use the parts vector for further processing
+    // ...
+    let seed_numbers = parts[1]
+        .split_whitespace()
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
 
     println!("Seed Numbers: {:?}", seed_numbers);
 
@@ -81,16 +77,34 @@ fn main() {
                 source_start,
                 range_length
             );
-            //RL = range_length, SN = seed-number, SS = source_start, DS = destination_start
-            // Additional logic to map the seed numbers through the chain
-            //Starting at the first line of the map
-            //add RL to SS and check if SN falls into the range (SS to SS + RL)
-            //if true
-            //Find the distance between the SRS and the SN
-            //Add above value to the DS to find the SN for the next map
-            //go straight to the next map
-            //if false
-            //go to next line in map
+            // Starting at the first line of the map
+            // Iterate through the next maps
+            //need to create a loop for the lines inside of each map
+            
+            //need a mut variable to store the initial seed number and have it
+            //update with the value derived from each iteration through a map
+            for seed in seed_numbers {
+                for (index, map) in maps.iter().enumerate() {
+                    // Calculate the seed range start and end in the current map
+                    // Access individual values in the line without dereferencing
+                    let destination_start = *line_values;
+                    // For the next two lines, we'll need to adjust depending on the length of each line
+                    let source_start = *line_values; // Example: Assuming the line has at least 2 values
+                    let range_length = *line_values; // Example: Assuming the line has at least 3 values
+
+                    // Check if the destination seed falls within the range
+                    if seed >= source_start && seed <= source_start + range_length {
+                        // Calculate the distance between the source seed in the current map and the destination seed
+                        let distance = seed - source_start;             
+
+                            // Go straight to the next map
+                            break;
+                        }
+                    }
+
+                    // If the destination seed is not found in the current map, go to the next line in the map
+                }
+            }
         }
     }
 }
