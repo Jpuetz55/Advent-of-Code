@@ -87,34 +87,41 @@ fn main() {
                 source_start,
                 range_length
             );
+        }
+    }
 
-            // Starting at the first line of the map
-            // Iterate through the next maps
-            // Need to create a loop for the lines inside each map
+    // Starting at the first line of the map
+    // Iterate through the next maps
+    // Need to create a loop for the lines inside each map
 
-            // Need a mutable variable to store the initial seed number
-            // and have it update with the value derived from each iteration through a map
-            for seed in seed_numbers.iter() {
-                for (index, map) in maps.iter().enumerate() {
-                    // Calculate the seed range start and end in the current map
-                    // Access individual values in the line without dereferencing
-                    let destination_start = *line_values;
-                    // For the next two lines, we'll need to adjust depending on the length of each line
-                    let source_start = *line_values; // Example: Assuming the line has at least 2 values
-                    let range_length = *line_values; // Example: Assuming the line has at least 3 values
-
-                    // Check if the destination seed falls within the range
-                    if seed >= &source_start && seed <= &(source_start + range_length) {
-                        // Calculate the distance between the source seed in the current map and the destination seed
-                        let distance = seed - source_start;
-
-                        // Go straight to the next map
-                        break;
-                    }
-
-                    // If the destination seed is not found in the current map, go to the next line in the map
-                }
+    // Need a mutable variable to store the initial seed number
+    // and have it update with the value derived from each iteration through a map
+    for seed in seed_numbers.iter() {
+        //assign seed before map loop starts. This will be modified in the loop as the
+        //map loop progresses and reset back to the seed value when a new seed loop starts
+        let mut seed = seed;
+        for (index, map) in maps.iter().enumerate() {
+            //loop for maps in map vector
+            //loop for lines in a map
+            for (line_index, line_values) in map.iter().enumerate() {
+                // Calculate the seed range start and end in the current map
+                // Access individual values in the line without dereferencing
+                let destination_start = *line_values;
+                // For the next two lines, we'll need to adjust depending on the length of each line
+                let source_start = *line_values; // Example: Assuming the line has at least 2 values
+                let range_length = *line_values; // Example: Assuming the line has at least 3 values
             }
+
+            // Check if the destination seed falls within the range
+            if seed >= &source_start && seed <= &(source_start + range_length) {
+                // Calculate the distance between the source seed in the current map and the destination seed
+                let distance = seed - source_start;
+
+                // Go straight to the next map
+                break;
+            }
+
+            // If the destination seed is not found in the current map, go to the next line in the map
         }
     }
 }
