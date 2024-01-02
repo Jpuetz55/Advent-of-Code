@@ -54,6 +54,7 @@ fn main() {
     // Parse the seed numbers and put them in a vector
     let first_line: Option<&str> = params_string.lines().next();
     let mut seed_numbers: Vec<usize> = Vec::new();
+    let mut location_numbers: Vec<usize> = Vec::new();
 
     if let Some(line) = first_line {
         let parts: Vec<&str> = line.split(":").collect();
@@ -109,7 +110,7 @@ fn main() {
                             // Calculate the distance between the source seed in the current map and the destination seed
                             let distance = loop_seed - source_start;
                             loop_seed = destination_start + distance;
-
+                            location_numbers.push(loop_seed);
                             // Print debugging information
                             println!(
                                 "Updated Loop Seed: {} (Map: {}, Line: {})",
@@ -127,5 +128,10 @@ fn main() {
                 }
             }
         }
+    }
+
+    // Get the lowest value
+    if let Some(min_value) = location_numbers.iter().min() {
+        println!("Minimum value: {}", min_value);
     }
 }
