@@ -132,7 +132,7 @@ fn main() {
         }
     }
 
-    // Get the lowest value
+    // Get the lowest value from location_numbers vec
     if let Some(min_value) = location_numbers.iter().min() {
         println!("Minimum value: {}", min_value);
     }
