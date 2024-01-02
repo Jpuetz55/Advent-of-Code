@@ -110,7 +110,6 @@ fn main() {
                             // Calculate the distance between the source seed in the current map and the destination seed
                             let distance = loop_seed - source_start;
                             loop_seed = destination_start + distance;
-                            location_numbers.push(loop_seed);
                             // Print debugging information
                             println!(
                                 "Updated Loop Seed: {} (Map: {}, Line: {})",
@@ -126,6 +125,9 @@ fn main() {
 
                     // If the destination seed is not found in the current map, go to the next line in the map
                 }
+                //push the loop_seed at the end of the loop. this is the location number for the
+                //intial seed value
+                location_numbers.push(loop_seed);
             }
         }
     }
