@@ -134,7 +134,7 @@ fn main() {
                 let mut seed_initial = seed_range.0;
                 let mut seed = seed_range.0;
                 let mut check_overlap: i32;
-                let seed_range_length = seed_range.1;
+                let mut seed_range_length = seed_range.1;
                 let mut qualified_overlaps: Vec<usize> = Vec::new();
                 while is_last_seed == false {
                     for (map_index, map) in maps.iter().enumerate() {
@@ -174,8 +174,9 @@ fn main() {
                     location_numbers.push(seed);
                     if qualified_overlaps.len() > 0 {
                         let min_overlap_value = qualified_overlaps.iter().min().unwrap();
-                        seed = seed_initial + *min_overlap_value;
+                        seed = seed_initial + min_overlap_value;
                         seed_initial = seed;
+                        seed_range_length = seed_range_length - *min_overlap_value;
                         qualified_overlaps.clear();
                     } else {
                         is_last_seed = true;
