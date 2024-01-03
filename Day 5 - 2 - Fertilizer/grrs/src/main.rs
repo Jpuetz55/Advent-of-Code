@@ -85,15 +85,21 @@ fn main() {
     //remaining for the mapping
 
     //start
-    //go through a full iteration, finding this value for each map and
-    //if the range of possible values exceeds the amount remaining on the mapping
-    //log that number in an array
+
+    //go through a full iteration,
+    //find seed_range_length - range_length for each map and
+    //if the range of possible seed values exceeds the amount
+    //remaining on the mapping_range,
+    //log that number in an array.
     //continue through the loop until the end to check for multiple qualified values
-    //choose the lowest of the values and extrapolate the location numbers from there
-    //to the point where the source number mapping changes
-    //set loop to initial seed value in the seed number range where that mapping changes
-    //go back to start
-    //
+    //if qualified_values.len() > 0
+
+    //choose the lowest of the values and log the initial value for that seed before the change
+
+    //calculate what the seed will be after the next change
+    //go back to start with the new seed number after the mapping changes
+    //else
+    //current_seed value is the last lowest_location_number candidate for current seed_range
 
     // Parse the input into a vector of 2D arrays
     let maps = parse_input(&params_string);
