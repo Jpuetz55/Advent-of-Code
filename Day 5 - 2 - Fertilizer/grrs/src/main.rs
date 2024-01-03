@@ -72,6 +72,29 @@ fn main() {
 
     println!("Seed Ranges: {:?}", seed_ranges);
 
+    //need to change approach to this problem as brute force takes too long
+    //need to figure out if the remaining range on the map for the source number
+    //exceeds the range of seeds to be checked from that initial seed
+    //if no, we can interpolate all the future seed values in that seed range
+    //instead of moving through the map individually
+    //if yes, We need to evaluate at what point the seed number exceeds the range for the intial line in the map
+    // and then do another run to figure out where that one lands
+
+    //do one complete run with the first seed number in the range.
+    //at each map, determine if the range of seeds being checked will exceed the range
+    //remaining for the mapping
+
+    //start
+    //go through a full iteration, finding this value for each map and
+    //if the range of possible values exceeds the amount remaining on the mapping
+    //log that number in an array
+    //continue through the loop until the end to check for multiple qualified values
+    //choose the lowest of the values and extrapolate the location numbers from there
+    //to the point where the source number mapping changes
+    //set loop to initial seed value in the seed number range where that mapping changes
+    //go back to start
+    //
+
     // Parse the input into a vector of 2D arrays
     let maps = parse_input(&params_string);
 
@@ -136,7 +159,7 @@ fn main() {
                     // push the loop_seed at the end of the loop. this is the location number for the
                     // intial seed value
                     location_numbers.push(loop_seed);
-                    println!("Pushed {}", loop_seed);
+                    println!("Pushed {} ----\t\t\t\t\t\t\t\t {}", loop_seed, seed_range.0);
                 }
             }
         }
