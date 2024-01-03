@@ -89,7 +89,7 @@ fn main() {
     //go through a full iteration,
     //find seed_range_length - range_length for each map and
     //if the range of possible seed values exceeds the amount
-    //remaining on the mapping_range,
+    //remaining on the mapping_range, I.E seed_range_length - range_length > 0
     //log that number in an array.
     //continue through the loop until the end to check for multiple qualified values
     //if qualified_values.len() > 0
