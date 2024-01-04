@@ -106,84 +106,76 @@ fn main() {
 
     // Iterate through all maps and print their information
     for (index, map) in maps.iter().enumerate() {
-        // Iterate through lines within the current map
-        for (line_index, line_values) in map.iter().enumerate() {
-            // Access individual values in the line without dereferencing
-            let destination_start = line_values.0;
-            let source_start = line_values.1;
-            let range_length = line_values.2;
+        println!("Processing Map {}", index + 1);
 
-            // Print values from the current line
-            // println!(
-            //     "Map {}: Line {}: Destination Start: {}, Source Start: {}, Range Length: {}",
-            //     index + 1,
-            //     line_index + 1,
-            //     destination_start,
-            //     source_start,
-            //     range_length
-            // );
+        // Starting at the first line of the map
+        // Iterate through the next maps
+        // Need to create a loop for the lines inside each map
 
-            // Starting at the first line of the map
-            // Iterate through the next maps
-            // Need to create a loop for the lines inside each map
+        // Need a mutable variable to store the initial seed number
+        // and have it update with the value derived from each iteration through a map
+        for seed_range in seed_ranges.iter() {
+            println!("Seed Range: ({}, {})", seed_range.0, seed_range.1);
 
-            // Need a mutable variable to store the initial seed number
-            // and have it update with the value derived from each iteration through a map
-            for seed_range in seed_ranges.iter() {
-                let mut is_last_seed = false;
-                let mut seed_initial = seed_range.0;
-                let mut seed = seed_range.0;
-                let mut check_overlap: i32;
-                let mut seed_range_length = seed_range.1;
-                let mut qualified_overlaps: Vec<usize> = Vec::new();
-                while is_last_seed == false {
-                    for (map_index, map) in maps.iter().enumerate() {
-                        for (line_index, line_values) in map.iter().enumerate() {
-                            // Calculate the seed range start and end in the current map
-                            // Access individual values in the line without dereferencing
-                            let destination_start = line_values.0;
-                            let source_start = line_values.1;
-                            let range_length = line_values.2;
+            let mut is_last_seed = false;
+            let mut seed_initial = seed_range.0;
+            let mut seed = seed_range.0;
+            let mut check_overlap: i32;
+            let mut seed_range_length = seed_range.1;
+            let mut qualified_overlaps: Vec<usize> = Vec::new();
 
-                            // Check if the seed range intersects with the source range
-                            if seed >= source_start && seed <= source_start + range_length {
-                                let distance = seed - source_start;
-                                seed = destination_start + distance;
-                                // Print debugging information
-                                println!(
-                                    "Updated Loop Seed: {} (Map: {}, Line: {})",
-                                    seed,
-                                    map_index + 1,
-                                    line_index + 1
-                                );
-                                check_overlap = (seed_range_length as i32) - (range_length as i32);
-                                if check_overlap > 0 {
-                                    qualified_overlaps.push(check_overlap as usize);
-                                }
+            while !is_last_seed {
+                println!("  Current Seed: {}", seed);
 
-                                // Go straight to the next map
-                                break;
+                seed = seed_initial; //set seed to the initial value for the seed range
+
+                for (map_index, map) in maps.iter().enumerate() {
+                    for (line_index, line_values) in map.iter().enumerate() {
+                        // Calculate the seed range start and end in the current map
+                        // Access individual values in the line without dereferencing
+                        let destination_start = line_values.0;
+                        let source_start = line_values.1;
+                        let range_length = line_values.2;
+
+                        // Check if the seed range intersects with the source range
+                        if seed >= source_start && seed <= source_start + range_length {
+                            let distance = seed - source_start;
+                            seed = destination_start + distance;
+
+                            // Print debugging information
+                            println!(
+                                "  Updated Loop Seed: {} (Map: {}, Line: {})",
+                                seed,
+                                map_index + 1,
+                                line_index + 1
+                            );
+
+                            check_overlap = (seed_range_length as i32) - (range_length as i32);
+                            if check_overlap > 0 {
+                                qualified_overlaps.push(check_overlap as usize);
                             }
+
+                            // Go straight to the next map
+                            break;
                         }
-
-                        // If the seed range is not found in the current map, go to the next line in the map
                     }
 
-                    // push the loop_seed at the end of the loop. this is the location number for the
-                    // intial seed value
-                    location_numbers.push(seed);
-                    if qualified_overlaps.len() > 0 {
-                        let min_overlap_value = qualified_overlaps.iter().min().unwrap();
-                        seed = seed_initial + min_overlap_value;
-                        seed_initial = seed;
-                        seed_range_length = seed_range_length - *min_overlap_value;
-                        qualified_overlaps.clear();
-                    } else {
-                        is_last_seed = true;
-                        // Add your else logic here if needed
-                    }
-                    println!("Pushed {} ----\t\t\t\t\t\t\t\t {}", seed, seed_range.0);
+                    // If the seed range is not found in the current map, go to the next line in the map
                 }
+
+                // push the seed at the end of the loop. this is the location number for the
+                // initial seed value
+                location_numbers.push(seed);
+                if qualified_overlaps.len() > 0 {
+                    let max_overlap_value = qualified_overlaps.iter().max().unwrap();
+                    seed_initial = seed_initial + max_overlap_value;
+                    seed_range_length = seed_range_length - *max_overlap_value;
+                    qualified_overlaps.clear();
+                } else {
+                    is_last_seed = true;
+                    // Add your else logic here if needed
+                }
+                println!("  Pushed {} ----\t\t\t {}", seed, seed_range.0);
             }
         }
     }
