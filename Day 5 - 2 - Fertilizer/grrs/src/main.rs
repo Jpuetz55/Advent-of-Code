@@ -156,6 +156,7 @@ fn main() {
                 //seed_range_length = it's length - minus the difference between it's length and the max overlap value
                 //will correctly adjust the seed_range_length for the next iteration
                 //next seed index will use the same value to calculate the next seed
+                //bug has something to do with when range_length = distance, I think
                 seed_initial = seed_initial + *overlaps_to_eor_diff + 1;
                 println!("Seed Initial: {}", seed_initial);
                 seed_range_length = seed_range_length - *overlaps_to_eor_diff;
