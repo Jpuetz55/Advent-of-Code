@@ -126,7 +126,7 @@ fn main() {
 
                         check_overlap = (seed_range_length as i32) - (range_length as i32);
                         if check_overlap > 0 {
-                            overlaps_to_eor_diffs.push(check_overlap as usize);
+                            overlaps_to_eor_diffs.push(range_length as usize);
                             println!("Qualified Overlap: {}", check_overlap);
                         }
 
