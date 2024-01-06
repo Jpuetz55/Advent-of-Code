@@ -128,6 +128,7 @@ fn main() {
                 //push the loop_seed at the end of the loop. this is the location number for the
                 //intial seed value
                 location_numbers.push(loop_seed);
+                println!("Location Numbers: {:?}", loop_seed);
             }
         }
     }
