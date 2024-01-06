@@ -93,7 +93,7 @@ fn main() {
         let mut seed = seed_range.0;
         let mut check_overlap: i32;
         let mut seed_range_length = seed_range.1;
-        let mut ovelaps_to_eor_diff: Vec<usize> = Vec::new();
+        let mut overlaps_to_eor_diffs: Vec<usize> = Vec::new();
 
         while !is_last_seed {
             seed = seed_initial;
@@ -126,7 +126,7 @@ fn main() {
 
                         check_overlap = (seed_range_length as i32) - (range_length as i32);
                         if check_overlap > 0 {
-                            ovelaps_to_eor_diff.push(check_overlap as usize);
+                            overlaps_to_eor_diffs.push(check_overlap as usize);
                             println!("Qualified Overlap: {}", check_overlap);
                         }
 
@@ -142,7 +142,7 @@ fn main() {
             // initial seed value
             location_numbers.push(seed);
             println!("  Pushed {} ----\n {}", seed, seed_range.0);
-            if ovelaps_to_eor_diff.len() > 0 {
+            if overlaps_to_eor_diffs.len() > 0 {
                 //choose maximum value as this indicates the next change in mapping is closest on this overlap.
                 //figured it out, the max_overlap value doesn't tell us which seed is updated first because
                 //the range values for each map are variable in size
@@ -150,20 +150,20 @@ fn main() {
                 //the index value on. not necessarily the max_overlap value
                 //more objective way to determine the index shift
                 //need to figure out exactly how far from the end of the range the current_seed is
-                //ovelaps_to_eor_diff should be the distance from the EOR for current seed
-                let max_overlap_value = ovelaps_to_eor_diff.iter().max().unwrap();
-                println!("overlaps_to_eor_diff: {}", max_overlap_value);
+                //overlaps_to_eor_diffs should be the distance from the EOR for current seed
+                let overlaps_to_eor_diff = overlaps_to_eor_diffs.iter().min().unwrap();
+                println!("overlaps_to_eor_diff: {}", overlaps_to_eor_diff);
                 //seed_range_length = it's length - minus the difference between it's length and the max overlap value
                 //will correctly adjust the seed_range_length for the next iteration
                 //next seed index will use the same value to calculate the next seed
-                let calc_next_seed_range_index = seed_range_length - *max_overlap_value + 1;
+                let calc_next_seed_range_index = seed_range_length - *overlaps_to_eor_diffs + 1;
                 println!("Calc Next Seed Range Index: {:?}", calc_next_seed_range_index);
                 seed_initial = seed_initial + calc_next_seed_range_index;
                 println!("Seed Initial: {}", seed_initial);
-                seed_range_length = *max_overlap_value;
+                seed_range_length = *overlaps_to_eor_diff;
 
                 println!("Seed Range Length: {}", seed_range_length);
-                ovelaps_to_eor_diff.clear();
+                overlaps_to_eor_diffs.clear();
             } else {
                 is_last_seed = true;
             }
