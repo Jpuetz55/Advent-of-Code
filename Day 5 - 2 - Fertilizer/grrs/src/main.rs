@@ -160,7 +160,7 @@ fn main() {
                 println!("Calc Next Seed Range Index: {:?}", calc_next_seed_range_index);
                 seed_initial = seed_initial + calc_next_seed_range_index;
                 println!("Seed Initial: {}", seed_initial);
-                seed_range_length = *overlaps_to_eor_diff;
+                seed_range_length = seed_range_length - *overlaps_to_eor_diff;
 
                 println!("Seed Range Length: {}", seed_range_length);
                 overlaps_to_eor_diffs.clear();
