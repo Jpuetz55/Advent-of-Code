@@ -58,6 +58,7 @@ Find the rank of every hand in your set. What are the total winnings?
 
 */
 
+use core::panic;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -96,6 +97,7 @@ fn hand_to_hand_rank(hand: [usize; 13]) -> usize {
     // Calculate the hand score
 
     match matches {
+        [0, 0, 0, 0] => 0, // High card
         [1, 0, 0, 0] => 1, // One pair
         [2, 0, 0, 0] => 2, // Two pair
         [0, 1, 0, 0] => 3, // Three of a kind
@@ -103,8 +105,7 @@ fn hand_to_hand_rank(hand: [usize; 13]) -> usize {
         [0, 0, 1, 0] => 5, // Four of a kind
         [0, 0, 0, 1] => 6, // Five of a kind
 
-        [0, 0, 0, 0] => 0,
-        _ => 0,
+        _ => panic!("Invalid hand"),
     }
 }
 
@@ -205,7 +206,6 @@ fn main() {
     let mut hands = parse_input(&params_string);
 
     hands.sort_by_key(|entry| entry.hand.1);
-    hands.reverse();
 
     println!("{:?}", hands);
 
