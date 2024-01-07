@@ -59,17 +59,128 @@ Find the rank of every hand in your set. What are the total winnings?
 */
 
 use std::fs::File;
-use std::io::{ self, Read };
+use std::io::Read;
 use std::path::Path;
 
-// Function to parse the entire input and return a vector of tuples for time and distance
-fn parse_input(input: &str) -> Vec<(&str, usize)> {
-    let mut hands: Vec<(&str, usize)> = Vec::new();
-    //parse input into a vector of tuples. (&str, usize)
-    for input in input.lines() {
-        let mut s = input.split_whitespace();
-        let hand: (&str, usize) = (s.next().unwrap(), s.next().unwrap().parse::<usize>().unwrap());
-        hands.push(hand);
+// Define a constant array for card rankings
+const CARD_RANKINGS: [char; 13] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+
+// Function to convert a card to its corresponding rank
+fn card_to_rank(card: char) -> usize {
+    CARD_RANKINGS.iter()
+        .position(|&c| c == card)
+        .unwrap() + 1
+}
+
+//need to convert each hand_string into a ([usize; 13], usize) tuple where the usize array is the
+//card counts and the usize is the hand rank
+//after getting hands in this representation, need to parse usize array into a usize hank rank and
+//store these values for when we determine overall ranks
+//we can determine overall ranks by sorting
+// Function to calculate the hand score
+fn hand_to_hand_rank(hand: [usize; 13]) -> usize {
+    //count how many numbers are equal to 2, 3, 4, and 5 in hand array
+    let mut matches = [0; 4];
+
+    for &bucket in hand.iter() {
+        if bucket == 2 {
+            matches[0] += 1;
+        } else if bucket == 3 {
+            matches[1] += 1;
+        } else if bucket == 4 {
+            matches[2] += 1;
+        } else if bucket == 5 {
+            matches[3] += 1;
+        }
+    }
+    // Calculate the hand score
+
+    match matches {
+        [1, 0, 0, 0] => 1, // One pair
+        [2, 0, 0, 0] => 2, // Two pair
+        [0, 1, 0, 0] => 3, // Three of a kind
+        [1, 1, 0, 0] => 4, // Full house
+        [0, 0, 1, 0] => 5, // Four of a kind
+        [0, 0, 0, 1] => 6, // Five of a kind
+
+        [0, 0, 0, 0] => 0,
+        _ => 0,
+    }
+}
+
+// Struct to represent a hand entry
+#[derive(Debug)]
+struct HandEntry {
+    //need to convert each hand_string into a ([usize; 13], usize) tuple where the usize array is the
+    //card counts and the usize is the hand rank
+    hand: ([usize; 13], usize),
+    bid: usize,
+    overall_rank: usize,
+    total_score: usize,
+}
+
+// Function to parse input into a vector of HandEntry
+fn parse_input(input: &str) -> Vec<HandEntry> {
+    let mut hands: Vec<HandEntry> = Vec::new();
+
+    // Parse input into a vector of HandEntry
+    for line in input.lines() {
+        let mut iter = line.split_whitespace();
+        let hand_str = iter.next().unwrap();
+        let bid = iter.next().unwrap().parse::<usize>().unwrap();
+        let mut hand_array: [usize; 13] = [0; 13];
+
+        hand_str.chars().for_each(|c| {
+            match c {
+                '2' => {
+                    hand_array[0] += 1;
+                }
+                '3' => {
+                    hand_array[1] += 1;
+                }
+                '4' => {
+                    hand_array[2] += 1;
+                }
+                '5' => {
+                    hand_array[3] += 1;
+                }
+                '6' => {
+                    hand_array[4] += 1;
+                }
+                '7' => {
+                    hand_array[5] += 1;
+                }
+                '8' => {
+                    hand_array[6] += 1;
+                }
+                '9' => {
+                    hand_array[7] += 1;
+                }
+                'T' => {
+                    hand_array[8] += 1;
+                }
+                'J' => {
+                    hand_array[9] += 1;
+                }
+                'Q' => {
+                    hand_array[10] += 1;
+                }
+                'K' => {
+                    hand_array[11] += 1;
+                }
+                'A' => {
+                    hand_array[12] += 1;
+                }
+                _ => panic!("Invalid card"),
+            }
+        });
+
+        hands.push(HandEntry {
+            hand: (hand_array, hand_to_hand_rank(hand_array)),
+            bid,
+            overall_rank: 0, // Initialize to 0, you can set this later if needed
+            total_score: 0, // Initialize to 0, you can set this later if needed
+        });
     }
     hands
 }
@@ -90,21 +201,33 @@ fn main() {
         Ok(_) => {}
     }
 
-    //println!("Read input string: {:?}", params_string);
+    // Parse the input string to get the vector of HandEntry
+    let mut hands = parse_input(&params_string);
 
-    // Parse the input string to get the vector of tuples for time and distance
+    hands.sort_by_key(|entry| entry.hand.1);
+    hands.reverse();
 
-    //map every char to a power ranking. i.e. 2 = 1, 3 = 2, 4 = 3, 5 = 4, 6 = 5, 7 = 6, 8 = 7, 9 = 8,
-    //                                        T = 9, J = 10, Q = 11, K = 12, A = 13
-    let possible_chars = String::from("23456789TJQKA");
+    println!("{:?}", hands);
 
-    let char_to_rank_vec: Vec<(char, usize)> = possible_chars
-        .chars()
-        .enumerate()
-        .map(|(i, c)| (c, i + 1))
-        .collect();
-    let hands = parse_input(&params_string);
+    // // Sort hands by hand score in descending order
+    // hands.sort_by_key(|entry| entry.hand_score);
+    // hands.reverse();
 
-    println!("char_to_rank_vec: {:?}", char_to_rank_vec);
-    println!("Parsed input: {:?}", hands);
+    // // Set relative rank multiplier based on sorting order
+    // for (i, entry) in hands.iter_mut().enumerate() {
+    //     entry.relative_rank_multiplier = i + 1;
+    //     entry.total_score = entry.bid * entry.relative_rank_multiplier;
+    // }
+
+    // // Print the results
+    // for entry in &hands {
+    //     println!(
+    //         "Hand: {}, Bid: {}, Relative Rank: {}, Hand Score: {}, Total Score: {}",
+    //         entry.hand,
+    //         entry.bid,
+    //         entry.relative_rank_multiplier,
+    //         entry.hand_score,
+    //         entry.total_score
+    //     );
+    // }
 }
