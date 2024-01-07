@@ -127,33 +127,51 @@ fn main() {
         Ok(_) => {}
     }
 
-    // velocity = hold_time
-    //
-    // distance = velocity * (time - velocity)
-    //
-    // can ignore first and last value of time range ( 0 and max ) as both produce 0 distance
-    //
-    // put time values and distance values in tuple vector
-    // make a vector game_vec (time, distance_record, win_count)
-    //
-    // iterate over the range of valid time values (i.e. excluding 0 and time.max())
-    // for each value game_vec
-    // iterate over (0..i, game_vec.0)
-    // in each iteration, calculate ---- distance = velocity * (game_vec.0 - velocity) ---- and check
-    // iteration values:
-    //     velocity = i; //hold_time
-    // roll_time = game_vec.0 - velocity
-    // win_count = 0
-    // distance = velocity * roll_time
-    // if distance > game_vec.1
-    // win_count++
-    // else
-    // go next
-    // game_vec.2 = win_count
-    //
-    // after finding wins for each game
-    //
-    // multiply the 3 win_count values in in the game_vec to get the answer
+    // Function to calculate distance based on velocity and roll time
+    fn calculate_distance(velocity: f64, roll_time: f64) -> f64 {
+        velocity * roll_time
+    }
+
+    fn main() {
+        // Define the maximum time value; replace with your specific value
+        let max_time = 10.0;
+
+        // Generate a vector of valid time values, excluding 0 and max_time
+        let time_values: Vec<f64> = (1..max_time as usize).map(|i| i as f64).collect();
+
+        // Initialize the game vector to store time, distance record, and win count
+        let mut game_vec: Vec<(f64, f64, usize)> = Vec::new();
+
+        // Iterate over the range of valid time values
+        for &t in &time_values {
+            let mut win_count = 0;
+            let mut distance_record = 0.0;
+
+            // Iterate over the range (0..t) to calculate distance and check win conditions
+            for i in 1..t as usize {
+                let velocity = i as f64;
+                let roll_time = t - velocity;
+
+                // Calculate distance based on velocity and roll time
+                let distance = calculate_distance(velocity, roll_time);
+
+                // Check if the calculated distance is greater than the distance record
+                if distance > distance_record {
+                    win_count += 1;
+                }
+            }
+
+            // Store the time, distance record, and win count in game_vec
+            game_vec.push((t, distance_record, win_count));
+        }
+
+        // Calculate the final answer by multiplying all win counts in game_vec
+        let answer: usize = game_vec.iter().map(|&(_, _, win_count)| win_count).product();
+
+        // Print the final answer
+        println!("The answer is: {}", answer);
+    }
+
 
 
 
