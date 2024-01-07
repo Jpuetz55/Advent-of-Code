@@ -32,6 +32,37 @@ Hold the button for 6 milliseconds, causing the boat to travel a total of 6 mill
 Hold the button for 7 milliseconds. That's the entire duration of the race. You never let go of the button. The boat can't move until you let go of the button. Please make sure you let go of the button so the boat gets to move. 0 millimeters.
 Since the current record for this race is 9 millimeters, there are actually 4 different ways you could win: you could hold the button for 2, 3, 4, or 5 milliseconds at the start of the race.
 
+
+
+velocity = hold_time
+
+distance = velocity * (time - velocity)
+
+can ignore first and last value of time range ( 0 and max ) as both produce 0 distance
+
+put time values and distance values in tuple vector
+make a vector game_vec (time, distance_record, win_count)
+
+iterate over the range of valid time values (i.e. excluding 0 and time.max())
+for each value game_vec
+    iterate over (0..i, game_vec.0)
+        in each iteration, calculate ---- distance = velocity * (game_vec.0 - velocity) ---- and check
+            iteration values:
+            velocity = i; //hold_time
+            roll_time = game_vec.0 - velocity
+            win_count = 0
+            distance = velocity * roll_time
+            if distance > game_vec.1
+                win_count++
+            else
+                go next
+   game_vec.2 = win_count
+
+after finding wins for each game
+
+multiply the 3 win_count values in in the game_vec to get the answer
+
+
 In the second race, you could hold the button for at least 4 milliseconds and at most 11 milliseconds and beat the record, a total of 8 different ways to win.
 
 In the third race, you could hold the button for at least 11 milliseconds and no more than 19 milliseconds and still beat the record, a total of 9 ways you could win.
@@ -95,6 +126,35 @@ fn main() {
         Err(why) => panic!("couldn't read {}: {}", display, why),
         Ok(_) => {}
     }
+
+    // velocity = hold_time
+    //
+    // distance = velocity * (time - velocity)
+    //
+    // can ignore first and last value of time range ( 0 and max ) as both produce 0 distance
+    //
+    // put time values and distance values in tuple vector
+    // make a vector game_vec (time, distance_record, win_count)
+    //
+    // iterate over the range of valid time values (i.e. excluding 0 and time.max())
+    // for each value game_vec
+    // iterate over (0..i, game_vec.0)
+    // in each iteration, calculate ---- distance = velocity * (game_vec.0 - velocity) ---- and check
+    // iteration values:
+    //     velocity = i; //hold_time
+    // roll_time = game_vec.0 - velocity
+    // win_count = 0
+    // distance = velocity * roll_time
+    // if distance > game_vec.1
+    // win_count++
+    // else
+    // go next
+    // game_vec.2 = win_count
+    //
+    // after finding wins for each game
+    //
+    // multiply the 3 win_count values in in the game_vec to get the answer
+
 
 
 }
