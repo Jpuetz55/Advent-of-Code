@@ -59,6 +59,7 @@ Find the rank of every hand in your set. What are the total winnings?
 */
 
 use core::panic;
+use std::cmp::Ordering;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
@@ -119,6 +120,29 @@ struct HandEntry {
     overall_rank: usize,
     total_score: usize,
 }
+
+impl Ord for HandEntry {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.hand.1.cmp(&other.hand.1) {
+            Ordering::Equal => self.bid.cmp(&other.bid),
+            other => other, // Reverse the order for hand ranks
+        }
+    }
+}
+
+impl PartialOrd for HandEntry {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for HandEntry {
+    fn eq(&self, other: &Self) -> bool {
+        self.hand == other.hand && self.bid == other.bid
+    }
+}
+
+impl Eq for HandEntry {}
 
 // Function to parse input into a vector of HandEntry
 fn parse_input(input: &str) -> Vec<HandEntry> {
