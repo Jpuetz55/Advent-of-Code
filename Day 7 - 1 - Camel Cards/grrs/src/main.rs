@@ -121,10 +121,119 @@ struct HandEntry {
     total_score: usize,
 }
 
+impl HandEntry {
+    // Function to compare hands based on their ranks
+
+    fn compare_high_card(&self, other: &Self) -> Ordering {
+        for i in 0..13 {
+            if self.hand.0[i] > other.hand.0[i] {
+                return Ordering::Greater;
+            } else if self.hand.0[i] < other.hand.0[i] {
+                return Ordering::Less;
+            }
+        }
+        Ordering::Equal
+    }
+
+    fn compare_one_pair(&self, other: &Self) -> Ordering {
+        let mut self_pair = 0;
+        let mut other_pair = 0;
+        let mut self_high_card = 0;
+        let mut other_high_card = 0;
+        for i in 0..13 {
+            if self.hand.0[i] == 2 {
+                self_pair = i;
+            } else if self.hand.0[i] == 1 {
+                self_high_card = i;
+            }
+            if other.hand.0[i] == 2 {
+                other_pair = i;
+            } else if other.hand.0[i] == 1 {
+                other_high_card = i;
+            }
+        }
+        if self_pair > other_pair {
+            return Ordering::Greater;
+        } else if self_pair < other_pair {
+            return Ordering::Less;
+        } else {
+            if self_high_card > other_high_card {
+                return Ordering::Greater;
+            } else if self_high_card < other_high_card {
+                return Ordering::Less;
+            } else {
+                return Ordering::Equal;
+            }
+        }
+    }
+
+    fn compare_two_pair(&self, other: &Self) -> Ordering {
+        return Ordering::Equal;
+    }
+
+    fn compare_three_of_a_kind(&self, other: &Self) -> Ordering {
+        return Ordering::Equal;
+    }
+
+    fn compare_full_house(&self, other: &Self) -> Ordering {
+        return Ordering::Equal;
+    }
+
+    fn compare_four_of_a_kind(&self, other: &Self) -> Ordering {
+        return Ordering::Equal;
+    }
+
+    fn compare_five_of_a_kind(&self, other: &Self) -> Ordering {
+        return Ordering::Equal;
+    }
+
+    fn compare_ranks(&self, other: &Self) -> Ordering {
+        match self.hand.1 {
+            0 => {
+                self.compare_high_card(other);
+                Ordering::Equal;
+            }
+            1 => {
+                self.compare_one_pair(other);
+                Ordering::Equal;
+            }
+            2 => {
+                self.compare_two_pair(other);
+                Ordering::Equal;
+            }
+            3 => {
+                self.compare_three_of_a_kind(other);
+                Ordering::Equal;
+            }
+            4 => {
+                self.compare_full_house(other);
+                Ordering::Equal;
+            }
+            5 => {
+                self.compare_four_of_a_kind(other);
+                Ordering::Equal;
+            }
+            6 => {
+                self.compare_five_of_a_kind(other);
+                Ordering::Equal;
+            }
+            _ => panic!("Invalid hand"),
+        }
+        for i in 0..13 {
+            if self.hand.0[i] > other.hand.0[i] {
+                return Ordering::Greater;
+            } else if self.hand.0[i] < other.hand.0[i] {
+                return Ordering::Less;
+            }
+        }
+        Ordering::Equal
+    }
+}
+
 impl Ord for HandEntry {
     fn cmp(&self, other: &Self) -> Ordering {
         match self.hand.1.cmp(&other.hand.1) {
-            Ordering::Equal => self.bid.cmp(&other.bid),
+            Ordering::Equal => self.compare_ranks(other),
             other => other, // Reverse the order for hand ranks
         }
     }
