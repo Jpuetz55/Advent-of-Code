@@ -138,7 +138,7 @@ impl PartialOrd for HandEntry {
 
 impl PartialEq for HandEntry {
     fn eq(&self, other: &Self) -> bool {
-        self.hand == other.hand && self.bid == other.bid
+        self.hand.1 == other.hand.1
     }
 }
 
