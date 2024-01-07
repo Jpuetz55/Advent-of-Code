@@ -140,7 +140,7 @@ fn main() {
 
             // push the seed at the end of the loop. this is the location number for the
             // initial seed value
-            location_numbers.push(seed);
+            location_numbers.push(seed - 1);
             println!("  Pushed {} ----\n {}", seed, seed_range.0);
             if overlaps_to_eor_diffs.len() > 0 {
                 //choose maximum value as this indicates the next change in mapping is closest on this overlap.
