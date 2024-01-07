@@ -63,7 +63,7 @@ use std::io::{ self, Read };
 use std::path::Path;
 
 // Function to parse the entire input and return a vector of tuples for time and distance
-fn parse_input(input: &str) -> (usize, usize) {
+fn parse_input(input: &str) -> Vec<(char, usize)> {
     //map every char to a power ranking. i.e. 2 = 1, 3 = 2, 4 = 3, 5 = 4, 6 = 5, 7 = 6, 8 = 7, 9 = 8,
     //                                        T = 9, J = 10, Q = 11, K = 12, A = 13
     let possible_chars = String::from("23456789TJQKA");
@@ -76,24 +76,7 @@ fn parse_input(input: &str) -> (usize, usize) {
 
     println!("Char to rank vector: {:?}", char_to_rank_vec);
 
-    for c in possible_chars.chars() {
-        println!("{} = {}", c, c as usize);
-    }
-    let mut lines = input.lines();
-    let time_line = lines.next().unwrap();
-    let record_line = lines.next().unwrap();
-
-    let time_parts: Vec<&str> = time_line.split(":").collect();
-    let time_values: usize = time_parts[1].replace(" ", "").parse().unwrap();
-
-    let record_parts: Vec<&str> = record_line.split(":").collect();
-    let record_values: usize = record_parts[1].replace(" ", "").parse().unwrap();
-
-    let game_tuple: (usize, usize) = (time_values, record_values);
-
-    println!("Parsed input: {:?}", game_tuple);
-
-    game_tuple
+    char_to_rank_vec
 }
 
 fn main() {
@@ -115,35 +98,7 @@ fn main() {
     //println!("Read input string: {:?}", params_string);
 
     // Parse the input string to get the vector of tuples for time and distance
-    let races = parse_input(&params_string);
+    let hands = parse_input(&params_string);
 
-    let mut ways_to_beat_record = 0;
-
-    let begin_range = ((races.0 as f64) * 0.19326).round() as usize;
-    let end_range = ((races.0 as f64) * ((1 as f64) - 0.19326)).round() as usize;
-
-    for hold_time in begin_range..end_range {
-        let velocity = hold_time;
-        let roll_time = races.0 - velocity;
-        let distance = velocity * roll_time;
-
-        // println!(
-        //     "Time: {}, Record: {}, Hold Time: {}, Velocity: {}, Roll Time: {}, Distance: {}, Ways to Beat Record: {}",
-        //     races.0,
-        //     races.1,
-        //     hold_time,
-        //     velocity,
-        //     roll_time,
-        //     distance,
-        //     ways_to_beat_record
-        // );
-
-        if distance > races.1 {
-            ways_to_beat_record += 1;
-            //println!("Updated Ways to Beat Record: {}", ways_to_beat_record);
-        }
-    }
-
-    // Print the result
-    println!("The answer is: {}", ways_to_beat_record);
+    println!("Parsed input: {:?}", hands);
 }
