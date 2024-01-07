@@ -207,6 +207,17 @@ fn main() {
 
     hands.sort_by_key(|entry| entry.hand.1);
 
+    //insertion sort to order the overall ranks. Will have to have a different comparison function for each hand rank
+    //     i ← 1
+    // while i < length(A)
+    //     j ← i
+    //     while j > 0 and A[j-1] > A[j]
+    //         swap A[j] and A[j-1]
+    //         j ← j - 1
+    //     end while
+    //     i ← i + 1
+    // end while
+
     println!("{:?}", hands);
 
     // // Sort hands by hand score in descending order
