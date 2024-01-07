@@ -117,6 +117,27 @@ fn parse_input(input: &str) -> Vec<(usize, usize)> {
     game_vec
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_hold_time_iterations() {
+        let input = "Time: 7 15 30\nDistance: 9 40 200";
+        let races = parse_input(input);
+
+        for &(t, _) in &races {
+            let mut iterations = 0;
+
+            for _ in 1..t {
+                iterations += 1;
+            }
+
+            assert_eq!(iterations, t - 1);
+        }
+    }
+}
+
 fn main() {
     // Read parameters from a file
     let path = Path::new("./params.txt");
