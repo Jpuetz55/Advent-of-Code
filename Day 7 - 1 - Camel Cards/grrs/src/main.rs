@@ -63,20 +63,15 @@ use std::io::{ self, Read };
 use std::path::Path;
 
 // Function to parse the entire input and return a vector of tuples for time and distance
-fn parse_input(input: &str) -> Vec<(char, usize)> {
-    //map every char to a power ranking. i.e. 2 = 1, 3 = 2, 4 = 3, 5 = 4, 6 = 5, 7 = 6, 8 = 7, 9 = 8,
-    //                                        T = 9, J = 10, Q = 11, K = 12, A = 13
-    let possible_chars = String::from("23456789TJQKA");
-
-    let char_to_rank_vec: Vec<(char, usize)> = possible_chars
-        .chars()
-        .enumerate()
-        .map(|(i, c)| (c, i + 1))
-        .collect();
-
-    println!("Char to rank vector: {:?}", char_to_rank_vec);
-
-    char_to_rank_vec
+fn parse_input(input: &str) -> Vec<(&str, usize)> {
+    let mut hands: Vec<(&str, usize)> = Vec::new();
+    //parse input into a vector of tuples. (&str, usize)
+    for input in input.lines() {
+        let mut s = input.split_whitespace();
+        let hand: (&str, usize) = (s.next().unwrap(), s.next().unwrap().parse::<usize>().unwrap());
+        hands.push(hand);
+    }
+    hands
 }
 
 fn main() {
@@ -98,7 +93,18 @@ fn main() {
     //println!("Read input string: {:?}", params_string);
 
     // Parse the input string to get the vector of tuples for time and distance
+
+    //map every char to a power ranking. i.e. 2 = 1, 3 = 2, 4 = 3, 5 = 4, 6 = 5, 7 = 6, 8 = 7, 9 = 8,
+    //                                        T = 9, J = 10, Q = 11, K = 12, A = 13
+    let possible_chars = String::from("23456789TJQKA");
+
+    let char_to_rank_vec: Vec<(char, usize)> = possible_chars
+        .chars()
+        .enumerate()
+        .map(|(i, c)| (c, i + 1))
+        .collect();
     let hands = parse_input(&params_string);
 
+    println!("char_to_rank_vec: {:?}", char_to_rank_vec);
     println!("Parsed input: {:?}", hands);
 }
