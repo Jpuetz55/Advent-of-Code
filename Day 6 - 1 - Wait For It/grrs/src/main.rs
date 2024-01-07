@@ -1,4 +1,4 @@
-                                                                                /*--- Day 6: Wait For It ---
+/*--- Day 6: Wait For It ---
 The ferry quickly brings you across Island Island. After asking around, you discover that there is indeed normally a large pile of sand somewhere near here, but you don't see anything besides lots of water and the small island where the ferry has docked.
 
 As you try to figure out what to do next, you notice a poster on a wall near the ferry dock. "Boat races! Open to the public! Grand prize is an all-expenses-paid trip to Desert Island!" That must be where the sand comes from! Best of all, the boat races are starting in just a few minutes.
@@ -72,43 +72,49 @@ To see how much margin of error you have, determine the number of ways you can b
 Determine the number of ways you could beat the record in each race. What do you get if you multiply these numbers together?*/
 
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::{ self, Read };
 use std::path::Path;
 
-// Function to parse a single map and return a 2D array
-fn parse_map(map_str: &str) -> Vec<(usize, usize, usize)> {
-    map_str
-        .split_whitespace()
-        .map(|num_str| num_str.parse().unwrap())
-        .collect::<Vec<usize>>()
-        .chunks_exact(3)
-        .map(|chunk| (chunk[0], chunk[1], chunk[2]))
-        .collect()
+// Function to parse a single map and return a tuple of vectors for time and distance
+fn parse_map(map_str: &str) -> (Vec<usize>, Vec<usize>) {
+    let mut iter = map_str.split_whitespace().map(|num_str| num_str.parse().unwrap());
+
+    let time_values: Vec<usize> = iter
+        .by_ref()
+        .take_while(|_| true)
+        .collect();
+    let distance_values: Vec<usize> = iter.collect();
+
+    (time_values, distance_values)
 }
 
-// Function to parse the entire input and return a vector of 2D arrays
-fn parse_input(input: &str) -> Vec<Vec<(usize, usize, usize)>> {
-    let mut maps = Vec::new();
-    let input_to_vector: Vec<&str> = input.lines().collect();
-    let mut current_map: Vec<(usize, usize, usize)> = Vec::new();
+// Function to parse the entire input and return a vector of tuples for time and distance
+fn parse_input(input: &str) -> Vec<(usize, usize)> {
+    let mut lines = input.lines();
+    let time_line = lines.next().unwrap();
+    let record_line = lines.next().unwrap();
 
-    for line in input_to_vector {
-        if !line.is_empty() && line.chars().nth(0).unwrap().is_digit(10) {
-            // Parse the line and add to the current map
-            current_map.extend(parse_map(line));
-        } else if line.is_empty() && !current_map.is_empty() {
-            // Add the current map to the vector and clear it
-            maps.push(current_map.clone());
-            current_map.clear();
-        }
-    }
+    let time_parts: Vec<&str> = time_line.split(":").collect();
+    let time_values: Vec<usize> = time_parts[1]
+        .split_whitespace()
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect();
 
-    // Add the last map if it's not empty
-    if !current_map.is_empty() {
-        maps.push(current_map);
-    }
+    let record_parts: Vec<&str> = record_line.split(":").collect();
+    let record_values: Vec<usize> = record_parts[1]
+        .split_whitespace()
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect();
 
-    maps
+    let game_vec: Vec<(usize, usize)> = time_values
+        .iter()
+        .zip(record_values.iter())
+        .map(|(&time, &record)| (time, record))
+        .collect();
+
+    println!("Parsed input: {:?}", game_vec);
+
+    game_vec
 }
 
 fn main() {
@@ -127,52 +133,43 @@ fn main() {
         Ok(_) => {}
     }
 
-    // Function to calculate distance based on velocity and roll time
-    fn calculate_distance(velocity: f64, roll_time: f64) -> f64 {
-        velocity * roll_time
-    }
+    println!("Read input string: {:?}", params_string);
 
-    fn main() {
-        // Define the maximum time value; replace with your specific value
-        let max_time = 10.0;
+    // Parse the input string to get the vector of tuples for time and distance
+    let races = parse_input(&params_string);
 
-        // Generate a vector of valid time values, excluding 0 and max_time
-        let time_values: Vec<f64> = (1..max_time as usize).map(|i| i as f64).collect();
+    // Iterate over races to calculate the number of ways to beat the record
+    let result: usize = races
+        .iter()
+        .map(|&(t, record)| {
+            let mut ways_to_beat_record = 0;
 
-        // Initialize the game vector to store time, distance record, and win count
-        let mut game_vec: Vec<(f64, f64, usize)> = Vec::new();
-
-        // Iterate over the range of valid time values
-        for &t in &time_values {
-            let mut win_count = 0;
-            let mut distance_record = 0.0;
-
-            // Iterate over the range (0..t) to calculate distance and check win conditions
-            for i in 1..t as usize {
-                let velocity = i as f64;
+            for hold_time in 1..t {
+                let velocity = hold_time;
                 let roll_time = t - velocity;
+                let distance = velocity * roll_time;
 
-                // Calculate distance based on velocity and roll time
-                let distance = calculate_distance(velocity, roll_time);
+                println!(
+                    "Time: {}, Record: {}, Hold Time: {}, Velocity: {}, Roll Time: {}, Distance: {}, Ways to Beat Record: {}",
+                    t,
+                    record,
+                    hold_time,
+                    velocity,
+                    roll_time,
+                    distance,
+                    ways_to_beat_record
+                );
 
-                // Check if the calculated distance is greater than the distance record
-                if distance > distance_record {
-                    win_count += 1;
+                if distance > record {
+                    ways_to_beat_record += 1;
+                    println!("Updated Ways to Beat Record: {}", ways_to_beat_record);
                 }
             }
 
-            // Store the time, distance record, and win count in game_vec
-            game_vec.push((t, distance_record, win_count));
-        }
+            ways_to_beat_record
+        })
+        .product();
 
-        // Calculate the final answer by multiplying all win counts in game_vec
-        let answer: usize = game_vec.iter().map(|&(_, _, win_count)| win_count).product();
-
-        // Print the final answer
-        println!("The answer is: {}", answer);
-    }
-
-
-
-
+    // Print the result
+    println!("The answer is: {}", result);
 }
