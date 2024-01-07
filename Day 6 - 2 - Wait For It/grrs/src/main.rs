@@ -105,7 +105,7 @@ fn parse_map(map_str: &str) -> (Vec<usize>, Vec<usize>) {
 }
 
 // Function to parse the entire input and return a vector of tuples for time and distance
-fn parse_input(input: &str) -> Vec<(usize, usize)> {
+fn parse_input(input: &str) -> (usize, usize) {
     let mut lines = input.lines();
     let time_line = lines.next().unwrap();
     let record_line = lines.next().unwrap();
@@ -116,36 +116,11 @@ fn parse_input(input: &str) -> Vec<(usize, usize)> {
     let record_parts: Vec<&str> = record_line.split(":").collect();
     let record_values: usize = record_parts[1].replace(" ", "").parse().unwrap();
 
-    let game_vec: Vec<(usize, usize)> = time_values
-        .iter()
-        .zip(record_values.iter())
-        .map(|(&time, &record)| (time, record))
-        .collect();
+    let game_tuple: (usize, usize) = (time_values, record_values);
 
-    println!("Parsed input: {:?}", game_vec);
+    println!("Parsed input: {:?}", game_tuple);
 
-    game_vec
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_hold_time_iterations() {
-        let input = "Time: 7 15 30\nDistance: 9 40 200";
-        let races = parse_input(input);
-
-        for &(t, _) in &races {
-            let mut iterations = 0;
-
-            for _ in 1..t {
-                iterations += 1;
-            }
-
-            assert_eq!(iterations, t - 1);
-        }
-    }
+    game_tuple
 }
 
 fn main() {
@@ -164,43 +139,38 @@ fn main() {
         Ok(_) => {}
     }
 
-    println!("Read input string: {:?}", params_string);
+    //println!("Read input string: {:?}", params_string);
 
     // Parse the input string to get the vector of tuples for time and distance
     let races = parse_input(&params_string);
 
-    // Iterate over races to calculate the number of ways to beat the record
-    let result: usize = races
-        .iter()
-        .map(|&(t, record)| {
-            let mut ways_to_beat_record = 0;
+    let mut ways_to_beat_record = 0;
 
-            for hold_time in 1..t {
-                let velocity = hold_time;
-                let roll_time = t - velocity;
-                let distance = velocity * roll_time;
+    let begin_range = ((races.0 as f64) * 0.19326).round() as usize;
+    let end_range = ((races.0 as f64) * ((1 as f64) - 0.19326)).round() as usize;
 
-                println!(
-                    "Time: {}, Record: {}, Hold Time: {}, Velocity: {}, Roll Time: {}, Distance: {}, Ways to Beat Record: {}",
-                    t,
-                    record,
-                    hold_time,
-                    velocity,
-                    roll_time,
-                    distance,
-                    ways_to_beat_record
-                );
+    for hold_time in begin_range..end_range {
+        let velocity = hold_time;
+        let roll_time = races.0 - velocity;
+        let distance = velocity * roll_time;
 
-                if distance > record {
-                    ways_to_beat_record += 1;
-                    println!("Updated Ways to Beat Record: {}", ways_to_beat_record);
-                }
-            }
+        // println!(
+        //     "Time: {}, Record: {}, Hold Time: {}, Velocity: {}, Roll Time: {}, Distance: {}, Ways to Beat Record: {}",
+        //     races.0,
+        //     races.1,
+        //     hold_time,
+        //     velocity,
+        //     roll_time,
+        //     distance,
+        //     ways_to_beat_record
+        // );
 
-            ways_to_beat_record
-        })
-        .product();
+        if distance > races.1 {
+            ways_to_beat_record += 1;
+            //println!("Updated Ways to Beat Record: {}", ways_to_beat_record);
+        }
+    }
 
     // Print the result
-    println!("The answer is: {}", result);
+    println!("The answer is: {}", ways_to_beat_record);
 }
