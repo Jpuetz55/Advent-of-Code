@@ -115,6 +115,38 @@ struct HandEntry {
     total_score: usize,
 }
 
+// Function to sort hands alphabetically within each rank
+fn sort_hands_alphabetically_within_rank(hands: &mut Vec<HandEntry>) {
+    hands.sort_by(|a, b| {
+        // Compare hands character by character
+        for (char_a, char_b) in a.hand.0.chars().zip(b.hand.0.chars()) {
+            let rank_a = if char_a.is_digit(10) {
+                9 - (char_a.to_digit(10).unwrap() as usize)
+            } else {
+                char_a as usize
+            };
+            let rank_b = if char_b.is_digit(10) {
+                9 - (char_b.to_digit(10).unwrap() as usize)
+            } else {
+                char_b as usize
+            };
+
+            match rank_a.cmp(&rank_b) {
+                std::cmp::Ordering::Less => {
+                    return std::cmp::Ordering::Less;
+                }
+                std::cmp::Ordering::Greater => {
+                    return std::cmp::Ordering::Greater;
+                }
+                _ => {
+                    continue;
+                }
+            }
+        }
+        std::cmp::Ordering::Equal
+    });
+}
+
 // Function to parse input into a vector of HandEntry
 fn parse_input(input: &str) -> Vec<HandEntry> {
     let mut hands: Vec<HandEntry> = Vec::new();
@@ -200,65 +232,32 @@ fn main() {
     // Parse the input string to get the vector of HandEntry
     let mut hands = parse_input(&params_string);
 
-    hands.sort_by_key(|entry| entry.hand.1);
-
-    let mut hands_by_rank: HashMap<usize, Vec<&HandEntry>> = HashMap::new();
-
-    // Group hands by hand rank using a HashMap
-    let mut hands_by_rank: HashMap<usize, Vec<&str>> = HashMap::new();
-
-    for entry in &hands {
-        hands_by_rank.entry(entry.hand.2).or_insert(Vec::new()).push(&entry.hand.0);
-    }
-
-    // Print or use the vectors for each hand rank
-    for (rank, hand_strings) in &hands_by_rank {
-        for hand_string in hand_strings {
-            // Find the corresponding HandEntry for the current hand_string
-            let entry = hands
-                .iter()
-                .find(|&e| &e.hand.0 == hand_string)
-                .unwrap();
-            println!(
-                "Rank {}: Hand: {}, Bid: {}, Overall Rank: {}",
-                rank,
-                entry.hand.0,
-                entry.bid,
-                entry.overall_rank
-            );
+    // Sort hands by hand score in descending order
+    hands.sort_by(|a, b| {
+        let cmp = b.hand.2.cmp(&a.hand.2); // Sort by hand score in descending order
+        if cmp == std::cmp::Ordering::Equal {
+            // If hand scores are equal, compare bids in ascending order
+            a.bid.cmp(&b.bid)
+        } else {
+            cmp
         }
-        println!(); // Add a newline for better readability
+    });
+
+    // Set overall rank based on sorting order
+    for (i, entry) in hands.iter_mut().enumerate() {
+        entry.overall_rank = i + 1;
+        entry.total_score = entry.bid * entry.overall_rank;
     }
 
-    //insertion sort to order the overall ranks. Will have to have a different comparison function for each hand rank
-    //     i ← 1
-    // while i < length(A)
-    //     j ← i
-    //     while j > 0 and A[j-1] > A[j]
-    //         swap A[j] and A[j-1]
-    //         j ← j - 1
-    //     end while
-    //     i ← i + 1
-    // end while
-    // // Sort hands by hand score in descending order
-    // hands.sort_by_key(|entry| entry.hand_score);
-    // hands.reverse();
-
-    // // Set relative rank multiplier based on sorting order
-    // for (i, entry) in hands.iter_mut().enumerate() {
-    //     entry.relative_rank_multiplier = i + 1;
-    //     entry.total_score = entry.bid * entry.relative_rank_multiplier;
-    // }
-
-    // // Print the results
-    // for entry in &hands {
-    //     println!(
-    //         "Hand: {}, Bid: {}, Relative Rank: {}, Hand Score: {}, Total Score: {}",
-    //         entry.hand,
-    //         entry.bid,
-    //         entry.relative_rank_multiplier,
-    //         entry.hand_score,
-    //         entry.total_score
-    //     );
-    // }
+    // Print the results
+    for entry in &hands {
+        println!(
+            "Rank {}: Hand: {}, Bid: {}, Overall Rank: {}, Total Score: {}",
+            entry.hand.2,
+            entry.hand.0,
+            entry.bid,
+            entry.overall_rank,
+            entry.total_score
+        );
+    }
 }
