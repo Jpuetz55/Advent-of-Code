@@ -105,7 +105,7 @@ fn hand_to_hand_rank(hand: [usize; 13]) -> usize {
 }
 
 // Struct to represent a hand entry
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct HandEntry {
     //need to convert each hand_string into a ([usize; 13], usize) tuple where the usize array is the
     //card counts and the usize is the hand rank
@@ -115,21 +115,33 @@ struct HandEntry {
     total_score: usize,
 }
 
+// Function to convert a card to its corresponding rank
+fn char_to_rank(card: char) -> u32 {
+    match card {
+        'A' => 1,
+        'K' => 2,
+        'Q' => 3,
+        'J' => 4,
+        'T' => 5,
+        '9' => 6,
+        '8' => 7,
+        '7' => 8,
+        '6' => 9,
+        '5' => 10,
+        '4' => 11,
+        '3' => 12,
+        '2' => 13,
+        _ => panic!("Invalid card"),
+    }
+}
+
 // Function to sort hands alphabetically within each rank
 fn sort_hands_alphabetically_within_rank(hands: &mut Vec<HandEntry>) {
     hands.sort_by(|a, b| {
-        // Compare hands character by character
+        // Compare hands character by character using char_to_rank
         for (char_a, char_b) in a.hand.0.chars().zip(b.hand.0.chars()) {
-            let rank_a = if char_a.is_digit(10) {
-                9 - (char_a.to_digit(10).unwrap() as usize)
-            } else {
-                char_a as usize
-            };
-            let rank_b = if char_b.is_digit(10) {
-                9 - (char_b.to_digit(10).unwrap() as usize)
-            } else {
-                char_b as usize
-            };
+            let rank_a = char_to_rank(char_a);
+            let rank_b = char_to_rank(char_b);
 
             match rank_a.cmp(&rank_b) {
                 std::cmp::Ordering::Less => {
@@ -145,6 +157,14 @@ fn sort_hands_alphabetically_within_rank(hands: &mut Vec<HandEntry>) {
         }
         std::cmp::Ordering::Equal
     });
+}
+
+// Function to update overall rank and total score based on the index in the sorted hands vector
+fn update_overall_rank_and_total_score(sorted_hands: &mut Vec<HandEntry>) {
+    for (index, entry) in sorted_hands.iter_mut().enumerate() {
+        entry.overall_rank = 1000 - index;
+        entry.total_score = entry.bid * entry.overall_rank;
+    }
 }
 
 // Function to parse input into a vector of HandEntry
@@ -232,25 +252,30 @@ fn main() {
     // Parse the input string to get the vector of HandEntry
     let mut hands = parse_input(&params_string);
 
-    // Sort hands by hand score in descending order
-    hands.sort_by(|a, b| {
-        let cmp = b.hand.2.cmp(&a.hand.2); // Sort by hand score in descending order
-        if cmp == std::cmp::Ordering::Equal {
-            // If hand scores are equal, compare bids in ascending order
-            a.bid.cmp(&b.bid)
-        } else {
-            cmp
-        }
-    });
-
-    // Set overall rank based on sorting order
-    for (i, entry) in hands.iter_mut().enumerate() {
-        entry.overall_rank = i + 1;
-        entry.total_score = entry.bid * entry.overall_rank;
+    // Separate hands into lists based on their rank
+    let mut hands_by_rank: HashMap<usize, Vec<HandEntry>> = HashMap::new();
+    for entry in hands.iter() {
+        hands_by_rank.entry(entry.hand.2).or_insert(Vec::new()).push(entry.clone());
     }
 
+    // Sort each list based on the original string value
+    for (_, hands_list) in hands_by_rank.iter_mut() {
+        sort_hands_alphabetically_within_rank(hands_list);
+    }
+
+    // Combine lists back together
+    let mut sorted_hands: Vec<HandEntry> = Vec::new();
+    for rank in (0..=6).rev() {
+        if let Some(mut hands_list) = hands_by_rank.remove(&rank) {
+            sorted_hands.append(&mut hands_list);
+        }
+    }
+
+    // Update overall rank and total score
+    update_overall_rank_and_total_score(&mut sorted_hands);
+
     // Print the results
-    for entry in &hands {
+    for entry in &sorted_hands {
         println!(
             "Rank {}: Hand: {}, Bid: {}, Overall Rank: {}, Total Score: {}",
             entry.hand.2,
@@ -260,4 +285,10 @@ fn main() {
             entry.total_score
         );
     }
+    let mut total = 0;
+    for entry in &sorted_hands {
+        total += entry.total_score;
+    }
+
+    println!("{}", total);
 }
