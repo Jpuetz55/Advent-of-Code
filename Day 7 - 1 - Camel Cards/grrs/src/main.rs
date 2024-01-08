@@ -50,19 +50,13 @@ Now, you can determine the total winnings of this set of hands by adding up the 
 
 Find the rank of every hand in your set. What are the total winnings?
 
-
-
-
-
-
-
 */
 
 use core::panic;
-use std::cmp::Ordering;
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
+use std::collections::HashMap;
 
 // Define a constant array for card rankings
 const CARD_RANKINGS: [char; 13] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
@@ -115,143 +109,11 @@ fn hand_to_hand_rank(hand: [usize; 13]) -> usize {
 struct HandEntry {
     //need to convert each hand_string into a ([usize; 13], usize) tuple where the usize array is the
     //card counts and the usize is the hand rank
-    hand: ([usize; 13], usize),
+    hand: (String, [usize; 13], usize),
     bid: usize,
     overall_rank: usize,
     total_score: usize,
 }
-
-impl HandEntry {
-    // Function to compare hands based on their ranks
-
-    fn compare_high_card(&self, other: &Self) -> Ordering {
-        for i in 0..13 {
-            if self.hand.0[i] > other.hand.0[i] {
-                return Ordering::Greater;
-            } else if self.hand.0[i] < other.hand.0[i] {
-                return Ordering::Less;
-            }
-        }
-        Ordering::Equal
-    }
-
-    fn compare_one_pair(&self, other: &Self) -> Ordering {
-        let mut self_pair = 0;
-        let mut other_pair = 0;
-        let mut self_high_card = 0;
-        let mut other_high_card = 0;
-        for i in 0..13 {
-            if self.hand.0[i] == 2 {
-                self_pair = i;
-            } else if self.hand.0[i] == 1 {
-                self_high_card = i;
-            }
-            if other.hand.0[i] == 2 {
-                other_pair = i;
-            } else if other.hand.0[i] == 1 {
-                other_high_card = i;
-            }
-        }
-        if self_pair > other_pair {
-            return Ordering::Greater;
-        } else if self_pair < other_pair {
-            return Ordering::Less;
-        } else {
-            if self_high_card > other_high_card {
-                return Ordering::Greater;
-            } else if self_high_card < other_high_card {
-                return Ordering::Less;
-            } else {
-                return Ordering::Equal;
-            }
-        }
-    }
-
-    fn compare_two_pair(&self, other: &Self) -> Ordering {
-        return Ordering::Equal;
-    }
-
-    fn compare_three_of_a_kind(&self, other: &Self) -> Ordering {
-        return Ordering::Equal;
-    }
-
-    fn compare_full_house(&self, other: &Self) -> Ordering {
-        return Ordering::Equal;
-    }
-
-    fn compare_four_of_a_kind(&self, other: &Self) -> Ordering {
-        return Ordering::Equal;
-    }
-
-    fn compare_five_of_a_kind(&self, other: &Self) -> Ordering {
-        return Ordering::Equal;
-    }
-
-    fn compare_ranks(&self, other: &Self) -> Ordering {
-        match self.hand.1 {
-            0 => {
-                self.compare_high_card(other);
-                Ordering::Equal;
-            }
-            1 => {
-                self.compare_one_pair(other);
-                Ordering::Equal;
-            }
-            2 => {
-                self.compare_two_pair(other);
-                Ordering::Equal;
-            }
-            3 => {
-                self.compare_three_of_a_kind(other);
-                Ordering::Equal;
-            }
-            4 => {
-                self.compare_full_house(other);
-                Ordering::Equal;
-            }
-            5 => {
-                self.compare_four_of_a_kind(other);
-                Ordering::Equal;
-            }
-            6 => {
-                self.compare_five_of_a_kind(other);
-                Ordering::Equal;
-            }
-            _ => panic!("Invalid hand"),
-        }
-        for i in 0..13 {
-            if self.hand.0[i] > other.hand.0[i] {
-                return Ordering::Greater;
-            } else if self.hand.0[i] < other.hand.0[i] {
-                return Ordering::Less;
-            }
-        }
-        Ordering::Equal
-    }
-}
-
-impl Ord for HandEntry {
-    fn cmp(&self, other: &Self) -> Ordering {
-        match self.hand.1.cmp(&other.hand.1) {
-            Ordering::Equal => self.compare_ranks(other),
-            other => other, // Reverse the order for hand ranks
-        }
-    }
-}
-
-impl PartialOrd for HandEntry {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialEq for HandEntry {
-    fn eq(&self, other: &Self) -> bool {
-        self.hand.1 == other.hand.1
-    }
-}
-
-impl Eq for HandEntry {}
 
 // Function to parse input into a vector of HandEntry
 fn parse_input(input: &str) -> Vec<HandEntry> {
@@ -310,7 +172,7 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
         });
 
         hands.push(HandEntry {
-            hand: (hand_array, hand_to_hand_rank(hand_array)),
+            hand: (hand_str.to_owned(), hand_array, hand_to_hand_rank(hand_array)),
             bid,
             overall_rank: 0, // Initialize to 0, you can set this later if needed
             total_score: 0, // Initialize to 0, you can set this later if needed
@@ -340,6 +202,34 @@ fn main() {
 
     hands.sort_by_key(|entry| entry.hand.1);
 
+    let mut hands_by_rank: HashMap<usize, Vec<&HandEntry>> = HashMap::new();
+
+    // Group hands by hand rank using a HashMap
+    let mut hands_by_rank: HashMap<usize, Vec<&str>> = HashMap::new();
+
+    for entry in &hands {
+        hands_by_rank.entry(entry.hand.2).or_insert(Vec::new()).push(&entry.hand.0);
+    }
+
+    // Print or use the vectors for each hand rank
+    for (rank, hand_strings) in &hands_by_rank {
+        for hand_string in hand_strings {
+            // Find the corresponding HandEntry for the current hand_string
+            let entry = hands
+                .iter()
+                .find(|&e| &e.hand.0 == hand_string)
+                .unwrap();
+            println!(
+                "Rank {}: Hand: {}, Bid: {}, Overall Rank: {}",
+                rank,
+                entry.hand.0,
+                entry.bid,
+                entry.overall_rank
+            );
+        }
+        println!(); // Add a newline for better readability
+    }
+
     //insertion sort to order the overall ranks. Will have to have a different comparison function for each hand rank
     //     i ← 1
     // while i < length(A)
@@ -350,9 +240,6 @@ fn main() {
     //     end while
     //     i ← i + 1
     // end while
-
-    println!("{:?}", hands);
-
     // // Sort hands by hand score in descending order
     // hands.sort_by_key(|entry| entry.hand_score);
     // hands.reverse();
