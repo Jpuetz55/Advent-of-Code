@@ -235,8 +235,8 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
                         total_score: 0, // Initialize to 0, you can set this later if needed
                     });
                 }
-            } else {
-                // 3 or more 'J's, treat 'J' as 'A'
+            } else if j < 5 {
+                // 3 or more 'J's, treat J as highest other card
                 let mut hand_array: [usize; 13] = [0; 13];
                 hand_str.chars().for_each(|c| {
                     match c {
@@ -267,39 +267,12 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
                     overall_rank: 0, // Initialize to 0, you can set this later if needed
                     total_score: 0, // Initialize to 0, you can set this later if needed
                 });
+            } else if j == 5 {
+                //still need logic
+                // No 'J' in the hand, process normally
+
+            } else {
             }
-        } else {
-            // No 'J' in the hand, process normally
-            let mut hand_array: [usize; 13] = [0; 13];
-
-            hand_str.chars().for_each(|c| {
-                match c {
-                    '2'..='9' => {
-                        let index = (c as usize) - ('2' as usize);
-                        hand_array[index] += 1;
-                    }
-                    'T' => {
-                        hand_array[8] += 1; // Index for 'T'
-                    }
-                    'Q' => {
-                        hand_array[10] += 1; // Index for 'Q'
-                    }
-                    'K' => {
-                        hand_array[11] += 1; // Index for 'K'
-                    }
-                    'A' => {
-                        hand_array[12] += 1; // Index for 'A'
-                    }
-                    _ => panic!("Invalid card"),
-                }
-            });
-
-            hands.push(HandEntry {
-                hand: (hand_str.to_owned(), hand_array, hand_to_hand_rank(hand_array)),
-                bid,
-                overall_rank: 0, // Initialize to 0, you can set this later if needed
-                total_score: 0, // Initialize to 0, you can set this later if needed
-            });
         }
     }
 
