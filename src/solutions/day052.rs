@@ -60,8 +60,6 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             .collect();
     }
 
-    println!("Seed Ranges: {:?}", seed_ranges);
-
     //... (Code to find and calculate seed values, explained in comments below)
 
     // Parse the input into a vector of 2D arrays
