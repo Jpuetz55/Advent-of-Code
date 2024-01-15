@@ -65,7 +65,6 @@ pub enum PuzzleErr {
 }
 
 // Define a constant array for card rankings
-const CARDS: [char; 13] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 const PERMUTE_CARDS: [char; 12] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A']; // no j
 
 //generate permutations when j == 2
@@ -86,13 +85,6 @@ fn generate_permutations_for_two_j() -> Vec<(char, char)> {
         counter += 1;
     });
     combinations_fn
-}
-
-// Function to convert a card to its corresponding rank
-fn card_to_rank(card: char) -> usize {
-    CARDS.iter()
-        .position(|&c| c == card)
-        .unwrap() + 1
 }
 
 //need to convert each hand_string into a ([usize; 13], usize) tuple where the usize array is the
@@ -190,7 +182,6 @@ fn generate_hand_array_vec_one_j(hand_array: &[usize; 13]) -> Vec<[usize; 13]> {
         }
         hand_array_vec.push(hand_array_copy);
     }
-    println!("{:?} {:?}", hand_array_vec, hand_array_vec.len());
     hand_array_vec
 }
 
@@ -241,7 +232,6 @@ fn generate_hand_array_combos_two_j(hand_array: &[usize; 13]) -> Vec<[usize; 13]
         }
         hand_array_vec.push(hand_array_copy);
     }
-    println!("{:?} {:?} test", hand_array_vec, hand_array_vec.len());
     hand_array_vec
 }
 fn get_max_rank(hand: [usize; 13]) -> usize {
@@ -274,9 +264,9 @@ fn get_max_rank(hand: [usize; 13]) -> usize {
     }
 }
 
-fn get_max_rank_two_j(hand_array: &[usize; 13]) -> usize {
+fn get_max_rank_one_j(hand_array: &[usize; 13]) -> usize {
     let mut max_rank = 0;
-    let hand_array_vec = generate_hand_array_combos_two_j(hand_array);
+    let hand_array_vec = generate_hand_array_vec_one_j(hand_array);
     for hand_array in hand_array_vec {
         let rank = get_max_rank(hand_array);
         if rank > max_rank {
@@ -286,9 +276,9 @@ fn get_max_rank_two_j(hand_array: &[usize; 13]) -> usize {
     max_rank
 }
 
-fn get_max_rank_one_j(hand_array: &[usize; 13]) -> usize {
+fn get_max_rank_two_j(hand_array: &[usize; 13]) -> usize {
     let mut max_rank = 0;
-    let hand_array_vec = generate_hand_array_vec_one_j(hand_array);
+    let hand_array_vec = generate_hand_array_combos_two_j(hand_array);
     for hand_array in hand_array_vec {
         let rank = get_max_rank(hand_array);
         if rank > max_rank {
@@ -431,7 +421,7 @@ pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
 
 fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     // Parse the input string to get the vector of HandEntry
-    let mut hands = parse_input(&input_data);
+    let hands = parse_input(&input_data);
 
     // Separate hands into lists based on their rank
     let mut hands_by_rank: HashMap<usize, Vec<HandEntry>> = HashMap::new();
@@ -455,17 +445,6 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     // Update overall rank and total score
     update_overall_rank_and_total_score(&mut sorted_hands);
 
-    // Print the results
-    for entry in &sorted_hands {
-        println!(
-            "Rank {}: Hand: {}, Bid: {}, Overall Rank: {}, Total Score: {}",
-            entry.hand.2,
-            entry.hand.0,
-            entry.bid,
-            entry.overall_rank,
-            entry.total_score
-        );
-    }
     let mut total = 0;
     for entry in &sorted_hands {
         total += entry.total_score;
@@ -484,5 +463,5 @@ pub fn main(data_dir: &str) {
         Ok(x) => println!(" Puzzle 7-2: {}", x),
         Err(e) => panic!("No solution to puzzle: {}.", e),
     }
-    assert_eq!(answer, Ok(52974));
+    assert_eq!(answer, Ok(253473930));
 }
