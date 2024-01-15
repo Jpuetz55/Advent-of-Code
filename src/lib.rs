@@ -61,10 +61,10 @@ pub fn run_day<'a>(data_dir: &'a str, day: &'a str) -> Result<(), Error<'a>> {
             solutions::day071::main(data_dir);
             Ok(())
         }
-        // 72 => {
-        //     solutions::day072::main(data_dir);
-        //     Ok(())
-        // }
+        "072" => {
+            solutions::day072::main(data_dir);
+            Ok(())
+        }
 
         // <-- INSERT NEW DAY HERE -->
         _ => Err(Error::DayNotImplemented(day)),

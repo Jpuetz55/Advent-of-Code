@@ -66,6 +66,27 @@ pub enum PuzzleErr {
 
 // Define a constant array for card rankings
 const CARDS: [char; 13] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+const PERMUTE_CARDS: [char; 12] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A']; // no j
+
+//generate permutations when j == 2
+//returns a vector of tuples for each combo
+fn generate_permutations_for_two_j() -> Vec<(char, char)> {
+    let mut combinations_fn: Vec<(char, char)> = Vec::new();
+    let mut counter = 1;
+    PERMUTE_CARDS.combination(2).for_each(|mut c| {
+        c.permutation().for_each(|p| {
+            combinations_fn.push((*p[0], *p[1]));
+            counter += 1;
+        });
+    });
+
+    // Include combinations of 2 identical cards
+    PERMUTE_CARDS.iter().for_each(|&card| {
+        combinations_fn.push((card, card));
+        counter += 1;
+    });
+    combinations_fn
+}
 
 // Function to convert a card to its corresponding rank
 fn card_to_rank(card: char) -> usize {
@@ -80,35 +101,6 @@ fn card_to_rank(card: char) -> usize {
 //store these values for when we determine overall ranks
 //we can determine overall ranks by sorting
 // Function to calculate the hand score
-fn get_max_rank(hand: [usize; 13]) -> usize {
-    //count how many numbers are equal to 2, 3, 4, and 5 in hand array
-    let mut matches = [0; 4];
-
-    for &bucket in hand.iter() {
-        if bucket == 2 {
-            matches[0] += 1;
-        } else if bucket == 3 {
-            matches[1] += 1;
-        } else if bucket == 4 {
-            matches[2] += 1;
-        } else if bucket == 5 {
-            matches[3] += 1;
-        }
-    }
-    // Calculate the hand score
-
-    match matches {
-        [0, 0, 0, 0] => 0, // High card
-        [1, 0, 0, 0] => 1, // One pair
-        [2, 0, 0, 0] => 2, // Two pair
-        [0, 1, 0, 0] => 3, // Three of a kind
-        [1, 1, 0, 0] => 4, // Full house
-        [0, 0, 1, 0] => 5, // Four of a kind
-        [0, 0, 0, 1] => 6, // Five of a kind
-
-        _ => panic!("Invalid hand"),
-    }
-}
 
 // Struct to represent a hand entry
 #[derive(Debug, Clone)]
@@ -173,33 +165,42 @@ fn update_overall_rank_and_total_score(sorted_hands: &mut Vec<HandEntry>) {
     }
 }
 
-//generate permutations when j == 2
-//returns a vector of tuples for each combo
-fn generate_permutations_for_j() -> Vec<(char, char)> {
-    const PERMUTE_CARDS: [char; 12] = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A'];
-    let mut combinations: Vec<(char, char)> = Vec::new();
-    let mut counter = 1;
-    PERMUTE_CARDS.combination(2).for_each(|mut c| {
-        c.permutation().for_each(|p| {
-            println!("k-permutation@{}={:?}", counter, p);
-            combinations.push((*p[0], *p[1]));
-            counter += 1;
-        });
-    });
-    PERMUTE_CARDS.iter().for_each(|&card| {
-        combinations.push((card, card));
-        counter += 1;
-    });
-    combinations
+fn generate_hand_array_vec_one_j(hand_array: &[usize; 13]) -> Vec<[usize; 13]> {
+    let mut hand_array_vec: Vec<[usize; 13]> = Vec::new();
+    for c in PERMUTE_CARDS {
+        let mut hand_array_copy = *hand_array;
+        match c {
+            '2'..='9' => {
+                let index = (c as usize) - ('2' as usize);
+                hand_array_copy[index] += 1;
+            }
+            'T' => {
+                hand_array_copy[8] += 1; // Index for 'T'
+            }
+            'Q' => {
+                hand_array_copy[10] += 1; // Index for 'Q'
+            }
+            'K' => {
+                hand_array_copy[11] += 1; // Index for 'K'
+            }
+            'A' => {
+                hand_array_copy[12] += 1; // Index for 'A'
+            }
+            _ => panic!("Invalid card"),
+        }
+        hand_array_vec.push(hand_array_copy);
+    }
+    println!("{:?} {:?}", hand_array_vec, hand_array_vec.len());
+    hand_array_vec
 }
 
 //param: hand_array with the j's taken out
-fn generate_hand_array_combos(hand_array: &[usize; 13]) -> Vec<[usize; 13]> {
-    let combinations = generate_permutations_for_j();
-    let hand_array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1]; //hand_array with j's taken out
+fn generate_hand_array_combos_two_j(hand_array: &[usize; 13]) -> Vec<[usize; 13]> {
     let mut hand_array_vec: Vec<[usize; 13]> = Vec::new();
+    // Assign the result of generate_permutations_for_two_j to COMBINATIONS variable
+    let combinations: Vec<(char, char)> = generate_permutations_for_two_j();
     for c in combinations {
-        let mut hand_array_copy = hand_array;
+        let mut hand_array_copy = *hand_array;
         match c.0 {
             '2'..='9' => {
                 let index = (c.0 as usize) - ('2' as usize);
@@ -243,17 +244,69 @@ fn generate_hand_array_combos(hand_array: &[usize; 13]) -> Vec<[usize; 13]> {
     println!("{:?} {:?} test", hand_array_vec, hand_array_vec.len());
     hand_array_vec
 }
+fn get_max_rank(hand: [usize; 13]) -> usize {
+    //count how many numbers are equal to 2, 3, 4, and 5 in hand array
+    let mut matches = [0; 4];
+
+    for &bucket in hand.iter() {
+        if bucket == 2 {
+            matches[0] += 1;
+        } else if bucket == 3 {
+            matches[1] += 1;
+        } else if bucket == 4 {
+            matches[2] += 1;
+        } else if bucket == 5 {
+            matches[3] += 1;
+        }
+    }
+    // Calculate the hand score
+
+    match matches {
+        [0, 0, 0, 0] => 0, // High card
+        [1, 0, 0, 0] => 1, // One pair
+        [2, 0, 0, 0] => 2, // Two pair
+        [0, 1, 0, 0] => 3, // Three of a kind
+        [1, 1, 0, 0] => 4, // Full house
+        [0, 0, 1, 0] => 5, // Four of a kind
+        [0, 0, 0, 1] => 6, // Five of a kind
+
+        _ => panic!("Invalid hand"),
+    }
+}
+
 fn get_max_rank_two_j(hand_array: &[usize; 13]) -> usize {
     let mut max_rank = 0;
-    let hand_array_vec = generate_hand_array_combos(hand_array);
+    let hand_array_vec = generate_hand_array_combos_two_j(hand_array);
     for hand_array in hand_array_vec {
         let rank = get_max_rank(hand_array);
         if rank > max_rank {
             max_rank = rank;
         }
     }
-    println!("max rank: {}", max_rank);
     max_rank
+}
+
+fn get_max_rank_one_j(hand_array: &[usize; 13]) -> usize {
+    let mut max_rank = 0;
+    let hand_array_vec = generate_hand_array_vec_one_j(hand_array);
+    for hand_array in hand_array_vec {
+        let rank = get_max_rank(hand_array);
+        if rank > max_rank {
+            max_rank = rank;
+        }
+    }
+    max_rank
+}
+
+fn get_max_rank_three_j(hand_array: &[usize; 13]) -> usize {
+    // if there is a 2 in hand array, max_rank is 6
+    for item in hand_array {
+        if *item == (2 as usize) {
+            return 6;
+        }
+    }
+    5
+    //if there is no 2 in hand array, max_rank is 5
 }
 
 // Function to parse input into a vector of HandEntry
@@ -267,6 +320,51 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
         let bid = iter.next().unwrap().parse::<usize>().unwrap();
         let mut hand_array: [usize; 13] = [0; 13];
 
+        hand_str.chars().for_each(|c| {
+            match c {
+                '2' => {
+                    hand_array[0] += 1;
+                }
+                '3' => {
+                    hand_array[1] += 1;
+                }
+                '4' => {
+                    hand_array[2] += 1;
+                }
+                '5' => {
+                    hand_array[3] += 1;
+                }
+                '6' => {
+                    hand_array[4] += 1;
+                }
+                '7' => {
+                    hand_array[5] += 1;
+                }
+                '8' => {
+                    hand_array[6] += 1;
+                }
+                '9' => {
+                    hand_array[7] += 1;
+                }
+                'T' => {
+                    hand_array[8] += 1;
+                }
+                'J' => {
+                    hand_array[9] += 1;
+                }
+                'Q' => {
+                    hand_array[10] += 1;
+                }
+                'K' => {
+                    hand_array[11] += 1;
+                }
+                'A' => {
+                    hand_array[12] += 1;
+                }
+                _ => panic!("Invalid card"),
+            }
+        });
+
         // Check if 'J' is present in the hand
         if hand_str.contains('J') {
             let j_count = hand_str
@@ -276,6 +374,9 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
 
             if j_count == 1 {
                 //todo
+                //set j's to zero to generate combos for the remaining 4 cards
+                hand_array[9] = 0;
+
                 hands.push(HandEntry {
                     hand: (hand_str.to_owned(), hand_array, get_max_rank_one_j(&hand_array)),
                     bid,
@@ -284,41 +385,40 @@ fn parse_input(input: &str) -> Vec<HandEntry> {
                 });
             } else if j_count == 2 {
                 // 2 'J's, consider all permutations with get_max_rank_two_j
+                //set j's to zero to generate combos for the remaining 3 cards
+                hand_array[9] = 0;
                 hands.push(HandEntry {
                     hand: (hand_str.to_owned(), hand_array, get_max_rank_two_j(&hand_array)),
                     bid,
                     overall_rank: 0, // Initialize to 0, you can set this later if needed
                     total_score: 0, // Initialize to 0, you can set this later if needed
                 });
-            } else if j_count < 5 {
-                // 3 or more 'J's, treat J as highest other card
-
+            } else if j_count == 3 {
+                hand_array[9] = 0;
                 hands.push(HandEntry {
-                    hand: (hand_str.to_owned(), hand_array, get_max_rank_three_four_j(&hand_array)),
-                    bid,
-                    overall_rank: 0, // Initialize to 0, you can set this later if needed
-                    total_score: 0, // Initialize to 0, you can set this later if needed
-                });
-            } else if j_count == 5 {
-                //still need logic
-                // No 'J' in the hand, process normally
-                hands.push(HandEntry {
-                    hand: (hand_str.to_owned(), hand_array, get_max_rank_five_j(&hand_array)),
+                    hand: (hand_str.to_owned(), hand_array, get_max_rank_three_j(&hand_array)),
                     bid,
                     overall_rank: 0, // Initialize to 0, you can set this later if needed
                     total_score: 0, // Initialize to 0, you can set this later if needed
                 });
             } else {
-                // j_count == 0. proceed as normal
-                // No 'J' in the hand, process normally
-
                 hands.push(HandEntry {
-                    hand: (hand_str.to_owned(), hand_array, get_max_rank(hand_array)),
+                    hand: (hand_str.to_owned(), hand_array, 6 as usize),
                     bid,
                     overall_rank: 0, // Initialize to 0, you can set this later if needed
                     total_score: 0, // Initialize to 0, you can set this later if needed
                 });
             }
+        } else {
+            // j_count == 0. proceed as normal
+            // No 'J' in the hand, process normally
+
+            hands.push(HandEntry {
+                hand: (hand_str.to_owned(), hand_array, get_max_rank(hand_array)),
+                bid,
+                overall_rank: 0, // Initialize to 0, you can set this later if needed
+                total_score: 0, // Initialize to 0, you can set this later if needed
+            });
         }
     }
 
