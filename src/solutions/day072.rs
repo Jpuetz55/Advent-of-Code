@@ -95,7 +95,7 @@ struct HandEntry {
     total_score: usize,
 }
 
-// Function to convert card character to rank
+// Function to convert card character to sorting rank
 fn char_to_rank(card: char) -> u32 {
     match card {
         'A' => 1,
@@ -296,16 +296,19 @@ fn get_max_rank_two_j(hand_array: &[usize; 13]) -> usize {
 
 // Function to get the maximum rank for a hand with three 'J's
 fn get_max_rank_three_j(hand_array: &[usize; 13]) -> usize {
-    // Check if there are two 'J's in the hand
+    // Check if there are two of any card in the hand
     for item in hand_array {
         if *item == 2 {
-            return 6; // Return rank 6 if two 'J's are present
+            return 6; // Return rank 6 if both cards are the same are present. 5 of a kind is the highest rank possible
         }
     }
 
-    // Return rank 5 if three 'J's are present
+    // Return rank 5 if both cards are different. 4 of a kind is the highest rank possible
     5
 }
+
+//4 J's is trivial. just make them the other card for 5 of a kind
+//Do I need to explain why 5 J's is trivial?
 
 // Function to parse input and create HandEntry instances
 fn parse_input(input: &str) -> Vec<HandEntry> {
