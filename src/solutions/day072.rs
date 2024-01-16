@@ -442,7 +442,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     for (_, hands_list) in hands_by_rank.iter_mut() {
         sort_hands_alphabetically_within_rank(hands_list);
     }
-
+    //This is readable but for optimization, I should just leave them in the hashmap and iterate over them in order for the total score
     // Combine hands from all ranks into a single sorted list
     let mut sorted_hands: Vec<HandEntry> = Vec::new();
     for rank in (0..=6).rev() {
