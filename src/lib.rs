@@ -69,146 +69,146 @@ pub fn run_day<'a>(data_dir: &'a str, day: &'a str) -> Result<(), Error<'a>> {
             solutions::day081::main(data_dir);
             Ok(())
         }
-        "082" => {
-            solutions::day082::main(data_dir);
-            Ok(())
-        }
-        "091" => {
-            solutions::day091::main(data_dir);
-            Ok(())
-        }
-        "092" => {
-            solutions::day092::main(data_dir);
-            Ok(())
-        }
-        "101" => {
-            solutions::day101::main(data_dir);
-            Ok(())
-        }
-        "102" => {
-            solutions::day102::main(data_dir);
-            Ok(())
-        }
-        "111" => {
-            solutions::day111::main(data_dir);
-            Ok(())
-        }
-        "112" => {
-            solutions::day112::main(data_dir);
-            Ok(())
-        }
-        "121" => {
-            solutions::day121::main(data_dir);
-            Ok(())
-        }
-        "122" => {
-            solutions::day122::main(data_dir);
-            Ok(())
-        }
-        "131" => {
-            solutions::day131::main(data_dir);
-            Ok(())
-        }
-        "132" => {
-            solutions::day132::main(data_dir);
-            Ok(())
-        }
-        "141" => {
-            solutions::day141::main(data_dir);
-            Ok(())
-        }
-        "142" => {
-            solutions::day142::main(data_dir);
-            Ok(())
-        }
-        "151" => {
-            solutions::day151::main(data_dir);
-            Ok(())
-        }
-        "152" => {
-            solutions::day152::main(data_dir);
-            Ok(())
-        }
-        "161" => {
-            solutions::day161::main(data_dir);
-            Ok(())
-        }
-        "162" => {
-            solutions::day162::main(data_dir);
-            Ok(())
-        }
-        "171" => {
-            solutions::day171::main(data_dir);
-            Ok(())
-        }
-        "172" => {
-            solutions::day172::main(data_dir);
-            Ok(())
-        }
-        "181" => {
-            solutions::day181::main(data_dir);
-            Ok(())
-        }
-        "182" => {
-            solutions::day182::main(data_dir);
-            Ok(())
-        }
-        "191" => {
-            solutions::day191::main(data_dir);
-            Ok(())
-        }
-        "192" => {
-            solutions::day192::main(data_dir);
-            Ok(())
-        }
-        "201" => {
-            solutions::day201::main(data_dir);
-            Ok(())
-        }
-        "202" => {
-            solutions::day202::main(data_dir);
-            Ok(())
-        }
-        "211" => {
-            solutions::day211::main(data_dir);
-            Ok(())
-        }
-        "212" => {
-            solutions::day212::main(data_dir);
-            Ok(())
-        }
-        "221" => {
-            solutions::day221::main(data_dir);
-            Ok(())
-        }
-        "222" => {
-            solutions::day222::main(data_dir);
-            Ok(())
-        }
-        "231" => {
-            solutions::day231::main(data_dir);
-            Ok(())
-        }
-        "232" => {
-            solutions::day232::main(data_dir);
-            Ok(())
-        }
-        "241" => {
-            solutions::day241::main(data_dir);
-            Ok(())
-        }
-        "242" => {
-            solutions::day242::main(data_dir);
-            Ok(())
-        }
-        "251" => {
-            solutions::day251::main(data_dir);
-            Ok(())
-        }
-        "252" => {
-            solutions::day252::main(data_dir);
-            Ok(())
-        }
+        // "082" => {
+        //     solutions::day082::main(data_dir);
+        //     Ok(())
+        // }
+        // "091" => {
+        //     solutions::day091::main(data_dir);
+        //     Ok(())
+        // }
+        // "092" => {
+        //     solutions::day092::main(data_dir);
+        //     Ok(())
+        // }
+        // "101" => {
+        //     solutions::day101::main(data_dir);
+        //     Ok(())
+        // }
+        // "102" => {
+        //     solutions::day102::main(data_dir);
+        //     Ok(())
+        // }
+        // "111" => {
+        //     solutions::day111::main(data_dir);
+        //     Ok(())
+        // }
+        // "112" => {
+        //     solutions::day112::main(data_dir);
+        //     Ok(())
+        // }
+        // "121" => {
+        //     solutions::day121::main(data_dir);
+        //     Ok(())
+        // }
+        // "122" => {
+        //     solutions::day122::main(data_dir);
+        //     Ok(())
+        // }
+        // "131" => {
+        //     solutions::day131::main(data_dir);
+        //     Ok(())
+        // }
+        // "132" => {
+        //     solutions::day132::main(data_dir);
+        //     Ok(())
+        // }
+        // "141" => {
+        //     solutions::day141::main(data_dir);
+        //     Ok(())
+        // }
+        // "142" => {
+        //     solutions::day142::main(data_dir);
+        //     Ok(())
+        // }
+        // "151" => {
+        //     solutions::day151::main(data_dir);
+        //     Ok(())
+        // }
+        // "152" => {
+        //     solutions::day152::main(data_dir);
+        //     Ok(())
+        // }
+        // "161" => {
+        //     solutions::day161::main(data_dir);
+        //     Ok(())
+        // }
+        // "162" => {
+        //     solutions::day162::main(data_dir);
+        //     Ok(())
+        // }
+        // "171" => {
+        //     solutions::day171::main(data_dir);
+        //     Ok(())
+        // }
+        // "172" => {
+        //     solutions::day172::main(data_dir);
+        //     Ok(())
+        // }
+        // "181" => {
+        //     solutions::day181::main(data_dir);
+        //     Ok(())
+        // }
+        // "182" => {
+        //     solutions::day182::main(data_dir);
+        //     Ok(())
+        // }
+        // "191" => {
+        //     solutions::day191::main(data_dir);
+        //     Ok(())
+        // }
+        // "192" => {
+        //     solutions::day192::main(data_dir);
+        //     Ok(())
+        // }
+        // "201" => {
+        //     solutions::day201::main(data_dir);
+        //     Ok(())
+        // }
+        // "202" => {
+        //     solutions::day202::main(data_dir);
+        //     Ok(())
+        // }
+        // "211" => {
+        //     solutions::day211::main(data_dir);
+        //     Ok(())
+        // }
+        // "212" => {
+        //     solutions::day212::main(data_dir);
+        //     Ok(())
+        // }
+        // "221" => {
+        //     solutions::day221::main(data_dir);
+        //     Ok(())
+        // }
+        // "222" => {
+        //     solutions::day222::main(data_dir);
+        //     Ok(())
+        // }
+        // "231" => {
+        //     solutions::day231::main(data_dir);
+        //     Ok(())
+        // }
+        // "232" => {
+        //     solutions::day232::main(data_dir);
+        //     Ok(())
+        // }
+        // "241" => {
+        //     solutions::day241::main(data_dir);
+        //     Ok(())
+        // }
+        // "242" => {
+        //     solutions::day242::main(data_dir);
+        //     Ok(())
+        // }
+        // "251" => {
+        //     solutions::day251::main(data_dir);
+        //     Ok(())
+        // }
+        // "252" => {
+        //     solutions::day252::main(data_dir);
+        //     Ok(())
+        // }
 
         // <-- INSERT NEW DAY HERE -->
         _ => Err(Error::DayNotImplemented(day)),

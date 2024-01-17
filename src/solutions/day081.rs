@@ -1,8 +1,4 @@
-use std::collections::HashMap;
-
-use crate::data::load;
-use thiserror::Error;
-use permutator::{ Combination, Permutation };
+use crate::{ data::load, Error };
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum PuzzleErr {
@@ -15,7 +11,9 @@ fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
 }
 
 // Function to calculate total winnings
-fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {}
+fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
+    Ok(1 as isize)
+}
 
 // Main function to execute the puzzle
 pub fn main(data_dir: &str) {
