@@ -2,7 +2,9 @@ use aoc_2023::solutions::day081::puzzle;
 use std::collections::HashMap;
 
 const EXAMPLE_INPUT: &str =
-    "DBQ = (RTP, ZZZ)
+    "LLR
+
+DBQ = (RTP, ZZZ)
 RTP = (PXX, PLG)
 VBX = (BRV, DKG)
 PXX = (HLR, VBX)
@@ -14,31 +16,31 @@ BLH = (ZZZ, GGG)";
 fn example_1_puzzle_1() {
     let mut choices_map: HashMap<&str, (&str, &str)> = HashMap::new();
 
-    let mut current_key = "";
+    let parts: Vec<&str> = EXAMPLE_INPUT.split("\n\n")
+        .map(|s| s.trim())
+        .collect();
 
-    for line in EXAMPLE_INPUT.lines() {
-        let trimmed_line = line.trim();
+    println!("{:?}", parts);
 
-        if trimmed_line.is_empty() {
-            continue;
-        }
+    let pattern = parts[0];
+    let map = parts[1];
+    // hard set starting key
+    let start_key = "DBQ";
 
-        if trimmed_line.chars().all(|c| c.is_alphabetic()) {
-            current_key = trimmed_line;
-        } else {
-            let parts: Vec<&str> = trimmed_line
-                .split('=')
+    for line in map.lines() {
+        let parts: Vec<&str> = line
+            .split('=')
+            .map(|s| s.trim())
+            .collect();
+        if parts.len() == 2 {
+            let key = parts[0];
+            let choices: Vec<&str> = parts[1]
+                .trim_matches(|c| (c == '(' || c == ')'))
+                .split(',')
                 .map(|s| s.trim())
                 .collect();
-            if parts.len() == 2 {
-                let choices: Vec<&str> = parts[1]
-                    .trim_matches(|c| (c == '(' || c == ')'))
-                    .split(',')
-                    .map(|s| s.trim())
-                    .collect();
-                if choices.len() == 2 {
-                    choices_map.insert(current_key, (choices[0], choices[1]));
-                }
+            if choices.len() == 2 {
+                choices_map.insert(key, (choices[0], choices[1]));
             }
         }
     }
@@ -47,5 +49,6 @@ fn example_1_puzzle_1() {
     for (key, value) in &choices_map {
         println!("{} = {:?}", key, value);
     }
+    println!("{:?}", &choices_map);
     assert_eq!(puzzle(self::EXAMPLE_INPUT), Ok(6));
 }
