@@ -1,4 +1,4 @@
-use aoc_2023::solutions::day011::puzzle;
+use aoc_2023::solutions::day081::puzzle;
 
 const EXAMPLE_INPUT: &str = "";
 
