@@ -6,7 +6,7 @@ pub enum PuzzleErr {
     NoDigits,
 }
 // Main puzzle-solving function
-fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
+pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
     calculate_total(input_data)
 }
 
