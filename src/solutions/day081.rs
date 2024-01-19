@@ -23,7 +23,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     let pattern = parts[0];
     let map = parts[1];
     // hard set starting key
-    let start_key = "DBQ";
+    let start_key = "AAA";
 
     for line in map.lines() {
         let parts: Vec<&str> = line
@@ -75,5 +75,5 @@ pub fn main(data_dir: &str) {
         Ok(x) => println!(" Puzzle 8-1: {}", x),
         Err(e) => panic!("No solution to puzzle: {}.", e),
     }
-    assert_eq!(answer, Ok(253473930));
+    assert_eq!(answer, Ok(12737));
 }
