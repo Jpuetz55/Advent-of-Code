@@ -59,7 +59,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
 
     //iterate through the values and end the function and return the step count when all the values end with a z
     //initialize a boolean switch to right value
-    let mut bool_switch = false;
+    let mut bool_switch = true;
 
     loop {
         if value_vec.iter().all(|value| value.ends_with("Z")) {
@@ -73,7 +73,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
                     .iter()
                     .map(|&value| {
                         let new_value = choices_map.get(value).map_or(value, |(v, _)| {
-                            println!("Choosing left: value={}", v);
+                            // println!("Choosing left: value={}", v);
                             v
                         });
                         new_value
