@@ -159,7 +159,7 @@ pub fn main(data_dir: &str) {
 
     let answer = puzzle(&data);
     match answer {
-        Ok(x) => println!(" Puzzle 8-1: {}", x),
+        Ok(x) => println!(" Puzzle 8-2: {}", x),
         Err(e) => panic!("No solution to puzzle: {}.", e),
     }
     assert_eq!(answer, Ok(9064949303801));
