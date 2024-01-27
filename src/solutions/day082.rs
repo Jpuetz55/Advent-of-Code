@@ -68,7 +68,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
         })
         .collect();
 
-    println!("Initial Value Vec: {:?}", value_vec);
+    //println!("Initial Value Vec: {:?}", value_vec);
 
     let mut steps_vec: Vec<u64> = Vec::new();
 
@@ -90,7 +90,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     }
 
     for key in value_vec.iter() {
-        println!("Calculating steps for key: {}", key);
+        //println!("Calculating steps for key: {}", key);
         let mut i = 1;
         let mut steps: isize = 1;
         let mut temp_key = *key;
@@ -101,8 +101,6 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             if key.ends_with('Z') || temp_key.ends_with('Z') {
                 break;
             }
-            //populate new vec with all the values selected from the value_vec
-            //choose value 1 if bool_switch is true, value2 otherwise
             if pattern.chars().nth(i).unwrap() == 'R' {
                 //println!("Right");
                 let new_temp_key = update_key_right(temp_key, &choices_map);
@@ -119,13 +117,10 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             i += 1;
         }
         steps_vec.push(steps as u64);
-        println!("Steps for key {}: {:?}", key, steps);
+        //println!("Steps for key {}: {:?}", key, steps);
     }
 
-    println!("Steps: {:?}", steps_vec);
-
-    //have steps_vec. Multiply all the values by themselves in a loop when all the numbers are equal
-    //return the number they are all equal to
+    //println!("Steps: {:?}", steps_vec);
 
     // Function to calculate the greatest common divisor (GCD) using Euclidean algorithm
     fn gcd(mut a: u64, mut b: u64) -> u64 {
