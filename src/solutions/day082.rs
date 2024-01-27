@@ -13,6 +13,14 @@ pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
     calculate_total(input_data)
 }
 
+//Originally tried to brute force. After verifying that my algo was working correctly
+//It would not arrive at a solution, implying that the number of steps is computationally infeasible to brute force
+
+//A clever way to arrive at the solution more quickly is to calculate the number of steps for
+//each starting key and then finding the Least Common Multiple of steps required for each key
+//to arrive at the solution as each key forms their own pattern that repeats at the next multiple of steps
+//the Least Common Multiple is essentially when the pattern for all these keys sync up
+
 // Function to calculate total winnings
 fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     let mut choices_map: HashMap<&str, (&str, &str)> = HashMap::new();
@@ -22,6 +30,10 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
         .map(|s| s.trim())
         .collect();
 
+    let pattern = parts[0];
+
+    //println!("{}", pattern);
+
     let map = parts[1];
 
     //parse input and create hashmap to hold the key value pairs
@@ -30,86 +42,130 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             .split('=')
             .map(|s| s.trim())
             .collect();
-        if parts.len() == 2 {
-            let key = parts[0];
-            let choices: Vec<&str> = parts[1]
-                .trim_matches(|c| (c == '(' || c == ')'))
-                .split(',')
-                .map(|s| s.trim())
-                .collect();
-            if choices.len() == 2 {
-                choices_map.insert(key, (choices[0], choices[1]));
-            }
-        }
+
+        let key = parts[0];
+        let choices: Vec<&str> = parts[1]
+            .trim_matches(|c| (c == '(' || c == ')'))
+            .split(',')
+            .map(|s| s.trim())
+            .collect();
+
+        choices_map.insert(key, (&choices[0], &choices[1]));
+        //println!("Key: {}, Value: {:?}", key, choices_map.get(key));
     }
 
-    let mut steps: isize = 0;
+    //println!("Choices Map: {:?}", choices_map);
 
-    //get all key values from map wherein the key ends with an A
+    //get all key values from the map wherein the key ends with an A
 
-    //intialize a vector to hold the key value pairs with the initial values (ends with A). select left first
-    let mut value_vec: Vec<&str> = choices_map
+    //initialize a vector to hold the key-value pairs with the initial values (ends with A). select left first
+    let value_vec: Vec<&str> = choices_map
         .iter()
         .filter(|(key, _value)| key.ends_with("A"))
-        .map(|(key, value)| {
-            println!("Initial: key={}, value={:?}", key, value);
+        .map(|(_key, value)| {
+            //println!("Initial: key={}, value={:?}", key, value);
             value.0
         })
         .collect();
 
+    println!("Initial Value Vec: {:?}", value_vec);
+
+    let mut steps_vec: Vec<u64> = Vec::new();
+
     //iterate through the values and end the function and return the step count when all the values end with a z
-    //initialize a boolean switch to right value
-    let mut bool_switch = true;
-
-    loop {
-        if value_vec.iter().all(|value| value.ends_with("Z")) {
-            break;
-        } else {
-            //populate new vec with all the values selected from the value_vec
-            //choose value 1 if bool_switch is true, value2 otherwise
-            if bool_switch {
-                println!("Switch is true");
-                value_vec = value_vec
-                    .iter()
-                    .map(|&value| {
-                        let new_value = choices_map.get(value).map_or(value, |(v, _)| {
-                            // println!("Choosing left: value={}", v);
-                            v
-                        });
-                        new_value
-                    })
-                    .collect();
-            } else {
-                println!("Switch is false");
-                value_vec = value_vec
-                    .iter()
-                    .map(|&value| {
-                        let new_value = choices_map.get(value).map_or(value, |(_, v)| {
-                            println!("Choosing right: value={}", v);
-                            v
-                        });
-                        new_value
-                    })
-                    .collect();
-            }
-
-            //flip switch
-            bool_switch = !bool_switch;
-            steps += 1;
-        }
+    fn update_key_left<'a>(
+        value: &'a str,
+        choices_map: &'a HashMap<&'a str, (&'a str, &'a str)>
+    ) -> &'a str {
+        let new_value = choices_map.get(value);
+        new_value.unwrap().0
     }
 
-    Ok(steps)
+    fn update_key_right<'a>(
+        value: &'a str,
+        choices_map: &'a HashMap<&'a str, (&'a str, &'a str)>
+    ) -> &'a str {
+        let new_value = choices_map.get(value);
+        new_value.unwrap().1
+    }
+
+    for key in value_vec.iter() {
+        println!("Calculating steps for key: {}", key);
+        let mut i = 1;
+        let mut steps: isize = 1;
+        let mut temp_key = *key;
+        loop {
+            if i == pattern.len() {
+                i = 0;
+            }
+            if key.ends_with('Z') || temp_key.ends_with('Z') {
+                break;
+            }
+            //populate new vec with all the values selected from the value_vec
+            //choose value 1 if bool_switch is true, value2 otherwise
+            if pattern.chars().nth(i).unwrap() == 'R' {
+                //println!("Right");
+                let new_temp_key = update_key_right(temp_key, &choices_map);
+                temp_key = new_temp_key;
+                //println!("New Temp Key: {}", temp_key);
+            } else if pattern.chars().nth(i).unwrap() == 'L' {
+                //println!("Left");
+                let new_temp_key = update_key_left(temp_key, &choices_map);
+                temp_key = new_temp_key;
+                //println!("New Temp Key: {}", temp_key);
+            }
+            //println!("Value Vec: {:?}{}", value_vec, i);
+            steps += 1;
+            i += 1;
+        }
+        steps_vec.push(steps as u64);
+        println!("Steps for key {}: {:?}", key, steps);
+    }
+
+    println!("Steps: {:?}", steps_vec);
+
+    //have steps_vec. Multiply all the values by themselves in a loop when all the numbers are equal
+    //return the number they are all equal to
+
+    // Function to calculate the greatest common divisor (GCD) using Euclidean algorithm
+    fn gcd(mut a: u64, mut b: u64) -> u64 {
+        while b != 0 {
+            let temp = b;
+            b = a % b;
+            a = temp;
+        }
+        a
+    }
+
+    // Function to calculate the least common multiple (LCM) of a vector of numbers
+    fn lcm_of_vec(numbers: Vec<u64>) -> u64 {
+        if numbers.len() == 0 {
+            return 0; // LCM is undefined for an empty list, you may want to handle this case differently
+        }
+
+        let mut lcm_result = numbers[0];
+
+        for &num in numbers.iter().skip(1) {
+            let gcd_value = gcd(lcm_result, num);
+            lcm_result = (lcm_result * num) / gcd_value;
+        }
+
+        lcm_result
+    }
+
+    println!("Steps: {:?}", steps_vec[0]);
+
+    Ok(lcm_of_vec(steps_vec) as isize)
 }
 
 // Main function to execute the puzzle
 pub fn main(data_dir: &str) {
-    let data = load(data_dir, 081, None);
+    let data = load(data_dir, 082, None);
 
     let answer = puzzle(&data);
     match answer {
         Ok(x) => println!(" Puzzle 8-1: {}", x),
         Err(e) => panic!("No solution to puzzle: {}.", e),
     }
-    assert_eq!(answer, Ok(12737));
+    assert_eq!(answer, Ok(9064949303801));
 }
