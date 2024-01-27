@@ -62,9 +62,9 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     let value_vec: Vec<&str> = choices_map
         .iter()
         .filter(|(key, _value)| key.ends_with("A"))
-        .map(|(_key, value)| {
+        .map(|(key, _value)| {
             //println!("Initial: key={}, value={:?}", key, value);
-            value.0
+            *key
         })
         .collect();
 
@@ -91,8 +91,8 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
 
     for key in value_vec.iter() {
         //println!("Calculating steps for key: {}", key);
-        let mut i = 1;
-        let mut steps: isize = 1;
+        let mut i = 0;
+        let mut steps: isize = 0;
         let mut temp_key = *key;
         loop {
             if i == pattern.len() {
