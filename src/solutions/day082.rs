@@ -58,7 +58,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
 
     //get all key values from the map wherein the key ends with an A
 
-    //initialize a vector to hold the key-value pairs with the initial values (ends with A). select left first
+    //initialize a vector to hold the key-value pairs with the initial values (ends with A).
     let value_vec: Vec<&str> = choices_map
         .iter()
         .filter(|(key, _value)| key.ends_with("A"))
