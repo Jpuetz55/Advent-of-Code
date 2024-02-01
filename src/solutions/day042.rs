@@ -42,9 +42,9 @@ fn process_card(lines: &Vec<Card>, card: &Card, overall_total: &mut u32) {
     let mut win_count = 0;
 
     // Split the string into winning and held numbers
-    let held_numbers = parts[1].split("|").collect::<Vec<&str>>();
-    let winning_numbers = held_numbers[0].split_whitespace().collect::<Vec<&str>>();
-    let held_numbers = held_numbers[1].split_whitespace().collect::<Vec<&str>>();
+    let all_numbers = parts[1].split("|").collect::<Vec<&str>>();
+    let winning_numbers = all_numbers[0].split_whitespace().collect::<Vec<&str>>();
+    let held_numbers = all_numbers[1].split_whitespace().collect::<Vec<&str>>();
 
     // Convert strings to vectors of u32
     let winning_numbers: Vec<u32> = winning_numbers
