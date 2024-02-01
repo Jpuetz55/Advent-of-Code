@@ -60,6 +60,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             current_index = 0;
         }
 
+        //ok, this is fucked. bad job robot
         for i in (0..vecs.len()).rev() {
             let last_index = vecs[i].len() - 1;
             if let Some(last_value) = vecs[i].get(last_index) {
