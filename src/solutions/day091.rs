@@ -31,7 +31,49 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     //until the next vec is the first vec in vecs. add this value to running_total (scope:global)
     //return running_total
 
-    Ok(0 as isize)
+    let mut vecs: Vec<Vec<isize>> = Vec::new();
+    let mut running_total = 0;
+
+    for line in input_data.lines() {
+        let mut start_vec: Vec<isize> = line
+            .split_whitespace()
+            .map(|s| s.parse::<isize>().unwrap_or(0))
+            .collect();
+
+        let mut current_index = 0;
+
+        while current_index < start_vec.len() {
+            let mut difference_vec: Vec<isize> = Vec::new();
+
+            while current_index < start_vec.len() - 1 {
+                let diff = start_vec[current_index + 1] - start_vec[current_index];
+                difference_vec.push(diff);
+                current_index += 1;
+            }
+
+            if difference_vec.iter().all(|&x| x == 0) {
+                break;
+            }
+
+            vecs.push(start_vec.clone());
+            start_vec = difference_vec;
+            current_index = 0;
+        }
+
+        for i in (0..vecs.len()).rev() {
+            let last_index = vecs[i].len() - 1;
+            if let Some(last_value) = vecs[i].get(last_index) {
+                running_total += last_value;
+                if i > 0 {
+                    start_vec[last_index] += last_value;
+                }
+            }
+        }
+
+        vecs.clear();
+    }
+
+    Ok(running_total)
 }
 
 // Main function to execute the puzzle
