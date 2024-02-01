@@ -29,6 +29,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     //if true
     //start at the last vec in vecs, get the value of the last index, add it to the last value in the next vec, repeat this process
     //until the next vec is the first vec in vecs. add this value to running_total (scope:global)
+    //return running_total
 
     Ok(0 as isize)
 }
