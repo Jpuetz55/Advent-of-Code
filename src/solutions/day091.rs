@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{data::load, Error};
+use crate::{ data::load, Error };
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum PuzzleErr {
@@ -16,7 +16,7 @@ pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
 // Function to calculate total winnings
 fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     //for each line in input_data
-    //declare vecs Vec to store all number_vec's
+    //intialize vecs Vec to store all number_vec's
     //set start_vec from input_data
     //set index to first item
     //compare with next item
