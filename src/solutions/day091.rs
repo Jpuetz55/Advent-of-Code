@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{ data::load, Error };
+use crate::{data::load, Error};
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum PuzzleErr {
