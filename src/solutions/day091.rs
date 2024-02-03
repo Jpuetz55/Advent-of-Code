@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use crate::{ data::load, Error };
+use crate::{data::load, Error};
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum PuzzleErr {
@@ -15,23 +13,7 @@ pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
 
 // Function to calculate total winnings
 fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
-    //for each line in input_data
-    //intialize vecs Vec to store all number_vec's
-    //set start_vec from input_data
-    //set index to first item
-    //compare with next item
-    //push the difference to difference_vec (scope: loop)
-    //do this until the current_index is the last value in the start_vec (scope: loop)
-    //check to see if all the values are zero
-    //if false
-    //push start_vec to vecs
-    //restart the process with the difference_vec as the start_vec
-    //if true
-    //start at the last vec in vecs, get the value of the last index, add it to the last value in the next vec, repeat this process
-    //until the next vec is the first vec in vecs. add this value to running_total (scope:global)
-    //return running_total
-
-    let mut vecs: Vec<Vec<isize>> = Vec::new();
+    // Computed differences in original 
     let mut running_total = 0;
 
     for line in input_data.lines() {
@@ -40,38 +22,42 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
             .map(|s| s.parse::<isize>().unwrap_or(0))
             .collect();
 
-        let mut current_index = 0;
+        let original_vec = start_vec.clone();
+        let mut difference_vecs: Vec<Vec<isize>> = Vec::new();
+        let mut difference_vec: Vec<isize> = vec![1 as isize];
 
-        while current_index < start_vec.len() {
-            let mut difference_vec: Vec<isize> = Vec::new();
-
+        while !difference_vec.iter().all(|&x| x == 0) {
+            difference_vec.clear();
+            let mut current_index = 0;
             while current_index < start_vec.len() - 1 {
                 let diff = start_vec[current_index + 1] - start_vec[current_index];
                 difference_vec.push(diff);
                 current_index += 1;
             }
-
-            if difference_vec.iter().all(|&x| x == 0) {
-                break;
-            }
-
-            vecs.push(start_vec.clone());
-            start_vec = difference_vec;
-            current_index = 0;
+            difference_vecs.push(difference_vec.clone());
+            start_vec = difference_vec.clone();
         }
 
-        //ok, this is fucked. bad job robot
-        for i in (0..vecs.len()).rev() {
-            let last_index = vecs[i].len() - 1;
-            if let Some(last_value) = vecs[i].get(last_index) {
-                running_total += last_value;
-                if i > 0 {
-                    start_vec[last_index] += last_value;
-                }
-            }
+        // Now calculate the amount to add to the running total
+        let mut value_to_add_to_total = 0;
+
+        // Iterate through difference_vecs starting from the second-to-last vector
+        for i in (1..difference_vecs.len()).rev() {
+            // Get the last value of the current vector
+            let last_value_current = value_to_add_to_total;
+
+            // Get the last value of the previous vector
+            let last_value_previous = difference_vecs[i - 1].last().cloned().unwrap_or_default();
+
+            // Add the last value of the current vector to the last value of the previous vector
+            value_to_add_to_total = last_value_current + last_value_previous;
         }
 
-        vecs.clear();
+        // Add the last value of the original_vec to the running total
+        value_to_add_to_total += original_vec.last().cloned().unwrap_or_default();
+
+        // Add the calculated value to the running total
+        running_total += value_to_add_to_total;
     }
 
     Ok(running_total)
