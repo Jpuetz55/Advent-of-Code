@@ -55,7 +55,7 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
 
     let mut original_value = original_vec.first().cloned().unwrap_or_default();
     // Add the last value of the original_vec to the running total
-     original_value -= value_to_add_to_total;
+    original_value -= value_to_add_to_total;
 
     // Add the calculated value to the running total
     running_total += original_value;
@@ -73,5 +73,5 @@ pub fn main(data_dir: &str) {
     Ok(x) => println!(" Puzzle 9-2: {}", x),
     Err(e) => panic!("No solution to puzzle: {}.", e),
   }
-  assert_eq!(answer, Ok(1953784198));
+  assert_eq!(answer, Ok(957));
 }
