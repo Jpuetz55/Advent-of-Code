@@ -6,5 +6,5 @@ const EXAMPLE_INPUT: &str = "0 3 6 9 12 15
 
 #[test]
 fn example_1_puzzle_1() {
-    assert_eq!(puzzle(self::EXAMPLE_INPUT), Ok(114));
+    assert_eq!(puzzle(self::EXAMPLE_INPUT), Ok(2));
 }

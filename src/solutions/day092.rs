@@ -47,17 +47,18 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
       let last_value_current = value_to_add_to_total;
 
       // Get the last value of the previous vector
-      let last_value_previous = difference_vecs[i - 1].last().cloned().unwrap_or_default();
+      let last_value_previous = difference_vecs[i - 1].first().cloned().unwrap_or_default();
 
       // Add the last value of the current vector to the last value of the previous vector
-      value_to_add_to_total = last_value_current + last_value_previous;
+      value_to_add_to_total = last_value_previous - last_value_current;
     }
 
+    let mut original_value = original_vec.first().cloned().unwrap_or_default();
     // Add the last value of the original_vec to the running total
-    value_to_add_to_total += original_vec.last().cloned().unwrap_or_default();
+     original_value -= value_to_add_to_total;
 
     // Add the calculated value to the running total
-    running_total += value_to_add_to_total;
+    running_total += original_value;
   }
 
   Ok(running_total)
