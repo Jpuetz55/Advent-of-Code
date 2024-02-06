@@ -1,5 +1,5 @@
-use crate::{ data::load, Error };
 use std::collections::{ HashSet, VecDeque };
+use crate::{ data::load, Error };
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum PuzzleErr {
@@ -14,29 +14,31 @@ pub fn puzzle(input_data: &str) -> Result<isize, PuzzleErr> {
 
 // Function to calculate total winnings
 fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
-  //todo
-
   // Define the size of the matrix
   let rows = 140;
   let cols = 140;
 
   // Construct a 140x140 matrix filled with zeros
-  let matrix: Vec<Vec<i32>> = vec![vec![0; cols]; rows];
-
-  println!("Matrix: {:?}", matrix);
+  let mut matrix: Vec<Vec<char>> = vec![vec!['0'; cols]; rows];
 
   // Convert the string into a 140x140 matrix
-  let matrix: Vec<Vec<char>> = input_data
-    .chars()
-    .collect::<Vec<_>>()
-    .chunks(cols)
-    .map(|chunk| chunk.to_vec())
-    .collect();
+  let input_data = input_data.replace('\n', "");
+  println!("Input data: {:?}", input_data);
+  let mut index = 0;
 
-  // Access and print an element (for example, the element at row 5, column 10)
-  println!("Element at row 5, column 10: {}", matrix[5][10]);
+  for i in 0..rows {
+    for j in 0..cols {
+      matrix[i][j] = input_data.chars().nth(index).unwrap();
+      index += 1;
+    }
+  }
 
-  struct Graph {
+  // Print the matrix
+  println!("Matrix: {:?}", matrix);
+
+  println!("Matrix, row 5, column 5: {}", matrix[5][5]);
+
+  /* struct Graph {
     adj_list: Vec<Vec<usize>>,
   }
 
@@ -94,21 +96,19 @@ fn calculate_total(input_data: &str) -> Result<isize, PuzzleErr> {
     }
   }
 
-  fn main() {
-    let mut graph = Graph::new(6);
-    graph.add_edge(0, 1);
-    graph.add_edge(0, 2);
-    graph.add_edge(1, 3);
-    graph.add_edge(2, 4);
-    graph.add_edge(4, 2); // Introduce a cycle by adding an edge back to vertex 2
-    graph.add_edge(2, 5);
+  let mut graph = Graph::new(6);
+  graph.add_edge(0, 1);
+  graph.add_edge(0, 2);
+  graph.add_edge(1, 3);
+  graph.add_edge(2, 4);
+  graph.add_edge(4, 2); // Introduce a cycle by adding an edge back to vertex 2
+  graph.add_edge(2, 5);
 
-    if let Some(cycle_length) = graph.find_cycle() {
-      println!("Cycle found with length: {}", cycle_length);
-    } else {
-      println!("No cycle found.");
-    }
-  }
+  if let Some(cycle_length) = graph.find_cycle() {
+    println!("Cycle found with length: {}", cycle_length);
+  } else {
+    println!("No cycle found.");
+  } */
 
   Ok(0)
 }

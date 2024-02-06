@@ -78,13 +78,13 @@ pub fn run_day<'a>(data_dir: &'a str, day: &'a str) -> Result<(), Error<'a>> {
       Ok(())
     }
     "092" => {
-        solutions::day092::main(data_dir);
-        Ok(())
+      solutions::day092::main(data_dir);
+      Ok(())
     }
-    // "101" => {
-    //     solutions::day101::main(data_dir);
-    //     Ok(())
-    // }
+    "101" => {
+      solutions::day101::main(data_dir);
+      Ok(())
+    }
     // "102" => {
     //     solutions::day102::main(data_dir);
     //     Ok(())
